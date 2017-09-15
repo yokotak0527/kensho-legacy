@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="../dest/kensho.js"></script>
+</head>
+<body>
+  <form action="" id="my-form">
+    <input type="text" name="name">
+    <p class="name-error">sasfad</p>
+    <hr>
+    <div>
+      <label>
+        <input type="radio" name="sex" value="男性">
+        男性
+      </label>
+      <label>
+        <input type="radio" name="sex" value="女性">
+        女性
+      </label>
+      <p class="sex-error">sasfad</p>
+    </div>
+    <hr>
+    <div>
+      <textarea name="comment" id="" cols="30" rows="10"></textarea>
+      <p class="comment-error">sasfad</p>
+    </div>
+  </form>
+  <script>
+    var kensho = new Kensho('form');
+    kensho.add(
+      '#my-form input[name=name]',
+      '#my-form .name-error',
+      {
+        'required' : 'this is required!'
+      },
+      'change'
+    ).add(
+      '#my-form input[name=sex]',
+      '#my-form .sex-error',
+      {
+        'required' : 'this is required!'
+      },
+      'change'
+    ).add(
+      '#my-form textarea[name=comment]',
+      '#my-form .comment-error',
+      {
+        'required' : 'this is required!'
+      },
+      'change'
+    );
+    // setTimeout(function(){
+    //   kensho.validate('name');
+    // }, 2000);
+
+    console.log(Kensho.validate('required', 'a'));
+  </script>
+</body>
+</html>

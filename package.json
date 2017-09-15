@@ -1,0 +1,30 @@
+{
+  "name": "kensho",
+  "version": "0.0.0",
+  "description": "form validation library.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=development gulp watch"
+  },
+  "keywords": [
+    "validate"
+  ],
+  "author": "yokotak0527",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-changed": "^3.1.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-if": "^2.0.2",
+    "gulp-ignore": "^2.0.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sourcemaps": "^2.6.1",
+    "node-notifier": "^5.1.2",
+    "run-sequence": "^2.1.0"
+  },
+  "dependencies": {}
+}

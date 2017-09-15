@@ -1,0 +1,3 @@
+(()=>{
+  let plugin = Kensho.plugin;
+})();
