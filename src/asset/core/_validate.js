@@ -1,5 +1,7 @@
 /**
+ * 
  * validate value
+ * 
  * @param  {string}     name  - validation rule name.
  * @param  {string|int} value - 
  * @param  {object}     param - key/value variables for callback
@@ -7,7 +9,6 @@
  */
 static validate(name, value, param = {}){
   let rule = this.rule.get(name);
-
 
   return rule.callback(value, param);
 }

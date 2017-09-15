@@ -11,7 +11,9 @@ constructor(formElement, option = {}){
 
   this.formElement = formElement;
   this.rule        = Kensho.rule;
-  this.hook        = new Kensho.Hook(this);
+  // this.plugin      = Kensho.plugin;
+  this.hook        = new Kensho.Hook();
+  // this.plugin
   
   // soft private
   this._ = new Map();
@@ -24,7 +26,16 @@ constructor(formElement, option = {}){
   // console.log(form instanceof HTMLElement);
   formElement.classList.add('kensho-form');
 
-  // this.hook.addAction('init');
+  // this.hook.add('action', 'init', 'test1', function(){
+  //   console.log("1");
+  // });
+  // this.hook.add('action', 'init', 'test2', function(){
+  //   console.log("2");
+  // }).remove('action', 'init', 'test2');
+  // 
+  // this.hook.action('init', function(){
+  //   console.log(this);
+  // }, {}, this);
 }
 
 

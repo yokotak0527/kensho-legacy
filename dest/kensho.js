@@ -21,7 +21,9 @@ var Kensho = function () {
 
     this.formElement = formElement;
     this.rule = Kensho.rule;
-    this.hook = new Kensho.Hook(this);
+    // this.plugin      = Kensho.plugin;
+    this.hook = new Kensho.Hook();
+    // this.plugin
 
     // soft private
     this._ = new Map();
@@ -33,7 +35,16 @@ var Kensho = function () {
     // console.log(form instanceof HTMLElement);
     formElement.classList.add('kensho-form');
 
-    // this.hook.addAction('init');
+    // this.hook.add('action', 'init', 'test1', function(){
+    //   console.log("1");
+    // });
+    // this.hook.add('action', 'init', 'test2', function(){
+    //   console.log("2");
+    // }).remove('action', 'init', 'test2');
+    // 
+    // this.hook.action('init', function(){
+    //   console.log(this);
+    // }, {}, this);
   }
 
   // Kensho.addRule
@@ -77,7 +88,7 @@ var Kensho = function () {
     if (tagName === 'input') type = inputElement[0].getAttribute('type');else type = tagName;
     if (type !== 'radio') inputElement = inputElement[0];
 
-    var unit = _.inputs[name] = {
+    var unit = {
       name: name,
       inputElement: inputElement,
       errorElement: errorElement,
@@ -85,20 +96,13 @@ var Kensho = function () {
       type: type,
       rule: rule,
       error: []
-      // name         : name,
-      // $input       : $input,
-      // inputTagName : tagName,
-      // type         : type,
-      // $err         : $err,
-      // validate     : validate,
-      // errMsg       : errMsg,
-      // event        : event,
-      // errors       : [],
-      // zeroThrough  : true
+    };
 
+    unit = this.hook.filter('add-validate-filed-set-data', unit, this);
+    _.inputs[name] = unit;
 
-      // Add event handler
-    };event.forEach(function (name, i) {
+    // Add event handler
+    event.forEach(function (name, i) {
       if (name === 'init') {
         if (unit.type === 'radio') {
           unit.inputElement.forEach(function (input, i) {
@@ -122,12 +126,14 @@ var Kensho = function () {
       }
     });
 
+    this.hook.action('add-validate-field', { unit: unit }, this);
     return this;
-    // this.addAction('add');
   };
 
   /**
+   * 
    * validate value
+   * 
    * @param  {string}     name  - validation rule name.
    * @param  {string|int} value - 
    * @param  {object}     param - key/value variables for callback
@@ -219,38 +225,133 @@ var Kensho = function () {
 
   var Hook = function () {
     /**
-     * [constructor description]
-     * @param  {Kensho} kensho - instance of Kensho
-     * @return {[type]} [description]
+     *
+     * constructor
+     * 
      */
-    function Hook(kensho) {
+    function Hook() {
       _classCallCheck(this, Hook);
 
-      this.kensho = kensho;
-      this.actions = [];
-      this.filters = [];
-
+      // soft private
       map.set(this, Object.create(null));
-
       var _ = _get(this);
-      // console.log(_);
+      _.actions = {};
+      _.filters = {};
     }
     /**
-     * Do hook action
-     * @param  {string} name - to do hook name
+     *
+     * set action/filter hook
+     * 
+     * @param {string} type       - "action" or "filter"
+     * @param {string} hookName   - 
+     * @param {string} callback   - 
+     * @param {number} [priority] - 
+     * @return {hook} this
+     */
+
+
+    Hook.prototype.add = function add(type, hookName, callbackName, callback) {
+      var priority = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+
+      var _ = _get(this);
+      var hooks = void 0;
+      switch (type) {
+        case 'action':
+          hooks = _.actions;
+          break;
+        case 'filter':
+          hooks = _.filters;
+          break;
+      }
+      if (!hooks[hookName]) hooks[hookName] = [];
+      hooks = hooks[hookName];
+
+      var newHook = {
+        name: callbackName,
+        callback: callback
+      };
+      if (priority === false) {
+        hooks.push(newHook);
+      } else {
+        hooks.splice(priority, 0, newHook);
+      }
+      return this;
+    };
+    /**
+     * 
+     * @param  {string} type         - 
+     * @param  {string} hookName     - 
+     * @param  {string} callbackName - 
+     * @return {hook} this
+     */
+
+
+    Hook.prototype.remove = function remove(type, hookName, callbackName) {
+      var _ = _get(this);
+      var hooks = void 0;
+      var typeName = void 0;
+      switch (type) {
+        case 'action':
+          typeName = 'actions';
+          hooks = _.actions;
+          break;
+        case 'filter':
+          typeName = 'filters';
+          break;
+      }
+      hooks = _[typeName][hookName];
+      if (hooks) {
+        hooks = hooks.filter(function (hook) {
+          return hook.name !== callbackName;
+        });
+        _[typeName][hookName] = hooks;
+      }
+      return this;
+    };
+    /**
+     *
+     * Do action hook
+     * 
+     * @param  {string} name       - 
+     * @param  {object} [param={}] - 
+     * @param  {*}      thisObject - 
      * @return {void}
      */
 
 
-    Hook.prototype.setAction = function setAction(name) {};
+    Hook.prototype.action = function action(name) {
+      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var thisObject = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this;
+
+      var _ = _get(this);
+      var actions = _.actions[name];
+      if (actions) actions.forEach(function (listener) {
+        return listener.callback.call(thisObject, param);
+      });
+    };
     /**
-     * Do hook filter
-     * @param  {string} name - to do hook name
+     * 
+     * apply filter hook
+     * 
+     * @param  {string} name       - 
+     * @param  {*}      data       - 
+     * @param  {*}      thisObject - 
      * @return {*}
      */
 
 
-    Hook.prototype.setFilter = function setFilter(name) {};
+    Hook.prototype.filter = function filter(name, data) {
+      var thisObject = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this;
+
+      var _ = _get(this);
+      var filters = _.filters[name];
+      if (filters) {
+        filters.forEach(function (listener) {
+          data = listener.callback.call(thisObject, data);
+        });
+      };
+      return data;
+    };
 
     return Hook;
   }();

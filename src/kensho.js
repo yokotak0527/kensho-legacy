@@ -13,7 +13,9 @@ constructor(formElement, option = {}){
 
   this.formElement = formElement;
   this.rule        = Kensho.rule;
-  this.hook        = new Kensho.Hook(this);
+  // this.plugin      = Kensho.plugin;
+  this.hook        = new Kensho.Hook();
+  // this.plugin
   
   // soft private
   this._ = new Map();
@@ -26,7 +28,16 @@ constructor(formElement, option = {}){
   // console.log(form instanceof HTMLElement);
   formElement.classList.add('kensho-form');
 
-  // this.hook.addAction('init');
+  // this.hook.add('action', 'init', 'test1', function(){
+  //   console.log("1");
+  // });
+  // this.hook.add('action', 'init', 'test2', function(){
+  //   console.log("2");
+  // }).remove('action', 'init', 'test2');
+  // 
+  // this.hook.action('init', function(){
+  //   console.log(this);
+  // }, {}, this);
 }
 
 
@@ -67,7 +78,7 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
   else type = tagName;
   if(type !== 'radio') inputElement = inputElement[0];
 
-  let unit = _.inputs[name] = {
+  let unit = {
     name         : name,
     inputElement : inputElement,
     errorElement : errorElement,
@@ -75,18 +86,11 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
     type         : type,
     rule         : rule,
     error        : []
-    // name         : name,
-    // $input       : $input,
-    // inputTagName : tagName,
-    // type         : type,
-    // $err         : $err,
-    // validate     : validate,
-    // errMsg       : errMsg,
-    // event        : event,
-    // errors       : [],
-    // zeroThrough  : true
   }
-  
+
+  unit = this.hook.filter('add-validate-filed-set-data', unit, this);
+  _.inputs[name] = unit;
+
   // Add event handler
   event.forEach((name, i)=>{
     if(name === 'init'){
@@ -112,13 +116,14 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
     }
   });
 
+  this.hook.action('add-validate-field', {unit : unit}, this);
   return this;
-  // this.addAction('add');
-  
 }
 
 /**
+ * 
  * validate value
+ * 
  * @param  {string}     name  - validation rule name.
  * @param  {string|int} value - 
  * @param  {object}     param - key/value variables for callback
@@ -126,7 +131,6 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
  */
 static validate(name, value, param = {}){
   let rule = this.rule.get(name);
-
 
   return rule.callback(value, param);
 }
@@ -199,36 +203,113 @@ validate(name, param = {}){
   
   class Hook{
     /**
-     * [constructor description]
-     * @param  {Kensho} kensho - instance of Kensho
-     * @return {[type]} [description]
+     *
+     * constructor
+     * 
      */
-    constructor(kensho){
-      this.kensho  = kensho;
-      this.actions = [];
-      this.filters = [];
-      
+    constructor(){
+      // soft private
       map.set(this, Object.create(null));
-      
-      
       let _ = _get(this);
-      // console.log(_);
+      _.actions = {};
+      _.filters = {};
     }
     /**
-     * Do hook action
-     * @param  {string} name - to do hook name
+     *
+     * set action/filter hook
+     * 
+     * @param {string} type       - "action" or "filter"
+     * @param {string} hookName   - 
+     * @param {string} callback   - 
+     * @param {number} [priority] - 
+     * @return {hook} this
+     */
+    add(type, hookName, callbackName, callback, priority = false){
+      let _ = _get(this);
+      let hooks;
+      switch(type){
+        case 'action' :
+          hooks = _.actions;
+          break;
+        case 'filter' :
+          hooks = _.filters;
+          break;
+      }
+      if(!hooks[hookName]) hooks[hookName] = [];
+      hooks = hooks[hookName];
+      
+      let newHook = {
+        name     : callbackName,
+        callback : callback
+      }
+      if(priority === false){
+        hooks.push(newHook);
+      }else{
+        hooks.splice(priority, 0, newHook);
+      }
+      return this;
+    }
+    /**
+     * 
+     * @param  {string} type         - 
+     * @param  {string} hookName     - 
+     * @param  {string} callbackName - 
+     * @return {hook} this
+     */
+    remove(type, hookName, callbackName){
+      let _ = _get(this);
+      let hooks;
+      let typeName;
+      switch(type){
+        case 'action' :
+          typeName = 'actions';
+          hooks = _.actions;
+          break;
+        case 'filter' :
+          typeName = 'filters';
+          break;
+      }
+      hooks = _[typeName][hookName];
+      if(hooks){
+        hooks = hooks.filter((hook)=>{
+          return hook.name !== callbackName;
+        });
+        _[typeName][hookName] = hooks;
+      }
+      return this;
+    }
+    /**
+     *
+     * Do action hook
+     * 
+     * @param  {string} name       - 
+     * @param  {object} [param={}] - 
+     * @param  {*}      thisObject - 
      * @return {void}
      */
-    setAction(name){
-      
+    action(name, param = {}, thisObject = this){
+      let _       = _get(this);
+      let actions = _.actions[name];
+      if(actions) actions.forEach(listener => listener.callback.call(thisObject, param));
     }
     /**
-     * Do hook filter
-     * @param  {string} name - to do hook name
+     * 
+     * apply filter hook
+     * 
+     * @param  {string} name       - 
+     * @param  {*}      data       - 
+     * @param  {*}      thisObject - 
      * @return {*}
      */
-    setFilter(name){
-      
+    filter(name, data, thisObject = this){
+      let _       = _get(this);
+      let filters = _.filters[name];
+      if(filters){
+        filters.forEach((listener)=>{
+          data = listener.callback.call(thisObject, data);
+        });
+      };
+      return data;
     }
   }
   Kensho.Hook = Hook;
