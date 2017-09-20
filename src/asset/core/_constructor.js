@@ -7,35 +7,42 @@
  */
 constructor(formElement, option = {}){
   if(Kensho.isInitialize) Kensho.init();
+
+  if(Kensho.instanceList === undefined) Kensho.instanceList = [this];
+  else Kensho.instanceList.push(this);
+
   formElement = typeof formElement === 'string' ? document.querySelector(formElement) : formElement;
 
   this.formElement = formElement;
   this.rule        = Kensho.rule;
-  // this.plugin      = Kensho.plugin;
+  this.plugin      = Object.create(null);
+  this.classPlugin = Kensho.plugin;
   this.hook        = new Kensho.Hook();
-  // this.plugin
-  
+
   // soft private
   this._ = new Map();
   this._.set(this, Object.create(null));
   Object.defineProperty(this, '_', { enumerable : false });
   let _ = this._.get(this);
   _.inputs = {};
-  
 
-  // console.log(form instanceof HTMLElement);
+  // plugin setup
+  if(Kensho.instanceList.length === 1){
+    for(let key in Kensho.plugin._list.class){
+      let cb    = Kensho.plugin._list.class[key].callback;
+      let param = Kensho.plugin._list.class[key].param;
+      Kensho.plugin[key] = cb.call(Kensho, param);
+    }
+  };
+  for(let key in Kensho.plugin._list.instance){
+    let cb    = Kensho.plugin._list.instance[key].callback;
+    let param = Kensho.plugin._list.instance[key].param;
+    this.plugin[key] = cb.call(this, param);
+  }
+
   formElement.classList.add('kensho-form');
 
-  // this.hook.add('action', 'init', 'test1', function(){
-  //   console.log("1");
-  // });
-  // this.hook.add('action', 'init', 'test2', function(){
-  //   console.log("2");
-  // }).remove('action', 'init', 'test2');
-  // 
-  // this.hook.action('init', function(){
-  //   console.log(this);
-  // }, {}, this);
+  this.hook.action('init', {}, this);
 }
 
 

@@ -9,8 +9,7 @@
  */
 static validate(name, value, param = {}){
   let rule = this.rule.get(name);
-
-  return rule.callback(value, param);
+  return rule.check(value, param);
 }
 
 /**
@@ -21,9 +20,10 @@ static validate(name, value, param = {}){
  * @return {kensho} this
  */
 validate(name, param = {}){
-  console.log("member");
-  let _    = this._.get(this);
-  let unit = _.inputs[name];
+  let _          = this._.get(this);
+  let unit       = _.inputs[name];
+  let applyRules = unit.rule;
+  let verbose    = Kensho.config.get('verbose');
 
   if(unit.type === 'text'){
     value = unit.inputElement.value;
@@ -36,5 +36,17 @@ validate(name, param = {}){
   
   unit.errorElement.innerHTML = '';
   unit.error                  = [];
+
+  value = this.hook.filter('pre-validate-value', value, this);
+
+  for(let key in applyRules){
+    let result = Kensho.validate(key, value, applyRules[key].param);
+  }
+  // for(let i = 0, l = rule.length; i < l; i++){
+  //   
+  // }
+  // console.log(value);
+
+
   return this;
 }

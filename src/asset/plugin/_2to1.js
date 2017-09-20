@@ -4,10 +4,10 @@
    *
    * 
    */
-  Kensho.plugin.add('2to1', function(){
-    return function(){
-    }
-  }, {}, 'class');
+  // Kensho.plugin.add('2to1', function(){
+  //   return function(){
+  //   }
+  // }, {}, 'class');
 
 
   // Kensho.plugin.add('test1', function(){
@@ -33,7 +33,17 @@
   //  * @param  {string} val -
   //  * @return {string}
   //  */
-  // plugin.byte_2to1 = function(val){
+
+  let byte_2to1 = function(val){
+  }
+  byte_2to1.addMap = (map)=>{
+    this._userMaps.push(map);
+  }
+
+  Kensho.plugin.add('2to1', function(){
+    return byte_2to1
+  }, {}, 'class');
+
   //   let map = {};
   //   map = Object.assign(map, {
   //     '０' : '0', '１' : '1', '２' : '2', '３' : '3', '４' : '4',

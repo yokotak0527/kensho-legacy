@@ -7,6 +7,7 @@
   // ===========================================================================
   _c.lang                = 'en'; // language
   _c.errorMessageWrapper = 'li';
+  _c.verbose             = true; // 
 
   Kensho.config = {
     /**

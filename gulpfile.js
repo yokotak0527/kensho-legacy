@@ -36,12 +36,14 @@ conf.concat[`${packageParam.name}.js`] = [
   'asset/core/_validate.js',
   'asset/core/_footer.js',
   'asset/core/__config.js',
+  'asset/core/__error.js',
   'asset/core/__Hook.js',
-  'asset/core/__plugin.js',
   'asset/core/__rule.js',
+  'asset/core/__plugin.js',
   'asset/core/__init.js',
   'asset/rule/_default-rules.js',
-  'asset/rule/_default-plugins.js'
+  // 'asset/plugin/_default-plugins.js'
+  'asset/plugin/_2to1.js'
 ];
 // -----------------------------------------------------------------------------
 // Babel

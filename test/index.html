@@ -33,29 +33,19 @@
       '#my-form input[name=name]',
       '#my-form .name-error',
       {
-        'required' : 'this is required!'
+        'required' : 'this is required!',
+        'number'   : {
+          param        : {'allow2byte' : true},
+          errorMessage : 'number only'
+        }
       },
-      'change'
-    ).add(
-      '#my-form input[name=sex]',
-      '#my-form .sex-error',
-      {
-        'required' : 'this is required!'
-      },
-      'change'
-    ).add(
-      '#my-form textarea[name=comment]',
-      '#my-form .comment-error',
-      {
-        'required' : 'this is required!'
-      },
-      'change'
+      ['change']
     );
     // setTimeout(function(){
     //   kensho.validate('name');
     // }, 2000);
 
-    console.log(Kensho.validate('required', 'a'));
+    // console.log(Kensho.validate('required', 'a'));
   </script>
 </body>
 </html>

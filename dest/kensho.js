@@ -1,3 +1,5 @@
+var _this2 = this;
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -17,13 +19,16 @@ var Kensho = function () {
     _classCallCheck(this, Kensho);
 
     if (Kensho.isInitialize) Kensho.init();
+
+    if (Kensho.instanceList === undefined) Kensho.instanceList = [this];else Kensho.instanceList.push(this);
+
     formElement = typeof formElement === 'string' ? document.querySelector(formElement) : formElement;
 
     this.formElement = formElement;
     this.rule = Kensho.rule;
-    // this.plugin      = Kensho.plugin;
+    this.plugin = Object.create(null);
+    this.classPlugin = Kensho.plugin;
     this.hook = new Kensho.Hook();
-    // this.plugin
 
     // soft private
     this._ = new Map();
@@ -32,19 +37,23 @@ var Kensho = function () {
     var _ = this._.get(this);
     _.inputs = {};
 
-    // console.log(form instanceof HTMLElement);
+    // plugin setup
+    if (Kensho.instanceList.length === 1) {
+      for (var key in Kensho.plugin._list.class) {
+        var cb = Kensho.plugin._list.class[key].callback;
+        var param = Kensho.plugin._list.class[key].param;
+        Kensho.plugin[key] = cb.call(Kensho, param);
+      }
+    };
+    for (var _key in Kensho.plugin._list.instance) {
+      var _cb = Kensho.plugin._list.instance[_key].callback;
+      var _param = Kensho.plugin._list.instance[_key].param;
+      this.plugin[_key] = _cb.call(this, _param);
+    }
+
     formElement.classList.add('kensho-form');
 
-    // this.hook.add('action', 'init', 'test1', function(){
-    //   console.log("1");
-    // });
-    // this.hook.add('action', 'init', 'test2', function(){
-    //   console.log("2");
-    // }).remove('action', 'init', 'test2');
-    // 
-    // this.hook.action('init', function(){
-    //   console.log(this);
-    // }, {}, this);
+    this.hook.action('init', {}, this);
   }
 
   // Kensho.addRule
@@ -88,6 +97,19 @@ var Kensho = function () {
     if (tagName === 'input') type = inputElement[0].getAttribute('type');else type = tagName;
     if (type !== 'radio') inputElement = inputElement[0];
 
+    var _rule = {};
+    for (var key in rule) {
+      if (typeof rule[key] === 'string') {
+        _rule[key] = {
+          param: {},
+          errorMessage: rule[key]
+        };
+      } else {
+        _rule[key] = rule[key];
+      }
+    }
+    rule = _rule;
+
     var unit = {
       name: name,
       inputElement: inputElement,
@@ -98,7 +120,7 @@ var Kensho = function () {
       error: []
     };
 
-    unit = this.hook.filter('add-validate-filed-set-data', unit, this);
+    unit = this.hook.filter('validate-filed', unit, this);
     _.inputs[name] = unit;
 
     // Add event handler
@@ -126,7 +148,7 @@ var Kensho = function () {
       }
     });
 
-    this.hook.action('add-validate-field', { unit: unit }, this);
+    this.hook.action('set-validate-field', { unit: unit }, this);
     return this;
   };
 
@@ -145,8 +167,7 @@ var Kensho = function () {
     var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     var rule = this.rule.get(name);
-
-    return rule.callback(value, param);
+    return rule.check(value, param);
   };
 
   /**
@@ -161,9 +182,10 @@ var Kensho = function () {
   Kensho.prototype.validate = function validate(name) {
     var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    console.log("member");
     var _ = this._.get(this);
     var unit = _.inputs[name];
+    var applyRules = unit.rule;
+    var verbose = Kensho.config.get('verbose');
 
     if (unit.type === 'text') {
       value = unit.inputElement.value;
@@ -176,6 +198,18 @@ var Kensho = function () {
 
     unit.errorElement.innerHTML = '';
     unit.error = [];
+
+    value = this.hook.filter('pre-validate-value', value, this);
+
+    for (var key in applyRules) {
+      var result = Kensho.validate(key, value, applyRules[key].param);
+    }
+    // for(let i = 0, l = rule.length; i < l; i++){
+    //   
+    // }
+    // console.log(value);
+
+
     return this;
   };
 
@@ -191,6 +225,7 @@ var Kensho = function () {
   // ===========================================================================
   _c.lang = 'en'; // language
   _c.errorMessageWrapper = 'li';
+  _c.verbose = true; // 
 
   Kensho.config = {
     /**
@@ -215,6 +250,30 @@ var Kensho = function () {
       }_c[key] = val;
     }
   };
+})();
+
+(function () {
+  // let _list = {};
+  // 
+  // Kensho.error = (type)=>{
+  //   let lang = Kensho.config.get('lang');
+  //   let list = _list[lang] ? _list[lang] : _list['en'];
+  //   // if(list && list[type]) console.error(list[type]);
+  // }
+  // 
+  // /**
+  //  * @param  
+  //  * @return {void}
+  //  */
+  // Kensho.error.add = ()=>{
+  //   
+  // }
+  // 
+  // Kensho.error.add('plugin-error', {
+  //   'ja' : '',
+  //   'en' : ''
+  // });
+
 })();
 
 (function () {
@@ -360,11 +419,6 @@ var Kensho = function () {
 })();
 
 (function () {
-  var plugin = Object.create(null);
-  Kensho.plugin = plugin;
-})();
-
-(function () {
   var ruleBook = {};
   var rule = Object.create(null);
 
@@ -384,7 +438,7 @@ var Kensho = function () {
 
     dependency = typeof dependency === 'string' ? [dependency] : dependency;
     ruleBook[name] = {
-      callback: callback,
+      check: callback,
       dependency: dependency
     };
   };
@@ -416,6 +470,54 @@ var Kensho = function () {
 })();
 
 (function () {
+
+  var error = Kensho.error;
+  var plugin = Object.create(null);
+
+  var _list = {
+    'class': {},
+    'instance': {}
+    /**
+     *
+     * addPlugin
+     * 
+     * | scope argument       | class                             | instance                   |
+     * |----------------------|-----------------------------------|----------------------------|
+     * | this                 | Kensho                            | instance                   |
+     * | init. function       | once. when create first instance  | every time create instance |
+     * | to refer by instance | this.classPlugin or Kensho.plugin | this.plugin                |
+     * 
+     * @param {string}   name            - Plugin name
+     * @param {function} callback        - Initialize function. Don't use arrow function.
+     * @param {object}   [param={}]      - Initialize function arguments
+     * @param {string}   [scope='class'] - 'class' or 'instance'
+     * 
+     * @return {void}
+     */
+  };plugin.add = function (name, callback) {
+    var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var scope = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'class';
+
+    if (_list['class'][name] || _list['instance'][name]) {
+      console.error('plugin conflict ' + name);
+      return false;
+    }
+    if (Kensho.isInitialize()) {
+      console.error('plug-in is must be added before create instance.');
+      return false;
+    }
+    _list[scope][name] = {
+      param: param,
+      scope: scope,
+      callback: callback
+    };
+  };
+  plugin._list = _list;
+
+  Kensho.plugin = plugin;
+})();
+
+(function () {
   var initialized = false;
   /**
    * 
@@ -441,5 +543,112 @@ var Kensho = function () {
   rule.add('required', function (val, param) {
     return !val.trim() ? false : true;
   });
+
+  /**
+   * @param {object} param
+   * @param {boolean} param.arrow2byte - 
+   */
+  rule.add('number', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var arrow2byte = param['arrow2byte'] ? param['arrow2byte'] : false;
+    console.log(this);
+    return true;
+  });
+})();
+
+(function () {
+
+  /**
+   *
+   * 
+   */
+  // Kensho.plugin.add('2to1', function(){
+  //   return function(){
+  //   }
+  // }, {}, 'class');
+
+
+  // Kensho.plugin.add('test1', function(){
+  //   return function(){}
+  // }, {}, 'class');
+
+  // Kensho.plugin.add('test2', function(){
+  //   console.log(this);
+  //   this.hook.add('action', 'init', 'test1', function(){
+  //     console.log("init");
+  //   });
+  //   // let obj = {
+  //   //   a : 2
+  //   // }
+  //   // return function(){
+  //   //   
+  //   // }
+  // }, {}, 'instance');
+  // /**
+  //  *
+  //  * transform 2byte charactor to 1byte charactor.
+  //  * 
+  //  * @param  {string} val -
+  //  * @return {string}
+  //  */
+
+  var byte_2to1 = function byte_2to1(val) {};
+  byte_2to1.addMap = function (map) {
+    _this2._userMaps.push(map);
+  };
+
+  Kensho.plugin.add('2to1', function () {
+    return byte_2to1;
+  }, {}, 'class');
+
+  //   let map = {};
+  //   map = Object.assign(map, {
+  //     '０' : '0', '１' : '1', '２' : '2', '３' : '3', '４' : '4',
+  //     '５' : '5', '６' : '6', '７' : '7', '８' : '8', '９' : '9'
+  //   });
+  //   map = Object.assign(map, {
+  //     'ａ' : 'a', 'ｂ' : 'b', 'ｃ' : 'c', 'ｄ' : 'd', 'ｅ' : 'e',
+  //     'ｆ' : 'f', 'ｇ' : 'g', 'ｈ' : 'h', 'ｉ' : 'i', 'ｊ' : 'j',
+  //     'ｋ' : 'k', 'ｌ' : 'l', 'ｍ' : 'm', 'ｎ' : 'n', 'ｏ' : 'o',
+  //     'ｐ' : 'p', 'ｑ' : 'q', 'ｒ' : 'r', 'ｓ' : 's', 'ｔ' : 't',
+  //     'ｕ' : 'u', 'ｖ' : 'v', 'ｗ' : 'w', 'ｘ' : 'x', 'ｙ' : 'y',
+  //     'ｚ' : 'z'
+  //   });
+  //   map = Object.assign(map, {
+  //     'Ａ' : 'A', 'Ｂ' : 'B', 'Ｃ' : 'C', 'Ｄ' : 'D', 'Ｅ' : 'E',
+  //     'Ｆ' : 'F', 'Ｇ' : 'G', 'Ｈ' : 'H', 'Ｉ' : 'I', 'Ｊ' : 'J',
+  //     'Ｋ' : 'K', 'Ｌ' : 'L', 'Ｍ' : 'M', 'Ｎ' : 'N', 'Ｏ' : 'O',
+  //     'Ｐ' : 'P', 'Ｑ' : 'Q', 'Ｒ' : 'R', 'Ｓ' : 'S', 'Ｔ' : 'T',
+  //     'Ｕ' : 'U', 'Ｖ' : 'V', 'Ｗ' : 'W', 'Ｘ' : 'X', 'Ｙ' : 'Y',
+  //     'Ｚ' : 'Z'
+  //   });
+  //   map = Object.assign(map, {
+  //     '－' : '-', '（' : '(', '）' : ')', '＿' : '_', '／' : '/',
+  //     '＋' : '+', '：' : ':', '；' : ';', '］' : ']', '［' : '[',
+  //     '＠' : '@', '！' : '!', '＜' : '<', '＞' : '>', '？' : '?',
+  //     '｛' : '{', '｝' : '}', '＊' : '*', '”' : '"', '’' : "'",
+  //     '〜' : '~', '＾' : '^', '￥' : '¥', '｜' : '|', '＆' : '&',
+  //     '％' : '%', '＃' : '#', '＄' : '$', '　' : ' ', '＝' : '='
+  //   });
+  //   let result = '';
+  //   val.split('').forEach((s)=>{
+  //     s = map[s] ? map[s] : s;
+  //     result += s;
+  //   });
+  //   return result;
+  // }
+  // plugin.byte_2to1._userMaps = [];
+  // /**
+  //  *
+  //  * add user 2byte to 1byte charactors map.
+  //  * 
+  //  * @param {object} map - The key is 2byte charactor. The value is 1byte charactor.
+  //  */
+  // plugin.byte_2to1.addMap = (map)=>{
+  //   this._userMaps.push(map);
+  // }
+  // 
+  // let plugin = Kensho.plugin;
 })();
 //# sourceMappingURL=kensho.js.map

@@ -16,7 +16,7 @@
   rule.add = function(name, callback, dependency = []){
     dependency = typeof dependency === 'string' ? [dependency] : dependency;
     ruleBook[name] = {
-      callback   : callback,
+      check      : callback,
       dependency : dependency
     };
   };

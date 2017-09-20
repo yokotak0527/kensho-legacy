@@ -31,6 +31,19 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
   else type = tagName;
   if(type !== 'radio') inputElement = inputElement[0];
 
+  let _rule = {};
+  for(let key in rule){
+    if(typeof rule[key] === 'string'){
+      _rule[key] = {
+        param        : {},
+        errorMessage : rule[key]
+      };
+    }else{
+      _rule[key] = rule[key];
+    }
+  }
+  rule = _rule;
+
   let unit = {
     name         : name,
     inputElement : inputElement,
@@ -41,7 +54,7 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
     error        : []
   }
 
-  unit = this.hook.filter('add-validate-filed-set-data', unit, this);
+  unit = this.hook.filter('validate-filed', unit, this);
   _.inputs[name] = unit;
 
   // Add event handler
@@ -69,6 +82,6 @@ add(inputElement, errorElement, rule, event = [''], param = {}){
     }
   });
 
-  this.hook.action('add-validate-field', {unit : unit}, this);
+  this.hook.action('set-validate-field', {unit : unit}, this);
   return this;
 }
