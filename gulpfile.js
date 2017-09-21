@@ -15,9 +15,9 @@ const ENV            = process.env.NODE_ENV;
 let isWatching       = false;
 
 // =============================================================================
-// 
+//
 // CONFIGURATION
-// 
+//
 let conf = {
   concat  : {},
   options : {},
@@ -28,7 +28,7 @@ let conf = {
 };
 // -----------------------------------------------------------------------------
 // Concat
-// 
+//
 conf.concat[`${packageParam.name}.js`] = [
   'asset/core/_Kensho.js',
   'asset/core/_Kensho.config.js',
@@ -39,11 +39,11 @@ conf.concat[`${packageParam.name}.js`] = [
 
   'asset/rule/_default-rules.js',
   // 'asset/plugin/_default-plugins.js'
-  'asset/plugin/_2to1.js'
+  'asset/plugin/_full2half.js'
 ];
 // -----------------------------------------------------------------------------
 // Babel
-// 
+//
 conf.options.babel = {
   minified : false,
   comments : true,
@@ -57,7 +57,7 @@ conf.options.babel = {
 };
 // -----------------------------------------------------------------------------
 // plumber conf.
-// 
+//
 conf.options.plumber = {
   errorHandler : function(err){
     let relativePath = err.fileName;
@@ -73,12 +73,12 @@ conf.options.plumber = {
   }
 };
 // =============================================================================
-// 
+//
 // TASKS
-// 
+//
 // -----------------------------------------------------------------------------
 // concat JS files by list of "conf.concat".
-// 
+//
 gulp.task('concat', (done)=>{
   let baseSrc  = conf.path.src.js;
   let baseDest = conf.path.dest.js;
@@ -100,7 +100,7 @@ gulp.task('concat', (done)=>{
 });
 // -----------------------------------------------------------------------------
 // build JS files.
-// 
+//
 gulp.task('build', ()=>{
   return runSequence('concat', ()=>{
     let ops      = conf.options;
@@ -122,7 +122,7 @@ gulp.task('build', ()=>{
 });
 // -----------------------------------------------------------------------------
 // watch JS files.
-// 
+//
 gulp.task('watch', ()=>{
   isWatching = true;
   gulp.watch(path.join(conf.path.src, '**/*.js'), ['build']);
