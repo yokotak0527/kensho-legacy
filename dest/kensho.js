@@ -13,7 +13,7 @@ var Kensho = function () {
    *
    * 
    * @constructs Kensho
-   * @param  {string|HTMLElement} formElement
+   * @param  {(String|HTMLElement)} formElement
    */
   function Kensho(formElement) {
     _classCallCheck(this, Kensho);
@@ -97,16 +97,19 @@ var Kensho = function () {
    * @method  Kensho#add
    * @version 0.0.1
    * 
-   * @param {string|HTMLElement|array<HTMLElement>} inputElement form input HTML element or its CSS selector string.
-   * @param {string|HTMLElement}                    errorElement wrapper element of output error message or its CSS selector string.
-   * @param {object}                                rule         the key is rule name. The value is error message.
-   * @param {event}                                 event        trigger events
-   * @return {kensho}                                            instance
+   * @param {(String|HTMLElement|HTMLElement[])} inputElement form input HTML element or its CSS selector string.
+   * @param {(String|HTMLElement)}               errorElement wrapper element of output error message or its CSS selector string.
+   * @param {object}                             rule         the key is rule name. The value is error message.
+   * @param {String[]}                           [event=['']] trigger events.
+   * @return {kensho}                                         instance
    */
 
 
-  Kensho.prototype.add = function add(inputElement, errorElement, rule, event) {
+  Kensho.prototype.add = function add(inputElement, errorElement, rule) {
     var _this = this;
+
+    var event = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [''];
+
 
     // for example, name attribute of radio buttons are seted same value.
     // querySelector return matched first HTML element and 2nd and subsequent matched element is ignored.
@@ -178,6 +181,23 @@ var Kensho = function () {
     return this;
   };
   /**
+   *
+   *
+   * @return {Boolean}
+   */
+
+
+  Kensho.prototype.hasError = function hasError() {};
+  /**
+   *
+   *
+   *
+   * 
+   */
+
+
+  Kensho.prototype.allValidate = function allValidate() {};
+  /**
    * [validate description]
    * 
    * @method  Kensho#validate
@@ -233,7 +253,13 @@ var Kensho = function () {
     var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     var rule = this.rule.get(name);
-    return rule.check(value, param);
+    var result = true;
+    for (var i = 0, l = rule.dependency.length; i < l; i++) {
+      result = Kensho.rule.get(rule.dependency[i]).check(value, param);
+      if (!result) break;
+    }
+    if (result) result = rule.check(value, param);
+    return result;
   };
 
   return Kensho;
@@ -436,11 +462,14 @@ var Kensho = function () {
   /**
    * add validation rule
    *
+   * callback takes 2 arguments. the first arugment is input value. second is rule parameters.
+   * callback must return result of validated input value as boolean type.
+   *
    * @method  Kensho.rule.add
    * @version 0.0.1
    *
    * @param  {String}            name       validation rule name
-   * @param  {Function}          callback   rule method
+   * @param  {Function}          callback   rule method.
    * @param  {(String|String[])} dependency other rule that the rule depend on
    * @return {void}
    */
@@ -588,16 +617,30 @@ var Kensho = function () {
   });
 
   /**
-   * @param {object} param
-   * @param {boolean} param.arrow2byte - 
+   *
+   * @param {Object} param
+   * @param {Boolean} param.allow2byte - 
    */
   rule.add('number', function (val) {
     var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var arrow2byte = param['arrow2byte'] ? param['arrow2byte'] : false;
+    var allow2byte = param['allow2byte'] ? param['allow2byte'] : false;
     console.log(this);
-    return true;
+    return false;
   });
+
+  rule.add('test', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    // let rule   = Kensho.rule.get('test');
+    var result = true;
+    // for(let i = 0, l = rule.length; i < l; i++){
+    //   result = Kensho.rule.get(rule.length[i]).check(val, param);
+    //   if(!result) break;
+    // }
+    // if(result) result = rule.check(val, param);
+    return result;
+  }, 'number');
 })();
 
 (function () {

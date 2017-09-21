@@ -11,11 +11,14 @@
   /**
    * add validation rule
    *
+   * callback takes 2 arguments. the first arugment is input value. second is rule parameters.
+   * callback must return result of validated input value as boolean type.
+   *
    * @method  Kensho.rule.add
    * @version 0.0.1
    *
    * @param  {String}            name       validation rule name
-   * @param  {Function}          callback   rule method
+   * @param  {Function}          callback   rule method.
    * @param  {(String|String[])} dependency other rule that the rule depend on
    * @return {void}
    */

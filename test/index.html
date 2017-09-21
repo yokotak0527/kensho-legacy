@@ -33,18 +33,22 @@
       '#my-form input[name=name]',
       '#my-form .name-error',
       {
-        'required' : 'this is required!',
-        'number'   : {
-          param        : {'allow2byte' : true},
-          errorMessage : 'number only'
-        }
+        'test' : 'test validate'
       },
+      // {
+      //   'required' : 'this is required!',
+      //   'number'   : {
+      //     param        : {'allow2byte' : true},
+      //     errorMessage : 'number only'
+      //   }
+      // },
       ['change']
     );
     // setTimeout(function(){
     //   kensho.validate('name');
     // }, 2000);
 
+    console.log(Kensho.validate('test', '1234'));
     // console.log(Kensho.validate('required', 'a'));
   </script>
 </body>

@@ -7,7 +7,7 @@ class Kensho{
    *
    * 
    * @constructs Kensho
-   * @param  {string|HTMLElement} formElement
+   * @param  {(String|HTMLElement)} formElement
    */
   constructor(formElement){
     if(!Kensho.isInitialize()) Kensho.init();
@@ -90,13 +90,13 @@ class Kensho{
    * @method  Kensho#add
    * @version 0.0.1
    * 
-   * @param {string|HTMLElement|array<HTMLElement>} inputElement form input HTML element or its CSS selector string.
-   * @param {string|HTMLElement}                    errorElement wrapper element of output error message or its CSS selector string.
-   * @param {object}                                rule         the key is rule name. The value is error message.
-   * @param {event}                                 event        trigger events
-   * @return {kensho}                                            instance
+   * @param {(String|HTMLElement|HTMLElement[])} inputElement form input HTML element or its CSS selector string.
+   * @param {(String|HTMLElement)}               errorElement wrapper element of output error message or its CSS selector string.
+   * @param {object}                             rule         the key is rule name. The value is error message.
+   * @param {String[]}                           [event=['']] trigger events.
+   * @return {kensho}                                         instance
    */
-  add(inputElement, errorElement, rule, event){
+  add(inputElement, errorElement, rule, event = ['']){
 
     // for example, name attribute of radio buttons are seted same value.
     // querySelector return matched first HTML element and 2nd and subsequent matched element is ignored.
@@ -169,6 +169,23 @@ class Kensho{
     return this;
   }
   /**
+   *
+   *
+   * @return {Boolean}
+   */
+  hasError(){
+    
+  }
+  /**
+   *
+   *
+   *
+   * 
+   */
+  allValidate(){
+    
+  }
+  /**
    * [validate description]
    * 
    * @method  Kensho#validate
@@ -215,7 +232,13 @@ class Kensho{
    * @return {Boolean}           value is valid or invalid
    */
   static validate(name, value, param = {}){
-    let rule = this.rule.get(name);
-    return rule.check(value, param);
+    let rule   = this.rule.get(name);
+    let result = true;
+    for(let i = 0, l = rule.dependency.length; i < l; i++){
+      result = Kensho.rule.get(rule.dependency[i]).check(value, param);
+      if(!result) break;
+    }
+    if(result) result = rule.check(value, param);
+    return result;
   }
 }
