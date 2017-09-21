@@ -1,12 +1,10 @@
 (()=>{
   let map  = new Map();
   let _get = self => map.get(self);
-  
+
   class Hook{
     /**
-     *
-     * constructor
-     * 
+     * @constructs Kensho.Hook
      */
     constructor(){
       // soft private
@@ -16,14 +14,16 @@
       _.filters = {};
     }
     /**
-     *
-     * set action/filter hook
+     * add action/filter hook
      * 
-     * @param {string} type       - "action" or "filter"
-     * @param {string} hookName   - 
-     * @param {string} callback   - 
-     * @param {number} [priority] - 
-     * @return {hook} this
+     * @version 0.0.1
+     * 
+     * @param {string} type         - this hook type name. "action" or "filter"
+     * @param {string} hookName     - the target hook name
+     * @param {string} callbackName - callback name
+     * @param {string} callback     - 
+     * @param {number} [priority]   - a priority of to do callback
+     * @return {hook}               - instance
      */
     add(type, hookName, callbackName, callback, priority = false){
       let _ = _get(this);
@@ -51,11 +51,14 @@
       return this;
     }
     /**
+     * remove action/filter hook
      * 
-     * @param  {string} type         - 
-     * @param  {string} hookName     - 
-     * @param  {string} callbackName - 
-     * @return {hook} this
+     * @version 0.0.1
+     * 
+     * @param  {string} type         - this hook type name. "action" or "filter"
+     * @param  {string} hookName     - the target hook name
+     * @param  {string} callbackName - callback name
+     * @return {hook}                - instance
      */
     remove(type, hookName, callbackName){
       let _ = _get(this);
@@ -80,12 +83,13 @@
       return this;
     }
     /**
-     *
-     * Do action hook
+     * do action hook
      * 
-     * @param  {string} name       - 
-     * @param  {object} [param={}] - 
-     * @param  {*}      thisObject - 
+     * @version 0.0.1
+     * 
+     * @param  {string} name       - hook name
+     * @param  {object} [param={}] - in order to pass to the callbacks
+     * @param  {*}      thisObject - to bind "this" object. default is Hook instance
      * @return {void}
      */
     action(name, param = {}, thisObject = this){
@@ -94,13 +98,14 @@
       if(actions) actions.forEach(listener => listener.callback.call(thisObject, param));
     }
     /**
-     * 
      * apply filter hook
      * 
-     * @param  {string} name       - 
-     * @param  {*}      data       - 
-     * @param  {*}      thisObject - 
-     * @return {*}
+     * @version 0.0.1
+     * 
+     * @param  {string} name       - hook name
+     * @param  {*}      data       - data to be filterd
+     * @param  {*}      thisObject - to bind "this" object. default is Hook instance
+     * @return {*}                 - a filtered data
      */
     filter(name, data, thisObject = this){
       let _       = _get(this);

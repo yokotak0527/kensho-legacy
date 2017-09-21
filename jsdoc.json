@@ -1,0 +1,14 @@
+{
+  "opts": {
+    "template": "node_modules/tui-jsdoc-template",
+    "destination": "doc"
+  },
+  "templates": {
+    "name": "Kensho document",
+    "footerText": "Kensho document @yokotak0527",
+    "tabNames": {
+        "api": "API",
+        "tutorials": "Examples"
+    }
+  }
+}

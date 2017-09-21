@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development gulp watch"
+    "start": "NODE_ENV=development gulp watch",
+    "doc": "jsdoc dest/kensho.js -c jsdoc.json"
   },
   "keywords": [
     "validate"
@@ -23,8 +24,10 @@
     "gulp-ignore": "^2.0.2",
     "gulp-plumber": "^1.1.0",
     "gulp-sourcemaps": "^2.6.1",
+    "jsdoc": "^3.5.5",
     "node-notifier": "^5.1.2",
-    "run-sequence": "^2.1.0"
+    "run-sequence": "^2.1.0",
+    "tui-jsdoc-template": "^1.2.2"
   },
   "dependencies": {}
 }

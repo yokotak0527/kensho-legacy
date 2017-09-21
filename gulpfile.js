@@ -30,17 +30,13 @@ let conf = {
 // Concat
 // 
 conf.concat[`${packageParam.name}.js`] = [
-  'asset/core/_header.js',
-  'asset/core/_constructor.js',
-  'asset/core/_add.js',
-  'asset/core/_validate.js',
-  'asset/core/_footer.js',
-  'asset/core/__config.js',
-  'asset/core/__error.js',
-  'asset/core/__Hook.js',
-  'asset/core/__rule.js',
-  'asset/core/__plugin.js',
-  'asset/core/__init.js',
+  'asset/core/_Kensho.js',
+  'asset/core/_Kensho.config.js',
+  'asset/core/_Kensho.Hook.js',
+  'asset/core/_Kensho.rule.js',
+  'asset/core/_Kensho.plugin.js',
+  'asset/core/_Kensho.init.js',
+
   'asset/rule/_default-rules.js',
   // 'asset/plugin/_default-plugins.js'
   'asset/plugin/_2to1.js'

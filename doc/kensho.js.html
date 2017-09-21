@@ -1,6 +1,54 @@
-var _this2 = this;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: kensho.js | Kensho document</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Kensho document</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Classes</h3><ul><li><a href="Kensho.html">Kensho</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Kensho_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Kensho.html#classPlugin">classPlugin</a></li><li><a href="Kensho.html#formElement">formElement</a></li><li><a href="Kensho.html#hook">hook</a></li><li><a href="Kensho.html#plugin">plugin</a></li><li><a href="Kensho.html#rule">rule</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Kensho.html#.init">init</a></li><li><a href="Kensho.html#.isInitialize">isInitialize</a></li><li><a href="Kensho.html#.validate">validate</a></li><li><a href="Kensho.html#add">add</a></li><li><a href="Kensho.html#validate">validate</a></li></ul></div></li><li><a href="Kensho.Hook.html">Hook</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Kensho.Hook_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="Kensho.Hook.html#action">action</a></li><li><a href="Kensho.Hook.html#add">add</a></li><li><a href="Kensho.Hook.html#filter">filter</a></li><li><a href="Kensho.Hook.html#remove">remove</a></li></ul></div></li></ul></div><div class="lnb-api hidden"><h3>Namespaces</h3><ul><li><a href="Kensho.config.html">Kensho.config</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Kensho.config_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="Kensho.config.html#.get">get</a></li><li><a href="Kensho.config.html#.set">set</a></li></ul></div></li><li><a href="Kensho.plugin.html">Kensho.plugin</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Kensho.plugin_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="Kensho.plugin.html#.add">add</a></li></ul></div></li><li><a href="Kensho.rule.html">Kensho.rule</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Kensho.rule_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="Kensho.rule.html#.add">add</a></li><li><a href="Kensho.rule.html#.get">get</a></li><li><a href="Kensho.rule.html#.remove">remove</a></li></ul></div></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var _this2 = this;
+
+var _typeof = typeof Symbol === "function" &amp;&amp; typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj &amp;&amp; typeof Symbol === "function" &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -83,21 +131,21 @@ var Kensho = function () {
   /**
    * add validation field.
    *
-   * <div class="note">
-   *   <p>
-   *     argument event fundamentally sets JavaScript event.type name.<br>
+   * &lt;div class="note">
+   *   &lt;p>
+   *     argument event fundamentally sets JavaScript event.type name.&lt;br>
    *     but, it supports especialy names, as follows.
-   *   </p>
-   *   <dl>
-   *     <dt>init</dt>
-   *     <dd>when in add() method</dd>
-   *   </dl>
-   * </div>
+   *   &lt;/p>
+   *   &lt;dl>
+   *     &lt;dt>init&lt;/dt>
+   *     &lt;dd>when in add() method&lt;/dd>
+   *   &lt;/dl>
+   * &lt;/div>
    *
    * @method  Kensho#add
    * @version 0.0.1
    * 
-   * @param {string|HTMLElement|array<HTMLElement>} inputElement form input HTML element or its CSS selector string.
+   * @param {string|HTMLElement|array&lt;HTMLElement>} inputElement form input HTML element or its CSS selector string.
    * @param {string|HTMLElement}                    errorElement wrapper element of output error message or its CSS selector string.
    * @param {object}                                rule         the key is rule name. The value is error message.
    * @param {event}                                 event        trigger events
@@ -190,7 +238,7 @@ var Kensho = function () {
 
 
   Kensho.prototype.validate = function validate(name) {
-    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var param = arguments.length > 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : {};
 
     var _ = this._.get(this);
     var unit = _.inputs[name];
@@ -230,7 +278,7 @@ var Kensho = function () {
 
 
   Kensho.validate = function validate(name, value) {
-    var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var param = arguments.length > 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : {};
 
     var rule = this.rule.get(name);
     return rule.check(value, param);
@@ -310,7 +358,7 @@ var Kensho = function () {
 
 
     Hook.prototype.add = function add(type, hookName, callbackName, callback) {
-      var priority = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+      var priority = arguments.length > 4 &amp;&amp; arguments[4] !== undefined ? arguments[4] : false;
 
       var _ = _get(this);
       var hooks = void 0;
@@ -375,16 +423,16 @@ var Kensho = function () {
      * 
      * @version 0.0.1
      * 
-     * @param  {string} name       - hook name
-     * @param  {object} [param={}] - in order to pass to the callbacks
-     * @param  {*}      thisObject - to bind "this" object. default is Hook instance
+     * @param  {string} name       - a hook name
+     * @param  {object} [param={}] - to pass to the callbacks.
+     * @param  {*}      thisObject - to bind "this" object. default is Hook instance.
      * @return {void}
      */
 
 
     Hook.prototype.action = function action(name) {
-      var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var thisObject = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this;
+      var param = arguments.length > 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : {};
+      var thisObject = arguments.length > 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : this;
 
       var _ = _get(this);
       var actions = _.actions[name];
@@ -397,15 +445,15 @@ var Kensho = function () {
      * 
      * @version 0.0.1
      * 
-     * @param  {string} name       - hook name
+     * @param  {string} name       - a hook name
      * @param  {*}      data       - data to be filterd
-     * @param  {*}      thisObject - to bind "this" object. default is Hook instance
+     * @param  {*}      thisObject - to bind "this" object. default is Hook instance.
      * @return {*}                 - a filtered data
      */
 
 
     Hook.prototype.filter = function filter(name, data) {
-      var thisObject = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this;
+      var thisObject = arguments.length > 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : this;
 
       var _ = _get(this);
       var filters = _.filters[name];
@@ -445,7 +493,7 @@ var Kensho = function () {
    * @return {void}
    */
   rule.add = function (name, callback) {
-    var dependency = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+    var dependency = arguments.length > 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : [];
 
     dependency = typeof dependency === 'string' ? [dependency] : dependency;
     ruleBook[name] = {
@@ -494,43 +542,43 @@ var Kensho = function () {
   /**
    * add plugin
    *
-   * <div class="nonte">
-   *   <table>
-   *     <thead>
-   *       <tr>
-   *         <td></td><th>class</th><th>instance</th>
-   *       </tr>
-   *     </thead>
-   *     <tbody>
-   *       <tr>
-   *         <th>this</th>
-   *         <td>Kensho</td>
-   *         <td>instance</td>
-   *       </tr><tr>
-   *         <th>init. function</th>
-   *         <td>once. when create first instance</td>
-   *         <td>every time create instance</td>
-   *       </tr><tr>
-   *         <th>to refer by instance</th>
-   *         <td>this.classPlugin or Kensho.plugin</td>
-   *         <td>this.plugin </td>
-   *       </tr>
-   *     </tbody>
-   *   </table>
-   * </div>
+   * &lt;div class="nonte">
+   *   &lt;table>
+   *     &lt;thead>
+   *       &lt;tr>
+   *         &lt;td>&lt;/td>&lt;th>class&lt;/th>&lt;th>instance&lt;/th>
+   *       &lt;/tr>
+   *     &lt;/thead>
+   *     &lt;tbody>
+   *       &lt;tr>
+   *         &lt;th>this&lt;/th>
+   *         &lt;td>Kensho&lt;/td>
+   *         &lt;td>instance&lt;/td>
+   *       &lt;/tr>&lt;tr>
+   *         &lt;th>init. function&lt;/th>
+   *         &lt;td>once. when create first instance&lt;/td>
+   *         &lt;td>every time create instance&lt;/td>
+   *       &lt;/tr>&lt;tr>
+   *         &lt;th>to refer by instance&lt;/th>
+   *         &lt;td>this.classPlugin or Kensho.plugin&lt;/td>
+   *         &lt;td>this.plugin &lt;/td>
+   *       &lt;/tr>
+   *     &lt;/tbody>
+   *   &lt;/table>
+   * &lt;/div>
    * 
    * @method  Kensho.plugin.add
    * @version 0.0.1
    *
    * @param  {String}   name            plug-in name.
    * @param  {Function} callback        plug-in initialize function.
-   * @param  {Object}   [param={}]      paramerters in order to pass to the initialize function.
+   * @param  {Object}   [param={}]      paramerters in order to pass to the initialization function.
    * @param  {String}   [scope='class'] plugin type 'class' or 'instance'
    * @return {void}
    */
   plugin.add = function (name, callback) {
-    var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var scope = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'class';
+    var param = arguments.length > 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : {};
+    var scope = arguments.length > 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : 'class';
 
     if (_list['class'][name] || _list['instance'][name]) {
       console.error('plug-in ' + name + ' is conflict');
@@ -592,7 +640,7 @@ var Kensho = function () {
    * @param {boolean} param.arrow2byte - 
    */
   rule.add('number', function (val) {
-    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var param = arguments.length > 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : {};
 
     var arrow2byte = param['arrow2byte'] ? param['arrow2byte'] : false;
     console.log(this);
@@ -669,9 +717,9 @@ var Kensho = function () {
   //   map = Object.assign(map, {
   //     '－' : '-', '（' : '(', '）' : ')', '＿' : '_', '／' : '/',
   //     '＋' : '+', '：' : ':', '；' : ';', '］' : ']', '［' : '[',
-  //     '＠' : '@', '！' : '!', '＜' : '<', '＞' : '>', '？' : '?',
+  //     '＠' : '@', '！' : '!', '＜' : '&lt;', '＞' : '>', '？' : '?',
   //     '｛' : '{', '｝' : '}', '＊' : '*', '”' : '"', '’' : "'",
-  //     '〜' : '~', '＾' : '^', '￥' : '¥', '｜' : '|', '＆' : '&',
+  //     '〜' : '~', '＾' : '^', '￥' : '¥', '｜' : '|', '＆' : '&amp;',
   //     '％' : '%', '＃' : '#', '＄' : '$', '　' : ' ', '＝' : '='
   //   });
   //   let result = '';
@@ -695,3 +743,33 @@ var Kensho = function () {
   // let plugin = Kensho.plugin;
 })();
 //# sourceMappingURL=kensho.js.map
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">Kensho document @yokotak0527</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>
