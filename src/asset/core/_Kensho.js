@@ -216,7 +216,7 @@ class Kensho{
     value = this.hook.filter('pre-validate-value', value, this);
 
     for(let key in applyRules){
-      let result = Kensho.validate(key, value, applyRules[key].param);
+      let result = Kensho.validate.call(key, value, applyRules[key].param);
     }
     return this;
   }

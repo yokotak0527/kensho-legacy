@@ -33,23 +33,37 @@
       '#my-form input[name=name]',
       '#my-form .name-error',
       {
-        'test' : 'test validate'
+        'required' : 'this is required!',
+        'number'   : {
+          param        : {'allow2byte' : true},
+          errorMessage : 'number only'
+        }
       },
-      // {
-      //   'required' : 'this is required!',
-      //   'number'   : {
-      //     param        : {'allow2byte' : true},
-      //     errorMessage : 'number only'
-      //   }
-      // },
       ['change']
     );
     // setTimeout(function(){
     //   kensho.validate('name');
     // }, 2000);
 
-    console.log(Kensho.validate('test', '1234'));
-    // console.log(Kensho.validate('required', 'a'));
+    // console.log('required value "" = ',  Kensho.validate('required', ''));
+    // console.log('required value "a" = ', Kensho.validate('required', 'a'));
+
+    // console.log('number value "" = ',  Kensho.validate('number', ''));
+    // console.log('number value "a" = ', Kensho.validate('number', 'a'));
+    // console.log('number value "123" = ', Kensho.validate('number', '123'));
+    // console.log('number value "４５６"(full size) = ', Kensho.validate('number', '４５６'));
+    // console.log('number value "４５６" with full2half = ', Kensho.validate('number', '４５６', {allow2byte : true}));
+
+    // console.log('age value "a" = ', Kensho.validate('age', 'a'));
+    // console.log('age value "123" = ', Kensho.validate('age', '123'));
+    // console.log('age value "500" = ', Kensho.validate('age', '500'));
+    // console.log('age value "１００" = ', Kensho.validate('age', ' １００', {allow2byte : true, trim : true}));
+    
+    // console.log(Kensho.validate('fullsize', 'あいうえお'));
+    // console.log(Kensho.validate('halfsize', '123asd'));
+    
+    console.log(Kensho.validate('blacklist', 'abc', {list:['abc']}));
+    
   </script>
 </body>
 </html>

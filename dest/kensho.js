@@ -230,7 +230,7 @@ var Kensho = function () {
     value = this.hook.filter('pre-validate-value', value, this);
 
     for (var key in applyRules) {
-      var result = Kensho.validate(key, value, applyRules[key].param);
+      var result = Kensho.validate.call(key, value, applyRules[key].param);
     }
     return this;
   };
@@ -608,37 +608,150 @@ var Kensho = function () {
   var rule = Kensho.rule;
 
   /**
-   * required
+   * @param {String}  val
+   * @param {Object}  [param={}]
+   * @param {Boolean} [param.trim=false]
    */
-  rule.add('required', function (val, param) {
-    return !val.trim() ? false : true;
+  Kensho.rule.add('required', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var trimFlg = param.trim === true ? true : false;
+
+    if (trimFlg) val = val.trim();
+
+    return val ? true : false;
   });
+})();
+
+(function () {
+  var rule = Kensho.rule;
 
   /**
-   *
-   * @param {Object} param
-   * @param {Boolean} param.allow2byte - 
+   * @param {String} val
+   * @param {Object} [param={}]
+   */
+  rule.add('fullsize', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var result = true;
+
+    for (var i = 0, l = val.length; i < l; i++) {
+      if (!Kensho.plugin.is2byte(val[i])) {
+        result = false;
+        break;
+      };
+    }
+    return result;
+  });
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String} val
+   * @param {Object} [param={}]
+   */
+  rule.add('halfsize', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var result = true;
+
+    for (var i = 0, l = val.length; i < l; i++) {
+      if (!Kensho.plugin.is1byte(val[i])) {
+        result = false;
+        break;
+      };
+    }
+    return result;
+  });
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String}  val
+   * @param {Object}  [param={}]
+   * @param {Boolean} [param.allow2byte=false]
+   * @param {Boolean} [param.trim=false]
    */
   rule.add('number', function (val) {
     var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var allow2byte = param['allow2byte'] ? param['allow2byte'] : false;
-    console.log(this);
-    return false;
-  });
+    var allow2byteFlg = param.allow2byte === true ? true : false;
+    var trimFlg = param.trim === true ? true : false;
 
-  rule.add('test', function (val) {
+    if (allow2byteFlg) val = Kensho.plugin.full2half(val);
+    if (trimFlg) val = val.trim();
+
+    if (!/^[0-9]*$/.test(val)) return false;
+    return true;
+  });
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String}  val
+   * @param {Object}  [param={}]
+   * @param {Boolean} [param.allow2byte=false]
+   * @param {Number}  [param.maxAge=125]
+   * @param {Boolean} [param.trim=false]
+   */
+  rule.add('age', function (val) {
     var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    // let rule   = Kensho.rule.get('test');
-    var result = true;
-    // for(let i = 0, l = rule.length; i < l; i++){
-    //   result = Kensho.rule.get(rule.length[i]).check(val, param);
-    //   if(!result) break;
-    // }
-    // if(result) result = rule.check(val, param);
-    return result;
-  }, 'number');
+    var maxAge = param.maxAage ? param.maxAage : 125;
+    var allow2byteFlg = param.allow2byte === true ? true : false;
+    var trimFlg = param.trim === true ? true : false;
+
+    if (allow2byteFlg) val = Kensho.plugin.full2half(val);
+    if (trimFlg) val = val.trim();
+
+    if (!/^[0-9]{1,3}$/.test(val)) return false; // ex. a1,1234, -5
+    if (val.length !== 1 && /^0/.test(val)) return false; // first number is 0
+    if (val > maxAge) return false; // limit
+    return true;
+  }, ['number']);
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String} val
+   * @param {Object} [param={}]
+   */
+  rule.add('email', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(val);
+  }, ['halfsize']);
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String}   val
+   * @param {Object}   param
+   * @param {String[]} param.list
+   */
+  rule.add('blacklist', function (val, param) {
+    if (!param.list) return true;
+
+    for (var i = 0, l = param.list.length; i < l; i++) {
+      if (val === param.list[i]) {
+        return false;
+        break;
+      }
+    }
+    return true;
+  });
 })();
 
 (function () {
@@ -686,6 +799,25 @@ var Kensho = function () {
 
   Kensho.plugin.add('full2half', function () {
     return full2half;
+  }, {}, 'class');
+})();
+
+(function () {
+
+  isNbyte = function isNbyte(half) {
+    return function (val) {
+      var code = val.charCodeAt(0);
+      var f = code >= 0x0 && code < 0x81 || code == 0xf8f0 || code >= 0xff61 && code < 0xffa0 || code >= 0xf8f1 && code < 0xf8f4;
+      return !(f ^ half);
+    };
+  };
+
+  Kensho.plugin.add('is1byte', function () {
+    return isNbyte(true);
+  }, {}, 'class');
+
+  Kensho.plugin.add('is2byte', function () {
+    return isNbyte(false);
   }, {}, 'class');
 })();
 //# sourceMappingURL=kensho.js.map

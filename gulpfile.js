@@ -37,9 +37,17 @@ conf.concat[`${packageParam.name}.js`] = [
   'asset/core/_Kensho.plugin.js',
   'asset/core/_Kensho.init.js',
 
-  'asset/rule/_default-rules.js',
-  // 'asset/plugin/_default-plugins.js'
-  'asset/plugin/_full2half.js'
+  'asset/rule/_required.js',
+  'asset/rule/_fullsize.js',
+  'asset/rule/_halfsize.js',
+  'asset/rule/_number.js',
+  'asset/rule/_age.js',
+  'asset/rule/_email.js',
+  'asset/rule/_tel.js',
+  'asset/rule/_blacklist.js',
+
+  'asset/plugin/_full2half.js',
+  'asset/plugin/_is-n-byte.js'
 ];
 // -----------------------------------------------------------------------------
 // Babel
