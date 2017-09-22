@@ -102,6 +102,17 @@ var Kensho = function () {
     var tagName = inputElement[0].tagName.toLowerCase();
     var type = null;
     if (tagName === 'input') type = inputElement[0].getAttribute('type');else type = tagName;
+
+    // the following types are handled as text type
+    switch (type) {
+      case 'password':
+        type = 'text';
+        break;
+      case 'search':
+        type = 'text';
+        break;
+    }
+
     if (type !== 'radio') inputElement = inputElement[0];
 
     var _rule = {};
