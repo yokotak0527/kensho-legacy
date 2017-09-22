@@ -39,13 +39,7 @@ var Kensho = function () {
      * @memberof Kensho
      * @instance
      */
-    this.plugin = Object.create(null);
-    /**
-     * @member {object} classPlugin
-     * @memberof Kensho
-     * @instance
-     */
-    this.classPlugin = Kensho.plugin;
+    this.plugin = Kensho.plugin;
     /**
      * @member {hook} hook
      * @memberof Kensho
@@ -59,20 +53,6 @@ var Kensho = function () {
     Object.defineProperty(this, '_', { enumerable: false });
     var _ = this._.get(this);
     _.inputs = {};
-
-    // plugin setup
-    if (Kensho.instanceList.length === 1) {
-      for (var key in Kensho.plugin._list.class) {
-        var cb = Kensho.plugin._list.class[key].callback;
-        var param = Kensho.plugin._list.class[key].param;
-        Kensho.plugin[key] = cb.call(Kensho, param);
-      }
-    };
-    for (var _key in Kensho.plugin._list.instance) {
-      var _cb = Kensho.plugin._list.instance[_key].callback;
-      var _param = Kensho.plugin._list.instance[_key].param;
-      this.plugin[_key] = _cb.call(this, _param);
-    }
 
     formElement.classList.add('kensho-form');
 
@@ -180,41 +160,62 @@ var Kensho = function () {
   };
   /**
    *
+   * 
+   *
+   * @method Kensho#hasError
    *
    * @return {Boolean}
    */
 
 
-  Kensho.prototype.hasError = function hasError() {};
+  Kensho.prototype.hasError = function hasError() {
+    var _ = this._.get(this);
+    var result = false;
+    for (var key in _.inputs) {
+      if (_.inputs[key].error.length !== 0) {
+        result = true;
+        break;
+      }
+    }
+    return result;
+  };
   /**
-   *
    *
    *
    * 
+   * @method Kensho#allValidate
+   * 
+   * @return {void}
    */
 
 
-  Kensho.prototype.allValidate = function allValidate() {};
+  Kensho.prototype.allValidate = function allValidate() {
+    var _this2 = this;
+
+    var _ = this._.get(this);
+    Object.keys(_.inputs).map(function (key, i) {
+      _this2.validate(key);
+    });
+  };
   /**
-   * [validate description]
+   *
+   * 
    * 
    * @method  Kensho#validate
    * @version 0.0.1
    * 
    * @param  {String} name       -
-   * @param  {Object} [param={}] -
    * @return {kensho} instance
    */
 
 
   Kensho.prototype.validate = function validate(name) {
-    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
     var _ = this._.get(this);
     var unit = _.inputs[name];
     var applyRules = unit.rule;
     var verbose = Kensho.config.get('verbose');
     var wrapTag = Kensho.config.get('errorMessageWrapper');
+    var errorClassName = Kensho.config.get('errorClassName');
 
     if (unit.type === 'text') {
       value = unit.inputElement.value;
@@ -226,6 +227,7 @@ var Kensho = function () {
     }
 
     unit.errorElement.innerHTML = '';
+    unit.errorElement.classList.remove(errorClassName);
     unit.error = [];
 
     value = this.hook.filter('pre-validate-value', value, this);
@@ -239,7 +241,8 @@ var Kensho = function () {
         if (!verbose) break;
       }
     }
-    if (unit.error) {
+    if (unit.error.length) {
+      unit.errorElement.classList.add(errorClassName);
       unit.errorElement.innerHTML = unit.error.join('\n');
     }
     return this;
@@ -277,6 +280,7 @@ var Kensho = function () {
   var _c = {};
   _c.errorMessageWrapper = 'span';
   _c.verbose = true;
+  _c.errorClassName = 'kensho-has-error';
 
   /**
    * Kensho configuration.
@@ -524,10 +528,7 @@ var Kensho = function () {
    * @namespace Kensho.plugin
    */
   var plugin = Object.create(null);
-  var _list = {
-    'class': {},
-    'instance': {}
-  };
+  var _list = {};
   /**
    * add plugin
    *
@@ -559,17 +560,15 @@ var Kensho = function () {
    * @method  Kensho.plugin.add
    * @version 0.0.1
    *
-   * @param  {String}   name            plug-in name.
-   * @param  {Function} callback        plug-in initialize function.
-   * @param  {Object}   [param={}]      paramerters in order to pass to the initialize function.
-   * @param  {String}   [scope='class'] plugin type 'class' or 'instance'
+   * @param  {String}   name       plug-in name.
+   * @param  {Function} callback   plug-in initialize function.
+   * @param  {Object}   [param={}] paramerters in order to pass to the initialize function.
    * @return {void}
    */
   plugin.add = function (name, callback) {
     var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var scope = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'class';
 
-    if (_list['class'][name] || _list['instance'][name]) {
+    if (_list[name]) {
       console.error('plug-in ' + name + ' is conflict');
       return false;
     }
@@ -577,11 +576,11 @@ var Kensho = function () {
       console.error('plug-in is must be added before create instance.');
       return false;
     }
-    _list[scope][name] = {
-      param: param,
-      scope: scope,
-      callback: callback
-    };
+    Kensho.plugin[name] = callback;
+    // _list[name] = {
+    //   param    : param,
+    //   callback : callback
+    // };
   };
   plugin._list = _list;
 
@@ -807,9 +806,7 @@ var Kensho = function () {
     maps = Object.assign(maps, userMap);
   };
 
-  Kensho.plugin.add('full2half', function () {
-    return full2half;
-  }, {}, 'class');
+  Kensho.plugin.add('full2half', full2half);
 })();
 
 (function () {
@@ -822,12 +819,8 @@ var Kensho = function () {
     };
   };
 
-  Kensho.plugin.add('is1byte', function () {
-    return isNbyte(true);
-  }, {}, 'class');
+  Kensho.plugin.add('is1byte', isNbyte(true));
 
-  Kensho.plugin.add('is2byte', function () {
-    return isNbyte(false);
-  }, {}, 'class');
+  Kensho.plugin.add('is2byte', isNbyte(false));
 })();
 //# sourceMappingURL=kensho.js.map

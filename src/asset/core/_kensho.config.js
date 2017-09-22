@@ -2,6 +2,7 @@
   let _c = {};
   _c.errorMessageWrapper = 'span';
   _c.verbose             = true;
+  _c.errorClassName      = 'kensho-has-error';
 
   /**
    * Kensho configuration.

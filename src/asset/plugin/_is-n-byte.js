@@ -8,12 +8,8 @@
     }
   }
 
-  Kensho.plugin.add('is1byte', function(){
-    return isNbyte(true);
-  }, {}, 'class');
+  Kensho.plugin.add('is1byte', isNbyte(true));
 
-  Kensho.plugin.add('is2byte', function(){
-    return isNbyte(false);
-  }, {}, 'class');
+  Kensho.plugin.add('is2byte', isNbyte(false));
 
 })();

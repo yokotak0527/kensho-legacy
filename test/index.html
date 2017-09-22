@@ -4,76 +4,121 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <script src="../dest/kensho.js"></script>
+  <style>
+    *{
+      font-size   : 14px;
+      line-height : 1.3;
+      margin      : 0;
+      padding     : 0;
+      font-weight : normal;
+    }
+    ul,ol{ list-style : none }
+    form{ padding : 20px }
+    .unit{ padding : 0.8em 0 }
+    .unit h1{
+      font-weight   : bold;
+      margin-bottom : 0.1em;
+    }
+    .unit ul{
+      letter-spacing : -0.4em;
+      margin-bottom : 0.5em;
+    }
+    .unit ul li{
+      display        : inline-block;
+      letter-spacing : normal;
+      line-height    : 1;
+      padding        : 0.3em 0.5em;
+      font-size      : 11px;
+    }
+    .unit ul li + li{ margin-left : 0.3em }
+    .unit ul.rule{ margin-bottom : 0.2em }
+    .unit ul.rule li{
+      color          : #FFF;
+      background     : #B0B;
+    }
+    .unit ul.event li{
+      color          : #FFF;
+      background     : #0BB;
+    }
+    .unit .err{ color : #F00 }
+    .unit .err.kensho-has-error{ padding-top : 0.2em }
+  </style>
 </head>
 <body>
-  <form action="" id="my-form">
-    <div>
-      <input type="text" name="name">
-      <p class="name-error">sasfad</p>
+  <form action="./index.html" id="my-form">
+    <!-- TEXT -->
+    <div class="unit">
+      <h1>TEXT</h1>
+      <ul class="rule">
+        <li>required</li>
+        <li>required</li>
+      </ul>
+      <ul class="event">
+        <li>required</li>
+        <li>required</li>
+      </ul>
+      <div>
+        <input type="text" name="text">
+        <p class="err text"></p>
+      </div>
     </div>
-    <div>
-      <input type="text" name="tel">
-      <p class="tel-error">sasfad</p>
+    <div class="unit">
+      <h1>PASSWORD</h1>
+      <div>
+        <input type="password" name="pwd">
+        <p class="err pwd"></p>
+      </div>
     </div>
-    <hr>
-    <div>
-      <label>
-        <input type="radio" name="sex" value="男性">
-        男性
-      </label>
-      <label>
-        <input type="radio" name="sex" value="女性">
-        女性
-      </label>
-      <p class="sex-error">sasfad</p>
+    <div class="unit">
+      <h1>SEARCH</h1>
+      <div>
+        <input type="search" name="search">
+        <p class="err search"></p>
+      </div>
     </div>
-    <hr>
-    <div>
-      <textarea name="comment" id="" cols="30" rows="10"></textarea>
-      <p class="comment-error">sasfad</p>
+    <div class="unit">
+      <h1>TEL</h1>
+      <div>
+        <input type="tel" name="tel">
+        <p class="err tel"></p>
+      </div>
     </div>
+    <div class="unit">
+      <h1>EMAIL</h1>
+      <div>
+        <input type="email" name="email">
+        <p class="err email"></p>
+      </div>
+    </div>
+    <div class="unit">
+      <h1>URL</h1>
+      <div>
+        <input type="url" name="url">
+        <p class="err url"></p>
+      </div>
+    </div>
+    <input type="submit" id="submit">
   </form>
   <script>
-    var kensho = new Kensho('form');
+    let submitElement = document.querySelector('#submit');
+    submitElement.addEventListener('click', function(e){
+      e.preventDefault();
+      kensho.allValidate();
+      console.log(kensho.hasError());
+    });
+    
+
+    var kensho = new Kensho('#my-form');
+    
+    // TEXT
     kensho.add(
-      '#my-form input[name=name]',
-      '#my-form .name-error',
+      '#my-form input[name=text]',
+      '#my-form .err.text',
       {
         'required' : 'this is required!'
       },
       ['change']
-    ).add(
-      '#my-form input[name=tel]',
-      '#my-form .tel-error',
-      {
-        'required' : 'this is required!',
-        'number' : 'this is number only!'
-      },
-      ['change']
-    );
-    // setTimeout(function(){
-    //   kensho.validate('name');
-    // }, 2000);
-
-    // console.log('required value "" = ',  Kensho.validate('required', ''));
-    // console.log('required value "a" = ', Kensho.validate('required', 'a'));
-
-    // console.log('number value "" = ',  Kensho.validate('number', ''));
-    // console.log('number value "a" = ', Kensho.validate('number', 'a'));
-    // console.log('number value "123" = ', Kensho.validate('number', '123'));
-    // console.log('number value "４５６"(full size) = ', Kensho.validate('number', '４５６'));
-    // console.log('number value "４５６" with full2half = ', Kensho.validate('number', '４５６', {allow2byte : true}));
-
-    // console.log('age value "a" = ', Kensho.validate('age', 'a'));
-    // console.log('age value "123" = ', Kensho.validate('age', '123'));
-    // console.log('age value "500" = ', Kensho.validate('age', '500'));
-    // console.log('age value "１００" = ', Kensho.validate('age', ' １００', {allow2byte : true, trim : true}));
-    
-    // console.log(Kensho.validate('fullsize', 'あいうえお'));
-    // console.log(Kensho.validate('halfsize', '123asd'));
-    
-    // console.log(Kensho.validate('blacklist', 'abc', {list:['abc']}));
-    
+    )
   </script>
 </body>
 </html>

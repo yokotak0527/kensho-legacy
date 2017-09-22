@@ -41,7 +41,5 @@
     maps = Object.assign(maps, userMap);
   }
 
-  Kensho.plugin.add('full2half', function(){
-    return full2half
-  }, {}, 'class');
+  Kensho.plugin.add('full2half', full2half);
 })();
