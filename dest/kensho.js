@@ -762,15 +762,69 @@ var Kensho = function () {
    * @param {String[]} param.list
    */
   rule.add('blacklist', function (val, param) {
-    if (!param.list) return true;
+    var result = true;
+    if (!param.list) return result;
 
     for (var i = 0, l = param.list.length; i < l; i++) {
       if (val === param.list[i]) {
-        return false;
+        result = false;
         break;
       }
     }
-    return true;
+    return result;
+  });
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String}   val
+   * @param {Object}   param
+   * @param {String[]} param.list
+   */
+  rule.add('whitelist', function (val, param) {
+    // if(!param.list) return true;
+    // 
+    // for(let i = 0, l = param.list.length; i < l; i++){
+    //   if(val === param.list[i]){
+    //     return false;
+    //     break;
+    //   }
+    // }
+    // return true;
+  });
+})();
+
+(function () {
+  var rule = Kensho.rule;
+
+  /**
+   * @param {String}   val
+   * @param {Object}   [param]
+   * @param {Number}   [param.min]
+   * @param {Number}   [param.max]
+   * @param {Boolean}  [param.trim=true]
+   */
+  rule.add('range', function (val) {
+    var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var result = true;
+    var trimFlg = param.trim === true ? true : false;
+    if (trimFlg) val = val.trim();
+
+    if (param.min === undefined && param.max === undefined) return result;
+
+    if (param.min === undefined && typeof param.max === 'number') {
+      if (val.length > param.max) result = false;
+    }
+    if (typeof param.min === 'number' && _typeof(param.max) === undefined) {
+      if (val.length < param.min) result = false;
+    }
+    if (param.min !== undefined && param.max !== undefined) {
+      if (val.length < param.min || val.length > param.max) result = false;
+    }
+    return result;
   });
 })();
 

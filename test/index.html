@@ -97,6 +97,13 @@
     </div>
     <div class="unit">
       <h1>TEL</h1>
+      <ul class="rule">
+        <li>halfsize</li>
+        <li>range</li>
+      </ul>
+      <ul class="event">
+        <li>change</li>
+      </ul>
       <div>
         <input type="tel" name="tel">
         <p class="err tel"></p>
@@ -159,6 +166,7 @@
       ['change']
     )
 
+    console.log(Kensho.validate('range', 'よこたた', {max : 10, min : 4}));
   </script>
 </body>
 </html>
