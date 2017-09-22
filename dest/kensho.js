@@ -214,6 +214,7 @@ var Kensho = function () {
     var unit = _.inputs[name];
     var applyRules = unit.rule;
     var verbose = Kensho.config.get('verbose');
+    var wrapTag = Kensho.config.get('errorMessageWrapper');
 
     if (unit.type === 'text') {
       value = unit.inputElement.value;
@@ -230,7 +231,16 @@ var Kensho = function () {
     value = this.hook.filter('pre-validate-value', value, this);
 
     for (var key in applyRules) {
-      var result = Kensho.validate.call(key, value, applyRules[key].param);
+      var result = Kensho.validate.call(this, key, value, applyRules[key].param);
+      if (!result) {
+        var message = document.createTextNode(applyRules[key].errorMessage).nodeValue;
+        message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
+        unit.error.push('<' + wrapTag + ' class="kensho-error-message">' + message + '</' + wrapTag + '>');
+        if (!verbose) break;
+      }
+    }
+    if (unit.error) {
+      unit.errorElement.innerHTML = unit.error.join('\n');
     }
     return this;
   };
@@ -265,7 +275,7 @@ var Kensho = function () {
 
 (function () {
   var _c = {};
-  _c.errorMessageWrapper = 'li';
+  _c.errorMessageWrapper = 'span';
   _c.verbose = true;
 
   /**

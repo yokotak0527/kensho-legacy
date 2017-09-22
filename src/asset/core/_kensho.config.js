@@ -1,6 +1,6 @@
 (()=>{
   let _c = {};
-  _c.errorMessageWrapper = 'li';
+  _c.errorMessageWrapper = 'span';
   _c.verbose             = true;
 
   /**

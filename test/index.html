@@ -7,8 +7,14 @@
 </head>
 <body>
   <form action="" id="my-form">
-    <input type="text" name="name">
-    <p class="name-error">sasfad</p>
+    <div>
+      <input type="text" name="name">
+      <p class="name-error">sasfad</p>
+    </div>
+    <div>
+      <input type="text" name="tel">
+      <p class="tel-error">sasfad</p>
+    </div>
     <hr>
     <div>
       <label>
@@ -33,11 +39,15 @@
       '#my-form input[name=name]',
       '#my-form .name-error',
       {
+        'required' : 'this is required!'
+      },
+      ['change']
+    ).add(
+      '#my-form input[name=tel]',
+      '#my-form .tel-error',
+      {
         'required' : 'this is required!',
-        'number'   : {
-          param        : {'allow2byte' : true},
-          errorMessage : 'number only'
-        }
+        'number' : 'this is number only!'
       },
       ['change']
     );
@@ -62,7 +72,7 @@
     // console.log(Kensho.validate('fullsize', 'あいうえお'));
     // console.log(Kensho.validate('halfsize', '123asd'));
     
-    console.log(Kensho.validate('blacklist', 'abc', {list:['abc']}));
+    // console.log(Kensho.validate('blacklist', 'abc', {list:['abc']}));
     
   </script>
 </body>

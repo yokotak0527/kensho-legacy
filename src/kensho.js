@@ -200,6 +200,7 @@ class Kensho{
     let unit       = _.inputs[name];
     let applyRules = unit.rule;
     let verbose    = Kensho.config.get('verbose');
+    let wrapTag    = Kensho.config.get('errorMessageWrapper');
 
     if(unit.type === 'text'){
       value = unit.inputElement.value;
@@ -216,7 +217,16 @@ class Kensho{
     value = this.hook.filter('pre-validate-value', value, this);
 
     for(let key in applyRules){
-      let result = Kensho.validate.call(key, value, applyRules[key].param);
+      let result = Kensho.validate.call(this, key, value, applyRules[key].param);
+      if(!result){
+        let message = document.createTextNode(applyRules[key].errorMessage).nodeValue;
+        message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
+        unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
+        if(!verbose) break;
+      }
+    }
+    if(unit.error){
+      unit.errorElement.innerHTML = unit.error.join('\n');
     }
     return this;
   }
@@ -245,7 +255,7 @@ class Kensho{
 
 (()=>{
   let _c = {};
-  _c.errorMessageWrapper = 'li';
+  _c.errorMessageWrapper = 'span';
   _c.verbose             = true;
 
   /**
