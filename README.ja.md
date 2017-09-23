@@ -1,5 +1,6 @@
 # Kensho
 
+[](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
 
 ## 使い方
 
