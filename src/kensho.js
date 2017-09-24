@@ -752,11 +752,11 @@ class Kensho{
     if(trimFlg) val = val.trim();
 
     if(param.min === undefined && param.max === undefined) return result;
-    
+
     if(param.min === undefined && typeof param.max === 'number'){
       if(val.length > param.max) result = false;
     }
-    if(typeof param.min === 'number' && typeof param.max === undefined){
+    if(typeof param.min === 'number' && param.max === undefined){
       if(val.length < param.min) result = false;
     }
     if(param.min !== undefined && param.max !== undefined){

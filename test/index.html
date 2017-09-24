@@ -134,7 +134,7 @@
     });
 
     var kensho = new Kensho('#my-form');
-    
+
     // TEXT
     kensho.add(
       '#my-form input[name=text]',
@@ -166,8 +166,9 @@
       ['change']
     )
 
+    console.log(Kensho.validate('range', 'よこた', {min : 6}));
     // console.log(Kensho.validate('range', 'よこたた', {max : 10, min : 4}));
-    console.log(Kensho.validate('whitelist', 'avc', {list : ['avc']}));
+    // console.log(Kensho.validate('whitelist', 'avc', {list : ['avc']}));
   </script>
 </body>
 </html>

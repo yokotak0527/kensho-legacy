@@ -819,7 +819,7 @@ var Kensho = function () {
     if (param.min === undefined && typeof param.max === 'number') {
       if (val.length > param.max) result = false;
     }
-    if (typeof param.min === 'number' && _typeof(param.max) === undefined) {
+    if (typeof param.min === 'number' && param.max === undefined) {
       if (val.length < param.min) result = false;
     }
     if (param.min !== undefined && param.max !== undefined) {
