@@ -1,6 +1,6 @@
 # Kensho
 
-![](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
+[![Build Status](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)](https://travis-ci.org/yokotak0527/kensho)
 
 ## 使い方
 
@@ -35,7 +35,7 @@ myform.add(
 7. バリデーション項目を設定
 8. [インスタンス].hookでフックを追加 (オプション)
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## 設定
 
@@ -54,7 +54,7 @@ Kensho.config.set('verbose', false);
 | verbose             | true   | エラーメッセージの冗長的な出力 |
 | errorMessageWrapper | 'li'   | エラーメッセージを包むHTMLタグを指定します |
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## フック
 
@@ -64,7 +64,7 @@ Kensho.config.set('verbose', false);
 ```js
 /**
  * hook.add(type, hookName, callbackName, callback, priority = false)
- * 
+ *
  * @param {string} type       - フックの種類 action か filter
  * @param {string} hookName   - フック名
  * @param {string} callback   - コールバック関数。
@@ -119,7 +119,7 @@ kensho.hook.add('filter', 'pre-validate-value', myHook, 10);
 /**
  * アクション
  * hook.action(name, param, thisObject)
- * 
+ *
  * @param {string} name              - フック名
  * @param {object} [param={}]        - このフックのオブザーバに渡す引数
  * @param {object} [thisObject=this] - コールバック関数
@@ -129,7 +129,7 @@ this.hook.action('first-step');
 /**
  * フィルター
  * hook.filter(name, data, thisObject)
- * 
+ *
  * @param {string} name              - フック名
  * @param {*}      data              - このフックのオブザーバに渡す値
  * @param {object} [thisObject=this] - コールバック関数
@@ -138,7 +138,7 @@ let val = 'foo bar ';
 let formatVal = this.hook.filter('message', val);
 ```
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## プラグイン
 
@@ -150,7 +150,7 @@ let formatVal = this.hook.filter('message', val);
  * @param {function} callback        - Initialize function. Don't use arrow function.
  * @param {object} [param={}]      - Initialize function arguments
  * @param {string} [scope='class'] - 'class' or 'instance'
- * 
+ *
  */
 
 let myPluginInitialize = function(){
@@ -161,6 +161,6 @@ let myPluginInitialize = function(){
 Kensho.plugin.add('myPlugin', callback, param, 'class');
 ```
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## ルール
