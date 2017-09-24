@@ -8,11 +8,11 @@ module.exports = function(config){
       basePath: '',
       frameworks: ['jasmine'],
       files: [
+        'node_modules/es6-shim/es6-shim.js',
         'dest/Kensho.js',
         'test/*Spec.js'
       ],
       reporters: ['progress'],
-      port: 9876,
       colors: true,
       logLevel: config.LOG_INFO,
       autoWatch: false,
@@ -29,16 +29,16 @@ module.exports = function(config){
       basePath: '',
       frameworks: ['jasmine'],
       files: [
+        'node_modules/es6-shim/es6-shim.js',
         'dest/Kensho.js',
         'test/*Spec.js'
       ],
       reporters: ['mocha'],
-      port: 9876,
       colors: true,
       logLevel: config.LOG_INFO,
       autoWatch: true,
       browsers: ['PhantomJS'],
-      singleRun: false,
+      singleRun: true,
       concurrency: Infinity
     }
 
