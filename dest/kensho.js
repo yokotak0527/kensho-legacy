@@ -889,4 +889,4 @@ var Kensho = function () {
 
   Kensho.plugin.add('is2byte', isNbyte(false));
 })();
-//# sourceMappingURL=kensho.js.map
+//# sourceMappingURL=Kensho.js.map
