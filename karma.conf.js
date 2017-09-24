@@ -12,7 +12,7 @@ module.exports = function(config){
         './dest/Kensho.js',
         './test/*Spec.js'
       ],
-      reporters: ['progress'],
+      reporters: ['mocha'],
       colors: true,
       logLevel: config.LOG_INFO,
       autoWatch: false,

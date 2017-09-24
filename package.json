@@ -13,7 +13,7 @@
     "npm": ">=5.3.0"
   },
   "keywords": [
-    "validate"
+    "form validation library"
   ],
   "author": "yokotak0527",
   "license": "MIT",
