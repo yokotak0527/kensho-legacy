@@ -15,7 +15,7 @@ kensho.add(
   {
     'required' : 'this is required.',
   },
-  ['keyup', 'blur']
+  'keyup|blur'
 );
 ```
 
@@ -23,3 +23,23 @@ kensho.add(
 
 - jQuery is unnecessary.
 - be able to add your plugin, validation rules and to set hooks.
+
+| Browsers |
+|----------|
+| Chrome   |
+| FireFox  |
+| Safari   |
+| IE11     |
+| Edge     |
+
+## Default validation rules list
+
+01. required
+02. age
+03. range
+04. number
+05. email
+06. whitelist
+07. blacklist
+08. halfsize
+09. fullsize

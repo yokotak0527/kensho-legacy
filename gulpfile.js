@@ -34,6 +34,7 @@ conf.concat[`${packageParam.name}.js`] = [
   'asset/core/_Kensho.config.js',
   'asset/core/_Kensho.Hook.js',
   'asset/core/_Kensho.rule.js',
+  'asset/core/_Kensho.parser.js',
   'asset/core/_Kensho.plugin.js',
   'asset/core/_Kensho.init.js',
 

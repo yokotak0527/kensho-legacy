@@ -5,7 +5,6 @@
   _c.errorClassName        = 'kensho-has-error';
   _c.autocomplete          = true;
   _c.HTML5novalidate       = true;
-  _c.validationPseudoClass = true;
 
   /**
    * Kensho configuration.

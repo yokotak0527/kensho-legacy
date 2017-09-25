@@ -51,7 +51,7 @@
   </style>
 </head>
 <body>
-  <form action="./index.html" id="my-form">
+  <form action="./index.html" novalidate id="my-form">
     <!-- TEXT -->
     <div class="unit">
       <h1>TEXT</h1>
@@ -64,8 +64,8 @@
         <li>keyup</li>
       </ul>
       <div>
-        <input type="text" name="text">
-        <p class="err text"></p>
+        <input type="text" name="text" data-k-name="text">
+        <p class="err text" data-k-name="text--err"></p>
       </div>
     </div>
     <div class="unit">
@@ -89,7 +89,7 @@
         <li>halfsize</li>
       </ul>
       <ul class="event">
-        <li>change</li>
+        <li>keyup</li>
       </ul>
       <div>
         <input type="search" name="search">
@@ -100,10 +100,11 @@
       <h1>TEL</h1>
       <ul class="rule">
         <li>halfsize</li>
-        <li>range</li>
+        <li>number</li>
+        <li>range 11-15</li>
       </ul>
       <ul class="event">
-        <li>change</li>
+        <li>keyup</li>
       </ul>
       <div>
         <input type="tel" name="tel">
@@ -112,6 +113,12 @@
     </div>
     <div class="unit">
       <h1>EMAIL</h1>
+      <ul class="rule">
+        <li>email</li>
+      </ul>
+      <ul class="event">
+        <li>blur</li>
+      </ul>
       <div>
         <input type="email" name="email">
         <p class="err email"></p>
@@ -119,6 +126,12 @@
     </div>
     <div class="unit">
       <h1>URL</h1>
+      <ul class="rule">
+        <li>halfsize</li>
+      </ul>
+      <ul class="event">
+        <li>keyup</li>
+      </ul>
       <div>
         <input type="url" name="url">
         <p class="err url"></p>
@@ -134,40 +147,60 @@
       console.log(kensho.hasError());
     });
 
+    // Kensho.config.set('verbose', false);
     var kensho = new Kensho('#my-form');
 
     // TEXT
-    kensho.add(
-      '#my-form input[name=text]',
-      '#my-form .err.text',
-      {
-        'required' : 'this is required!'
-      },
-      ['init', 'blur', 'keyup']
-    )
+    // kensho.add(
+    //   '#my-form input[name=text]',
+    //   '#my-form .err.text',
+    //   {
+    //     required : 'this is required!'
+    //   },
+    //   'init|blur|keyup'
+    // )
     // PASSWORD
     kensho.add(
       '#my-form input[name=pwd]',
       '#my-form .err.pwd',
       {
-        'required' : 'this is required!'
+        required : 'this is required!'
       },
-      ['blur', 'keyup']
+      'blur|keyup'
     )
     // SEARCH
-    kensho.add(
+    .add(
       '#my-form input[name=search]',
       '#my-form .err.search',
       {
-        'required' : 'this is required!',
-        'halfsize' : 'text is half-size only'
+        required : 'this is required!',
+        halfsize : 'text is half-size only'
       },
-      ['keyup']
+      'keyup'
     )
-
-    // console.log(Kensho.validate('range', 'よこた', {min : 6}));
-    // console.log(Kensho.validate('range', 'よこたた', {max : 10, min : 4}));
-    // console.log(Kensho.validate('whitelist', 'avc', {list : ['avc']}));
+    // TEL
+    .add(
+      '#my-form input[name=tel]',
+      '#my-form .err.tel',
+      {
+        'halfsize' : 'text is half-size only',
+        'number'   : 'text is number only',
+        'range'    : {
+          errorMessage : 'text long is 2-4',
+          param        : {min : 2, max : 4}
+        }
+      },
+      'keyup'
+    )
+    // EMAIL
+    .add(
+      '#my-form input[name=email]',
+      '#my-form .err.email',
+      {
+        email : 'invalid email-address'
+      },
+      'blur'
+    );
   </script>
 </body>
 </html>

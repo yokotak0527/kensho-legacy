@@ -54,12 +54,25 @@ var Kensho = function () {
     var _ = this._.get(this);
     _.inputs = {};
 
-    if (Kensho.config.get('HTML5novalidate')) formElement.setAttribute('novalidate', '');
+    // if(Kensho.config.get('HTML5novalidate'))
+    //   formElement.setAttribute('novalidate', 'novalidate');
     if (Kensho.config.get('autocomplete')) formElement.setAttribute('autocomplete', 'off');
 
     formElement.classList.add('kensho-form');
 
     this.hook.action('init', {}, this);
+
+    // parser
+    var parserList = formElement.querySelectorAll('*[data-k-name]');
+    if (parserList) {
+      parserList = Array.from(parserList);
+      parserList = parserList.filter(function (html, i) {
+        return !html.getAttribute('data-k-name').match(/\-\-err$/) ? true : false;
+      });
+      parserList.map(function (html, i) {
+        var data = Kensho.parser.parse(formElement, html);
+      });
+    }
   }
   /**
    * add validation field.
@@ -81,7 +94,7 @@ var Kensho = function () {
    * @param {(String|HTMLElement|HTMLElement[])} inputElement form input HTML element or its CSS selector string.
    * @param {(String|HTMLElement)}               errorElement wrapper element of output error message or its CSS selector string.
    * @param {object}                             rule         the key is rule name. The value is error message.
-   * @param {String[]}                           [event=['']] trigger events.
+   * @param {String|String[]}                    [event=['']] trigger events.
    * @return {kensho}                                         instance
    */
 
@@ -98,7 +111,7 @@ var Kensho = function () {
     // as a result of it, inputElement type is a array.
     inputElement = typeof inputElement === 'string' ? document.querySelectorAll(inputElement) : Array.isArray(inputElement) ? inputElement : [inputElement];
     errorElement = typeof errorElement === 'string' ? document.querySelector(errorElement) : errorElement;
-    event = typeof event === 'string' ? [event] : event;
+    event = typeof event === 'string' ? event.split('|') : event;
 
     var _ = this._.get(this);
     var name = inputElement[0].getAttribute('name');
@@ -112,6 +125,15 @@ var Kensho = function () {
         type = 'text';
         break;
       case 'search':
+        type = 'text';
+        break;
+      case 'tel':
+        type = 'text';
+        break;
+      case 'email':
+        type = 'text';
+        break;
+      case 'url':
         type = 'text';
         break;
     }
@@ -168,6 +190,14 @@ var Kensho = function () {
         }
       }
     });
+
+    // console.log(inputElement.getAttribute('type'));
+    if (inputElement.getAttribute('type') === 'email') {
+      inputElement.addEventListener('change', function (e) {
+        // e.preventDefault();
+        console.log(e);
+      });
+    }
 
     this.hook.action('set-validate-field', { unit: unit }, this);
     return this;
@@ -243,7 +273,9 @@ var Kensho = function () {
     unit.errorElement.innerHTML = '';
     unit.errorElement.classList.remove(errorClassName);
     unit.error = [];
-    if (Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
+    // if(Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
+    unit.inputElement.classList.remove('invalid');
+    unit.inputElement.classList.remove('valid');
 
     value = this.hook.filter('pre-validate-value', value, this);
 
@@ -259,9 +291,10 @@ var Kensho = function () {
     if (unit.error.length) {
       unit.errorElement.classList.add(errorClassName);
       unit.errorElement.innerHTML = unit.error.join('\n');
-
-      if (Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('error');
-    } else {}
+      unit.inputElement.classList.add('invalid');
+    } else {
+      unit.inputElement.classList.add('valid');
+    }
     return this;
   };
   /**
@@ -300,7 +333,6 @@ var Kensho = function () {
   _c.errorClassName = 'kensho-has-error';
   _c.autocomplete = true;
   _c.HTML5novalidate = true;
-  _c.validationPseudoClass = true;
 
   /**
    * Kensho configuration.
@@ -541,6 +573,17 @@ var Kensho = function () {
   };
 
   Kensho.rule = rule;
+})();
+
+(function () {
+
+  var parser = {};
+  parser.parse = function (formElement, inputElement) {
+    console.log(formElement);
+    return true;
+  };
+
+  Kensho.parser = parser;
 })();
 
 (function () {
