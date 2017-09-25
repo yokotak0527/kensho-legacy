@@ -8,9 +8,9 @@ module.exports = function(config){
       basePath: '',
       frameworks: ['jasmine'],
       files: [
-        './node_modules/es6-shim/es6-shim.js',
-        './dest/Kensho.js',
-        './test/*Spec.js'
+        'node_modules/es6-shim/es6-shim.js',
+        'dest/Kensho.js',
+        'test/*Spec.js'
       ],
       reporters: ['mocha'],
       colors: true,
@@ -29,9 +29,9 @@ module.exports = function(config){
       basePath: '',
       frameworks: ['jasmine'],
       files: [
-        './node_modules/es6-shim/es6-shim.js',
-        './dest/Kensho.js',
-        './test/*Spec.js'
+        'node_modules/es6-shim/es6-shim.js',
+        'dest/Kensho.js',
+        'test/*Spec.js'
       ],
       reporters: ['mocha'],
       colors: true,
