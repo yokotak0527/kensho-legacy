@@ -2,7 +2,7 @@
 
 The JavaScript form validation library.
 
-![](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
+[![Build Status](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)](https://travis-ci.org/yokotak0527/kensho)
 
 ## How to use
 

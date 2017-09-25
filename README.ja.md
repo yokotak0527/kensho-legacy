@@ -1,6 +1,6 @@
 # Kensho
 
-![](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
+[![Build Status](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)](https://travis-ci.org/yokotak0527/kensho)
 
 ## 使い方
 
