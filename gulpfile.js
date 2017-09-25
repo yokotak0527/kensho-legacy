@@ -49,7 +49,9 @@ conf.concat[`${packageParam.name}.js`] = [
   'asset/rule/_range.js',
 
   'asset/plugin/_full2half.js',
-  'asset/plugin/_is-n-byte.js'
+  'asset/plugin/_is-n-byte.js',
+
+  'asset/_env-check.js'
 ];
 // -----------------------------------------------------------------------------
 // Babel
