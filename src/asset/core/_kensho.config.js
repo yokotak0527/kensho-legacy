@@ -4,12 +4,12 @@
   _c.verbose               = true;
   _c.errorClassName        = 'kensho-has-error';
   _c.autocomplete          = true;
-  _c.HTML5validate         = false; // please not change. not yet support.
+  _c.HTML5novalidate       = true;
   _c.validationPseudoClass = true;
 
   /**
    * Kensho configuration.
-   * 
+   *
    * @namespace Kensho.config
    */
   Kensho.config = {
@@ -17,7 +17,7 @@
     * get configuration value
     *
     * @method Kensho.config.get
-    * 
+    *
     * @param {String} key configuration key name
     * @return {*}         key value
     */
@@ -26,7 +26,7 @@
     },
     /**
      * Set configuration value
-     * 
+     *
      * @param {(String|Object)} key configuration key name. when you pass an object, you can set a number of configurations in bluk.
      * @return {void}
      */
@@ -35,5 +35,5 @@
       _c[key] = val;
     }
   }
-  
+
 })();

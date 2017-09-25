@@ -9,7 +9,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Kensho = function () {
   /**
    *
-   * 
+   *
    * @constructs Kensho
    * @param  {(String|HTMLElement)} formElement
    */
@@ -54,6 +54,9 @@ var Kensho = function () {
     var _ = this._.get(this);
     _.inputs = {};
 
+    if (Kensho.config.get('HTML5novalidate')) formElement.setAttribute('novalidate', '');
+    if (Kensho.config.get('autocomplete')) formElement.setAttribute('autocomplete', 'off');
+
     formElement.classList.add('kensho-form');
 
     this.hook.action('init', {}, this);
@@ -74,7 +77,7 @@ var Kensho = function () {
    *
    * @method  Kensho#add
    * @version 0.0.1
-   * 
+   *
    * @param {(String|HTMLElement|HTMLElement[])} inputElement form input HTML element or its CSS selector string.
    * @param {(String|HTMLElement)}               errorElement wrapper element of output error message or its CSS selector string.
    * @param {object}                             rule         the key is rule name. The value is error message.
@@ -128,11 +131,6 @@ var Kensho = function () {
     }
     rule = _rule;
 
-    // console.dir(inputElement);
-    if (!Kensho.config.get('HTML5validate')) {
-      inputElement.setAttribute('novalidate', '');
-    };
-
     var unit = {
       name: name,
       inputElement: inputElement,
@@ -176,7 +174,7 @@ var Kensho = function () {
   };
   /**
    *
-   * 
+   *
    *
    * @method Kensho#hasError
    *
@@ -198,9 +196,9 @@ var Kensho = function () {
   /**
    *
    *
-   * 
+   *
    * @method Kensho#allValidate
-   * 
+   *
    * @return {void}
    */
 
@@ -215,11 +213,11 @@ var Kensho = function () {
   };
   /**
    *
-   * 
-   * 
+   *
+   *
    * @method  Kensho#validate
    * @version 0.0.1
-   * 
+   *
    * @param  {String} name       -
    * @return {kensho} instance
    */
@@ -245,6 +243,7 @@ var Kensho = function () {
     unit.errorElement.innerHTML = '';
     unit.errorElement.classList.remove(errorClassName);
     unit.error = [];
+    if (Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
 
     value = this.hook.filter('pre-validate-value', value, this);
 
@@ -261,20 +260,16 @@ var Kensho = function () {
       unit.errorElement.classList.add(errorClassName);
       unit.errorElement.innerHTML = unit.error.join('\n');
 
-      unit.inputElement.setCustomValidity(false);
-      unit.inputElement.checkValidity();
-    } else {
-      unit.inputElement.setCustomValidity('');
-      unit.inputElement.checkValidity();
-    }
+      if (Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('error');
+    } else {}
     return this;
   };
   /**
    * validate
-   * 
+   *
    * @method  Kensho.validate
    * @version 0.0.1
-   * 
+   *
    * @param  {String} name       validation rule name.
    * @param  {*}      value      input value.
    * @param  {Object} [param={}] in order to pass to a rule function.
@@ -304,12 +299,12 @@ var Kensho = function () {
   _c.verbose = true;
   _c.errorClassName = 'kensho-has-error';
   _c.autocomplete = true;
-  _c.HTML5validate = false; // please not change. not yet support.
+  _c.HTML5novalidate = true;
   _c.validationPseudoClass = true;
 
   /**
    * Kensho configuration.
-   * 
+   *
    * @namespace Kensho.config
    */
   Kensho.config = {
@@ -317,7 +312,7 @@ var Kensho = function () {
     * get configuration value
     *
     * @method Kensho.config.get
-    * 
+    *
     * @param {String} key configuration key name
     * @return {*}         key value
     */
@@ -327,7 +322,7 @@ var Kensho = function () {
 
     /**
      * Set configuration value
-     * 
+     *
      * @param {(String|Object)} key configuration key name. when you pass an object, you can set a number of configurations in bluk.
      * @return {void}
      */

@@ -5,7 +5,7 @@
 class Kensho{
   /**
    *
-   * 
+   *
    * @constructs Kensho
    * @param  {(String|HTMLElement)} formElement
    */
@@ -49,6 +49,11 @@ class Kensho{
     let _ = this._.get(this);
     _.inputs = {};
 
+    if(Kensho.config.get('HTML5novalidate'))
+      formElement.setAttribute('novalidate', '');
+    if(Kensho.config.get('autocomplete'))
+      formElement.setAttribute('autocomplete', 'off');
+
     formElement.classList.add('kensho-form');
 
     this.hook.action('init', {}, this);
@@ -69,7 +74,7 @@ class Kensho{
    *
    * @method  Kensho#add
    * @version 0.0.1
-   * 
+   *
    * @param {(String|HTMLElement|HTMLElement[])} inputElement form input HTML element or its CSS selector string.
    * @param {(String|HTMLElement)}               errorElement wrapper element of output error message or its CSS selector string.
    * @param {object}                             rule         the key is rule name. The value is error message.
@@ -118,11 +123,6 @@ class Kensho{
     }
     rule = _rule;
 
-    // console.dir(inputElement);
-    if(!Kensho.config.get('HTML5validate')){
-      inputElement.setAttribute('novalidate', '');
-    };
-
     let unit = {
       name         : name,
       inputElement : inputElement,
@@ -166,7 +166,7 @@ class Kensho{
   }
   /**
    *
-   * 
+   *
    *
    * @method Kensho#hasError
    *
@@ -186,9 +186,9 @@ class Kensho{
   /**
    *
    *
-   * 
+   *
    * @method Kensho#allValidate
-   * 
+   *
    * @return {void}
    */
   allValidate(){
@@ -199,11 +199,11 @@ class Kensho{
   }
   /**
    *
-   * 
-   * 
+   *
+   *
    * @method  Kensho#validate
    * @version 0.0.1
-   * 
+   *
    * @param  {String} name       -
    * @return {kensho} instance
    */
@@ -223,10 +223,11 @@ class Kensho{
     if(unit.type === 'textarea'){
       // console.log();
     }
-    
+
     unit.errorElement.innerHTML = '';
     unit.errorElement.classList.remove(errorClassName);
     unit.error                  = [];
+    if(Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
 
     value = this.hook.filter('pre-validate-value', value, this);
 
@@ -243,20 +244,18 @@ class Kensho{
       unit.errorElement.classList.add(errorClassName);
       unit.errorElement.innerHTML = unit.error.join('\n');
 
-      unit.inputElement.setCustomValidity(false);
-      unit.inputElement.checkValidity();
+      if(Kensho.config.get('validationPseudoClass'))
+        unit.inputElement.setCustomValidity('error');
     }else{
-      unit.inputElement.setCustomValidity('');
-      unit.inputElement.checkValidity();
     }
     return this;
   }
   /**
    * validate
-   * 
+   *
    * @method  Kensho.validate
    * @version 0.0.1
-   * 
+   *
    * @param  {String} name       validation rule name.
    * @param  {*}      value      input value.
    * @param  {Object} [param={}] in order to pass to a rule function.
