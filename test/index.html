@@ -144,7 +144,6 @@
       },
       ['init', 'blur', 'keyup']
     )
-
     // PASSWORD
     kensho.add(
       '#my-form input[name=pwd]',
@@ -154,8 +153,7 @@
       },
       ['blur', 'keyup']
     )
-
-    // PASSWORD
+    // SEARCH
     kensho.add(
       '#my-form input[name=search]',
       '#my-form .err.search',
@@ -163,10 +161,10 @@
         'required' : 'this is required!',
         'halfsize' : 'text is half-size only'
       },
-      ['change']
+      ['keyup']
     )
 
-    console.log(Kensho.validate('range', 'よこた', {min : 6}));
+    // console.log(Kensho.validate('range', 'よこた', {min : 6}));
     // console.log(Kensho.validate('range', 'よこたた', {max : 10, min : 4}));
     // console.log(Kensho.validate('whitelist', 'avc', {list : ['avc']}));
   </script>

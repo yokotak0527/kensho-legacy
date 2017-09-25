@@ -1,8 +1,11 @@
 (()=>{
   let _c = {};
-  _c.errorMessageWrapper = 'span';
-  _c.verbose             = true;
-  _c.errorClassName      = 'kensho-has-error';
+  _c.errorMessageWrapper   = 'span';
+  _c.verbose               = true;
+  _c.errorClassName        = 'kensho-has-error';
+  _c.autocomplete          = true;
+  _c.HTML5validate         = false; // please not change. not yet support.
+  _c.validationPseudoClass = true;
 
   /**
    * Kensho configuration.
