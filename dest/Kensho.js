@@ -128,6 +128,11 @@ var Kensho = function () {
     }
     rule = _rule;
 
+    // console.dir(inputElement);
+    if (!Kensho.config.get('HTML5validate')) {
+      inputElement.setAttribute('novalidate', '');
+    };
+
     var unit = {
       name: name,
       inputElement: inputElement,
@@ -255,6 +260,12 @@ var Kensho = function () {
     if (unit.error.length) {
       unit.errorElement.classList.add(errorClassName);
       unit.errorElement.innerHTML = unit.error.join('\n');
+
+      unit.inputElement.setCustomValidity(false);
+      unit.inputElement.checkValidity();
+    } else {
+      unit.inputElement.setCustomValidity('');
+      unit.inputElement.checkValidity();
     }
     return this;
   };
@@ -292,6 +303,9 @@ var Kensho = function () {
   _c.errorMessageWrapper = 'span';
   _c.verbose = true;
   _c.errorClassName = 'kensho-has-error';
+  _c.autocomplete = true;
+  _c.HTML5validate = false; // please not change. not yet support.
+  _c.validationPseudoClass = true;
 
   /**
    * Kensho configuration.
@@ -898,4 +912,4 @@ if (typeof process !== "undefined" && typeof require !== "undefined") {
 else {
     window.Kensho = Kensho;
   }
-//# sourceMappingURL=Kensho.js.map
+//# sourceMappingURL=kensho.js.map

@@ -118,6 +118,11 @@ class Kensho{
     }
     rule = _rule;
 
+    // console.dir(inputElement);
+    if(!Kensho.config.get('HTML5validate')){
+      inputElement.setAttribute('novalidate', '');
+    };
+
     let unit = {
       name         : name,
       inputElement : inputElement,
@@ -237,6 +242,12 @@ class Kensho{
     if(unit.error.length){
       unit.errorElement.classList.add(errorClassName);
       unit.errorElement.innerHTML = unit.error.join('\n');
+
+      unit.inputElement.setCustomValidity(false);
+      unit.inputElement.checkValidity();
+    }else{
+      unit.inputElement.setCustomValidity('');
+      unit.inputElement.checkValidity();
     }
     return this;
   }
