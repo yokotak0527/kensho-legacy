@@ -137,6 +137,21 @@
         <p class="err url"></p>
       </div>
     </div>
+    <div class="unit">
+      <h1>MATCH</h1>
+      <ul class="rule">
+        <li>required</li>
+      </ul>
+      <ul class="event">
+        <li>blur</li>
+        <li>keyup</li>
+      </ul>
+      <div>
+        <input type="text" name="match1">
+        <input type="text" name="match2">
+        <p class="err match"></p>
+      </div>
+    </div>
     <input type="submit" id="submit">
   </form>
   <script>
@@ -200,6 +215,17 @@
         email : 'invalid email-address'
       },
       'blur'
+    )
+    .add(
+      '#my-form input[name=match2]',
+      '#my-form .err.match',
+      {
+        match : {
+          errorMessage : 'no match',
+          param        : '#my-form input[name=match1]'
+        }
+      },
+      'blur|keyup'
     );
   </script>
 </body>

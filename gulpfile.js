@@ -48,6 +48,7 @@ conf.concat[`${packageParam.name}.js`] = [
   'asset/rule/_blacklist.js',
   'asset/rule/_whitelist.js',
   'asset/rule/_range.js',
+  'asset/rule/_match.js',
 
   'asset/plugin/_full2half.js',
   'asset/plugin/_is-n-byte.js',
