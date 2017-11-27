@@ -140,7 +140,7 @@
     <div class="unit">
       <h1>MATCH</h1>
       <ul class="rule">
-        <li>required</li>
+        <li>match</li>
       </ul>
       <ul class="event">
         <li>blur</li>
@@ -150,6 +150,16 @@
         <input type="text" name="match1">
         <input type="text" name="match2">
         <p class="err match"></p>
+      </div>
+    </div>
+    <div class="unit">
+      <h1>CHECK BOX</h1>
+      <ul class="rule">
+        <li>required</li>
+      </ul>
+      <div>
+        <input type="checkbox" name="myCheckbox">
+        <p class="err checkbox"></p>
       </div>
     </div>
     <input type="submit" id="submit">
@@ -216,6 +226,7 @@
       },
       'blur'
     )
+    // MATCH
     .add(
       '#my-form input[name=match2]',
       '#my-form .err.match',
@@ -226,6 +237,15 @@
         }
       },
       'blur|keyup'
+    )
+    // CHECKBOX
+    .add(
+      '#my-form input[name=myCheckbox]',
+      '#my-form .err.checkbox',
+      {
+        required : 'required'
+      },
+      'init'
     );
   </script>
 </body>

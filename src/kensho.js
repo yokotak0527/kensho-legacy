@@ -231,7 +231,7 @@ class Kensho{
    * @method  Kensho#validate
    * @version 0.0.1
    *
-   * @param  {String} name       -
+   * @param  {String} name       - name属性
    * @return {kensho} instance
    */
   validate(name){
@@ -247,6 +247,7 @@ class Kensho{
     }else{
       value = this.formElement[unit.name] ? this.formElement[unit.name] : value;
     }
+    // console.log(value);
     if(unit.type === 'textarea'){
       // console.log();
     }
@@ -629,9 +630,17 @@ class Kensho{
   Kensho.rule.add('required', function(val, param = {}){
     let trimFlg = param.trim === true ? true : false;
 
-    if(trimFlg) val = val.trim();
+    if ( val instanceof HTMLElement ) {
+      let tagName = val.tagName.toLowerCase();
+      // checkbox support
+      if( tagName === 'input' && val.getAttribute('type') === 'checkbox' ){
+        return val.checked;
+      }
+    } else {
+        if(trimFlg) val = val.trim();
 
-    return val ? true : false;
+        return val ? true : false;
+    }
   });
 
 })();

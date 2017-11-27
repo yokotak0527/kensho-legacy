@@ -248,7 +248,7 @@ var Kensho = function () {
    * @method  Kensho#validate
    * @version 0.0.1
    *
-   * @param  {String} name       -
+   * @param  {String} name       - name属性
    * @return {kensho} instance
    */
 
@@ -266,6 +266,7 @@ var Kensho = function () {
     } else {
       value = this.formElement[unit.name] ? this.formElement[unit.name] : value;
     }
+    // console.log(value);
     if (unit.type === 'textarea') {
       // console.log();
     }
@@ -689,9 +690,17 @@ var Kensho = function () {
 
     var trimFlg = param.trim === true ? true : false;
 
-    if (trimFlg) val = val.trim();
+    if (val instanceof HTMLElement) {
+      var tagName = val.tagName.toLowerCase();
+      // checkbox support
+      if (tagName === 'input' && val.getAttribute('type') === 'checkbox') {
+        return val.checked;
+      }
+    } else {
+      if (trimFlg) val = val.trim();
 
-    return val ? true : false;
+      return val ? true : false;
+    }
   });
 })();
 

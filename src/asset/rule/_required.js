@@ -9,9 +9,17 @@
   Kensho.rule.add('required', function(val, param = {}){
     let trimFlg = param.trim === true ? true : false;
 
-    if(trimFlg) val = val.trim();
+    if ( val instanceof HTMLElement ) {
+      let tagName = val.tagName.toLowerCase();
+      // checkbox support
+      if( tagName === 'input' && val.getAttribute('type') === 'checkbox' ){
+        return val.checked;
+      }
+    } else {
+        if(trimFlg) val = val.trim();
 
-    return val ? true : false;
+        return val ? true : false;
+    }
   });
 
 })();
