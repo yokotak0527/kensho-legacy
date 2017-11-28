@@ -870,13 +870,16 @@ var Kensho = function () {
    * @param {Number}   [param.min]
    * @param {Number}   [param.max]
    * @param {Boolean}  [param.trim=true]
+   * @param {Boolean}  [param.undefinedThrough=false]
    */
   rule.add('range', function (val) {
     var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     var result = true;
     var trimFlg = param.trim === true ? true : false;
+    var undefinedThrough = param.undefinedThrough === true ? true : false;
     if (trimFlg) val = val.trim();
+    if (undefinedThrough && val.length === 0) return true;
 
     if (param.min === undefined && param.max === undefined) return result;
 
