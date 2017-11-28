@@ -136,6 +136,9 @@ var Kensho = function () {
       case 'url':
         type = 'text';
         break;
+      case 'number':
+        type = 'text';
+        break;
     }
 
     if (type !== 'radio') inputElement = inputElement[0];
