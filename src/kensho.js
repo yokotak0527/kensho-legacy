@@ -6,12 +6,6 @@
 let Kensho = (()=>{
 
     let initialized = false;
-    let initialize = function(){
-        if(initialized) return false;
-        initialized = true;
-
-        console.log(this);
-    }
 
     // =========================================================================
     class Kensho{
@@ -21,7 +15,6 @@ let Kensho = (()=>{
         constructor( formElement ) {
             if(Kensho.instanceList === undefined){
                 Kensho.instanceList = [this];
-                initialize.call(this);
             }else{
                 Kensho.instanceList.push( this );
             }
@@ -51,223 +44,245 @@ let Kensho = (()=>{
          * @memberof Kensho
          * @instance
          *
-         * @arg {(string|HTMLElement|HTMLElement[])} inputElement form input HTML element or its CSS selector string.
-         * @arg {(string|HTMLElement)}               errorElement wrapper element of output error message or its CSS selector string.
-         * @arg {Object}                             rule         the key is rule name. The value is error message.
-         * @arg {string|string[]}                    [event=['']] trigger events.
+         * @arg {(string|HTMLElement|HTMLElement[])} inputElement - form input HTML element or its CSS selector string.
+         * @arg {(string|HTMLElement)}               errorElement - wrapper element of output error message or its CSS selector string.
+         * @arg {Object}                             rule         - the key is rule name. The value is error message.
+         * @arg {string|string[]}                    [event=['']] - trigger events.
          *
-         * @return {kensho}                                         instance
+         * @return {this}
          */
-         add(inputElement, errorElement, rule, event = ['']){
+        add(inputElement, errorElement, rule, event = ['']){
             // for example, name attribute of radio buttons are seted same value.
             // querySelector return matched first HTML element and 2nd and subsequent matched element is ignored.
             // so, InputElement not use querySelector but use querySelectorAll.
             // as a result of it, inputElement type is a array.
-            inputElement = typeof inputElement === 'string' ? document.querySelectorAll(inputElement) : Array.isArray(inputElement) ? inputElement : [inputElement];
-            errorElement = typeof errorElement === 'string' ? document.querySelector(errorElement) : errorElement;
+            if( typeof inputElement === 'string' ){
+                inputElement = this.formElement.querySelectorAll(inputElement);
+                inputElement = Array.prototype.map.call(inputElement, v => v );
+            }else if( Array.isArray(inputElement) ){
+                let arr = [];
+                inputElement.forEach( val => {
+                    val = typeof val === 'string' ? this.formElement.querySelectorAll(val) : val;
+                    val = Array.prototype.map.call(val, v => v );
+                    val.forEach( v => { arr.push(v) });
+                });
+                inputElement = arr;
+            }else{
+                inputElement = Array.prototype.map.call(inputElement, v => v );
+            }
+            
+            errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement)    : errorElement;
             event        = typeof event        === 'string' ? event.split('|') : event;
 
-            let name    = inputElement[0].getAttribute('name');
-            let tagName = inputElement[0].tagName.toLowerCase();
-            let type    = null;
+
+            let name    = inputElement[0].getAttribute('name');  // input name attr.
+            let tagName = inputElement[0].tagName.toLowerCase(); // tag name
+            let type    = null;                                  // Input type based on Kensho's own sorting rule
             if(tagName === 'input') type = inputElement[0].getAttribute('type');
             else type = tagName;
 
             // the following types are handled as text type
             switch(type){
-              case 'password' :
-                type = 'text';
-                break;
-              case 'search' :
-                type = 'text';
-                break;
-              case 'tel' :
-                type = 'text';
-                break;
-              case 'email' :
-                type = 'text';
-                break;
-              case 'url' :
-                type = 'text';
-                break;
-              case 'number' :
-                type = 'text';
-                break;
+                case 'password' :
+                    type = 'text';
+                    break;
+                case 'search' :
+                    type = 'text';
+                    break;
+                case 'tel' :
+                    type = 'text';
+                    break;
+                case 'email' :
+                    type = 'text';
+                    break;
+                case 'url' :
+                    type = 'text';
+                    break;
+                case 'number' :
+                    type = 'text';
+                    break;
             }
 
-        if(type !== 'radio') inputElement = inputElement[0];
-
-        let _rule = {};
-        for(let key in rule){
-          if(typeof rule[key] === 'string'){
-            _rule[key] = {
-              param        : {},
-              errorMessage : rule[key]
-            };
-          }else{
-            _rule[key] = rule[key];
-          }
-        }
-        rule = _rule;
-
-        let unit = {
-          name         : name,
-          inputElement : inputElement,
-          errorElement : errorElement,
-          inputTagName : tagName,
-          type         : type,
-          rule         : rule,
-          error        : []
-        }
-
-        unit = this.hook.filter('validate-filed', unit, this);
-        _.inputs[name] = unit;
-
-        // Add event handler
-        event.forEach((name, i)=>{
-          if(name === 'init'){
-            if(unit.type === 'radio'){
-              unit.inputElement.forEach((input, i)=>{
-                this.validate(unit.name);
-              });
-            }else{
-              this.validate(unit.name);
+            // rule data formatting.
+            let _rule = {};
+            for(let key in rule){
+                if(typeof rule[key] === 'string'){
+                    _rule[key] = {
+                        param        : {},
+                        errorMessage : rule[key]
+                    };
+                }else{
+                    _rule[key] = rule[key];
+                }
             }
-          }else{
-            if(unit.type === 'radio'){
-              unit.inputElement.forEach((input, i)=>{
-                input.addEventListener(name, ()=>{
-                  this.validate(unit.name);
-                });
-              });
-            }else{
-              unit.inputElement.addEventListener(name, ()=>{
-                this.validate(unit.name);
-              });
+            rule = _rule;
+
+            // set data
+            let unit = {
+                name         : name,
+                inputElement : inputElement,
+                errorElement : errorElement,
+                inputTagName : tagName,
+                type         : type,
+                rule         : rule,
+                error        : []
             }
-          }
-        });
 
-        // console.log(inputElement.getAttribute('type'));
-        if(inputElement.getAttribute('type') === 'email'){
-          inputElement.addEventListener('change', function(e){
-            // e.preventDefault();
-            console.log(e);
-          });
+            unit = this.hook.filter('validate-filed', unit);
+
+            this.inputs[name] = unit;
+
+            // Add event handler
+            event.forEach((name, i)=>{
+                if(name === 'init'){
+                    this.validate(unit.name);
+                }else{
+                    unit.inputElement.forEach((elm)=>{
+                        elm.addEventListener(name, ()=>{
+                            this.validate(unit.name);
+                        });
+                    });
+                }
+            });
+
+            this.hook.action('set-validate-field', {unit : unit});
+            return this;
         }
-
-        this.hook.action('set-validate-field', {unit : unit}, this);
-        return this;
-      }
-      /**
-       *
-       *
-       *
-       * @method Kensho#hasError
-       *
-       * @return {Boolean}
-       */
-      hasError(){
+        /**
+         * Return bool value that form has invalid data whether or hasn't.
+         * 
+         * @version 0.0.1
+         * @memberof Kensho
+         * @instance
+         *
+         * @return {boolean}
+         */
+        hasError(){
         let _      = this._.get(this);
         let result = false;
         for(let key in _.inputs){
-          if(_.inputs[key].error.length !== 0){
-            result = true;
-            break;
-          }
+        if(_.inputs[key].error.length !== 0){
+        result = true;
+        break;
+        }
         }
         return result;
-      }
-      /**
-       *
-       *
-       *
-       * @method Kensho#allValidate
-       *
-       * @return {void}
-       */
-      allValidate(){
-        let _ = this._.get(this);
-        Object.keys(_.inputs).map((key, i)=>{
-          this.validate(key);
-        });
-      }
-      /**
-       *
-       *
-       *
-       * @method  Kensho#validate
-       * @version 0.0.1
-       *
-       * @param  {String} name       - name属性
-       * @return {kensho} instance
-       */
-      validate(name){
-        let _              = this._.get(this);
-        let unit           = _.inputs[name];
-        let applyRules     = unit.rule;
-        let verbose        = Kensho.config.get('verbose');
-        let wrapTag        = Kensho.config.get('errorMessageWrapper');
-        let errorClassName = Kensho.config.get('errorClassName');
+        }
+        /**
+         *
+         * @version 0.0.1
+         * @memberof Kensho
+         *
+         * @return {void}
+         */
+        allValidate(){
+            let _ = this._.get(this);
+            Object.keys(_.inputs).map((key, i)=>{
+                this.validate(key);
+            });
+        }
+        /**
+         *
+         * @version 0.0.1
+         * @memberof Kensho
+         *
+         * @param  {string} name - name属性
+         * @return {kensho}
+         */
+        validate(name){
+            let unit           = this.inputs[name];
+            let inputElement   = unit.inputElement;
+            let applyRules     = unit.rule;
+            let verbose        = Kensho.config.get('verbose');
+            let wrapTag        = Kensho.config.get('errorMessageWrapper');
+            let errorClassName = Kensho.config.get('errorClassName');
 
-        if(unit.type === 'text'){
-          value = unit.inputElement.value;
-        }else{
-          value = this.formElement[unit.name] ? this.formElement[unit.name] : value;
-        }
-        // console.log(value);
-        if(unit.type === 'textarea'){
-          // console.log();
-        }
+            for(let ruleName in applyRules){
 
-        unit.errorElement.innerHTML = '';
-        unit.errorElement.classList.remove(errorClassName);
-        unit.error                  = [];
-        // if(Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
-        unit.inputElement.classList.remove('invalid');
-        unit.inputElement.classList.remove('valid');
+                // validate
+                let values    = [];
+                let ruleParam = applyRules[ruleName]['param'];
+                inputElement.filter( elm => {
+                    if( unit.type === 'radio' ){
+                        values.push(elm.checked);
+                    }else if( unit.type === 'checkbox' ){
+                        values.push(elm.checked);
+                    }else{
+                        values.push(elm.value);
+                    }
+                });
+                Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
 
-        value = this.hook.filter('pre-validate-value', value, this);
+                
+                // for(let i = 0, l = inputElement.length; i < l; i++){
+                // 
+                //     // let val = 
+                //     // console.log(inputElement[i].checked);
+                // }
+                
+                // console.log(inputElement);
+                // console.log(applyRules[key]);
+            }
 
-        for(let key in applyRules){
-          let result = Kensho.validate.call(this, key, value, applyRules[key].param);
-          if(!result){
-            let message = document.createTextNode(applyRules[key].errorMessage).nodeValue;
-            message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
-            unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
-            if(!verbose) break;
-          }
+            // if(unit.type === 'text'){
+            //     value = unit.inputElement.value;
+            // }else{
+            //     value = this.formElement[unit.name] ? this.formElement[unit.name] : value;
+            // }
+            // // console.log(value);
+            // if(unit.type === 'textarea'){
+            //     // console.log();
+            // }
+            // 
+            // unit.errorElement.innerHTML = '';
+            // unit.errorElement.classList.remove(errorClassName);
+            // unit.error                  = [];
+            // // if(Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
+            // unit.inputElement.classList.remove('invalid');
+            // unit.inputElement.classList.remove('valid');
+            // 
+            // value = this.hook.filter('pre-validate-value', value, this);
+            // 
+            // for(let key in applyRules){
+            //     let result = Kensho.validate.call(this, key, value, applyRules[key].param);
+            //     if(!result){
+            //         let message = document.createTextNode(applyRules[key].errorMessage).nodeValue;
+            //         message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
+            //         unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
+            //         if(!verbose) break;
+            //     }
+            // }
+            // if(unit.error.length){
+            //     unit.errorElement.classList.add(errorClassName);
+            //     unit.errorElement.innerHTML = unit.error.join('\n');
+            //     unit.inputElement.classList.add('invalid');
+            // }else{
+            //     unit.inputElement.classList.add('valid');
+            // }
+            // return this;
         }
-        if(unit.error.length){
-          unit.errorElement.classList.add(errorClassName);
-          unit.errorElement.innerHTML = unit.error.join('\n');
-          unit.inputElement.classList.add('invalid');
-        }else{
-          unit.inputElement.classList.add('valid');
+        /**
+         * static validation.
+         *
+         * @version 0.0.1
+         * @memberof Kensho
+         *
+         * @param  {string} name       - validation rule name.
+         * @param  {any}    value      - input values.
+         * @param  {Object} [param={}] - in order to pass to a rule function.
+         * 
+         * @return {boolean}
+         */
+        static validate(name, value, param = {}){
+            let rule = this.rule.get(name);
+            let result = true;
+            for(let i = 0, l = rule.dependency.length; i < l; i++){
+                result = Kensho.rule.get(rule.dependency[i]).check(value, param);
+                if(!result) break;
+            }
+            if(result) result = rule.check(value, param);
+            return result;
         }
-        return this;
-      }
-      /**
-       * validate
-       *
-       * @method  Kensho.validate
-       * @version 0.0.1
-       *
-       * @param  {String} name       validation rule name.
-       * @param  {*}      value      input value.
-       * @param  {Object} [param={}] in order to pass to a rule function.
-       * @return {Boolean}           value is valid or invalid
-       */
-      static validate(name, value, param = {}){
-        let rule   = this.rule.get(name);
-        let result = true;
-        for(let i = 0, l = rule.dependency.length; i < l; i++){
-          result = Kensho.rule.get(rule.dependency[i]).check(value, param);
-          if(!result) break;
-        }
-        if(result) result = rule.check(value, param);
-        return result;
-      }
     }
     return Kensho;
 })();
@@ -509,210 +524,268 @@ let Kensho = (()=>{
      * @namespace Kensho.plugin
      */
     let plugin = Object.create(null);
-    let _list  = {};
+    let list   = {};
     /**
-     * Add plugins.
-     *
+     * Add plugins.<br>
+     * You have to call before the Kensho be created a instance.
+     * 
      * @method  Kensho.plugin.add
-     * @version 0.0.1
-     *
-     * @param  {string}   name       A plugin name.
-     * @param  {Function} callback   A plugin initialize function.
-     * @param  {Object}   [param={}] Paramerters in order to pass to the initialize function.
-     * @return {void}
+     * @version 1.0.0
+     * 
+     * @arg {string}   name       - A plugin name.
+     * @arg {Function} func       - A plugin function.
+     * @arg {Object}   [param={}] - 
+     * 
+     * @return {this}
      */
-    plugin.add = function(name, callback, param = {}){
-//     if(Kensho.isInitialize()){
-//       console.error(`plug-in is must be added before create instance.`);
-//       return false;
-//     }
-//     Kensho.plugin[name] = callback;
-//     // _list[name] = {
-//     //   param    : param,
-//     //   callback : callback
-//     // };
+    plugin.add = function(name, func, param = {}){
+        list[name] = {
+            'name'  : name,
+            'func'  : func,
+            'param' : param
+        };
+        return this;
     }
-    // plugin._list = _list;
+    /**
+     * remove plugins.
+     * 
+     * @method  Kensho.plugin.remove
+     * @version 1.0.0
+     * 
+     * @arg {string} name - A plugin name.
+     * 
+     * @return {this}
+     */
+    plugin.remove = function(name){
+        delete list[name];
+        return this;
+    }
+    /**
+     * get plugin function.
+     * 
+     * @method  Kensho.plugin.get
+     * @version 1.0.0
+     * 
+     * @arg    {string} name - 
+     * @return {any}         - 
+     */
+    plugin.get = function(name){
+        return list[name];
+    }
 
     Kensho.plugin = plugin;
 })();
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}  val
-//    * @param {Object}  [param={}]
-//    * @param {Boolean} [param.trim=false]
-//    */
-//   Kensho.rule.add('required', function(val, param = {}){
-//     let trimFlg = param.trim === true ? true : false;
-//
-//     if ( val instanceof HTMLElement ) {
-//       let tagName = val.tagName.toLowerCase();
-//       // checkbox support
-//       if( tagName === 'input' && val.getAttribute('type') === 'checkbox' ){
-//         return val.checked;
-//       }
-//     } else {
-//         if(trimFlg) val = val.trim();
-//
-//         return val ? true : false;
-//     }
-//   });
-//
-// })();
+(()=>{
+    let rule  = Kensho.rule;
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String} val
-//    * @param {Object} [param={}]
-//    */
-//   rule.add('fullsize', function(val, param = {}){
-//     let result = true;
-//
-//     for(let i = 0, l = val.length; i < l; i++){
-//       if(!Kensho.plugin.is2byte(val[i])){
-//         result = false;
-//         break;
-//       };
-//     }
-//     return result;
-//   });
-//
-// })();
+    /**
+     * @arg {any}     val                - 
+     * @arg {Object}  [param={}]         - 
+     * @arg {boolean} [param.trim=false] - 
+     * @arg {string}  [type='']          - input type based on Kensho's own sorting rule
+     */
+    Kensho.rule.add('required', function(val, param = {}, type = ''){
+        let trimFlg = param.trim === true ? true : false;
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String} val
-//    * @param {Object} [param={}]
-//    */
-//   rule.add('halfsize', function(val, param = {}){
-//     let result = true;
-//
-//     for(let i = 0, l = val.length; i < l; i++){
-//       if(!Kensho.plugin.is1byte(val[i])){
-//         result = false;
-//         break;
-//       };
-//     }
-//     return result;
-//   });
-//
-// })();
+        let result;
+        if(type === 'radio' || type === 'checkbox'){
+            result = false;
+            if( Array.isArray(val) ){
+                for(let i = 0, l = val.length; i < l; i++){
+                    if(val[i]){
+                        result = true;
+                        break;
+                    }
+                }
+            }else{
+                
+            }
+        } else {
+            if( Array.isArray(val) ){
+                for(let i = 0, l = val.length; i < l; i++){
+                    let v = val[i];
+                    if(trimFlg) v = v.trim();
+                    if(!v){
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
+        console.log(result);
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}  val
-//    * @param {Object}  [param={}]
-//    * @param {Boolean} [param.allow2byte=false]
-//    * @param {Boolean} [param.trim=false]
-//    */
-//   rule.add('number', function(val, param = {}){
-//     let allow2byteFlg = param.allow2byte === true ? true : false;
-//     let trimFlg       = param.trim       === true ? true : false;
-//
-//     if(allow2byteFlg) val = Kensho.plugin.full2half(val);
-//     if(trimFlg) val = val.trim();
-//
-//     if(!/^[0-9]*$/.test(val)) return false;
-//     return true;
-//   });
-//
-// })();
+        // if ( val instanceof HTMLElement ) {
+        //     let tagName = val.tagName.toLowerCase();
+        //     // checkbox support
+        //     if( tagName === 'input' && val.getAttribute('type') === 'checkbox' ){
+        //         return val.checked;
+        //     }
+        // } else {
+        //     if(trimFlg) val = val.trim();
+        //     return val ? true : false;
+        // }
+    });
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}  val
-//    * @param {Object}  [param={}]
-//    * @param {Boolean} [param.allow2byte=false]
-//    * @param {Number}  [param.maxAge=125]
-//    * @param {Boolean} [param.trim=false]
-//    */
-//   rule.add('age', function(val, param = {}){
-//     let maxAge        = param.maxAage             ? param.maxAage : 125;
-//     let allow2byteFlg = param.allow2byte === true ? true : false;
-//     let trimFlg       = param.trim       === true ? true : false;
-//
-//     if(allow2byteFlg) val = Kensho.plugin.full2half(val);
-//     if(trimFlg) val = val.trim();
-//
-//     if(!/^[0-9]{1,3}$/.test(val)) return false;          // ex. a1,1234, -5
-//     if(val.length !== 1 && /^0/.test(val)) return false; // first number is 0
-//     if(val > maxAge) return false;                       // limit
-//     return true;
-//   }, ['number']);
-//
-// })();
+})();
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String} val
-//    * @param {Object} [param={}]
-//    */
-//   rule.add('email', function(val, param = {}){
-//     // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
-//     let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-//     return re.test(val);
-//   }, ['halfsize']);
-//
-// })();
+(()=>{
+    let rule  = Kensho.rule;
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}   val
-//    * @param {Object}   param
-//    * @param {String[]} param.list
-//    */
-//   rule.add('blacklist', function(val, param){
-//     let result = true;
-//     if(!param.list) return result;
-//
-//     for(let i = 0, l = param.list.length; i < l; i++){
-//       if(val === param.list[i]){
-//         result = false;
-//         break;
-//       }
-//     }
-//     return result;
-//   });
-//
-// })();
+    /**
+     * @param {String} val
+     * @param {Object} [param={}]
+     */
+    rule.add('fullsize', function(val, param = {}){
+        let result  = true;
+        let is2byte = Kensho.plugin.get('is2byte');
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}   val
-//    * @param {Object}   param
-//    * @param {String[]} param.list
-//    */
-//   rule.add('whitelist', function(val, param){
-//     let result = false;
-//     if(!param.list) return result;
-//
-//     for(let i = 0, l = param.list.length; i < l; i++){
-//       if(val === param.list[i]){
-//         result = true;
-//         break;
-//       }
-//     }
-//     return result;
-//   });
-//
-// })();
+        for(let i = 0, l = val.length; i < l; i++){
+            if(!is2byte.func(val[i])){
+                result = false;
+                break;
+            };
+        }
+        return result;
+    });
+
+})();
+
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @param {String} val
+     * @param {Object} [param={}]
+     */
+    rule.add('halfsize', function(val, param = {}){
+        let result  = true;
+        let is1byte = Kensho.plugin.get('is1byte');
+
+        for(let i = 0, l = val.length; i < l; i++){
+            if(!is1byte.func(val[i])){
+                result = false;
+                break;
+            };
+        }
+        return result;
+    });
+
+})();
+
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @arg {string}  val                      - 
+     * @arg {Object}  [param={}]               -
+     * @arg {boolean} [param.allow2byte=false] -
+     * @arg {boolean} [param.trim=false]       -
+     *
+     * @return {boolean}
+     */
+    rule.add('number', function(val, param = {}){
+        let allow2byteFlg = param.allow2byte === true ? true : false;
+        let trimFlg       = param.trim       === true ? true : false;
+        let full2half = Kensho.plugin.get('full2half');
+
+        if(allow2byteFlg) val = full2half.func(val);
+        if(trimFlg) val = val.trim();
+
+        if(!/^[0-9]*$/.test(val)) return false;
+        return true;
+    });
+
+})();
+
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @param {string}  val
+     * @param {Object}  [param={}]
+     * @param {boolean} [param.allow2byte=false]
+     * @param {number}  [param.maxAge=125]
+     * @param {boolean} [param.trim=false]
+     */
+    rule.add('age', function(val, param = {}){
+        let maxAge        = param.maxAage             ? param.maxAage : 125;
+        let allow2byteFlg = param.allow2byte === true ? true : false;
+        let trimFlg       = param.trim       === true ? true : false;
+        let full2half     = Kensho.plugin.get('full2half');
+
+        if(allow2byteFlg) val = full2half.func(val);
+        if(trimFlg) val = val.trim();
+
+        if(!/^[0-9]{1,3}$/.test(val)) return false;          // ex. a1,1234, -5
+        if(val.length !== 1 && /^0/.test(val)) return false; // first number is 0
+        if(val > maxAge) return false;                       // limit
+        return true;
+    }, ['number']);
+
+})();
+
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @param {string} val
+     * @param {Object} [param={}]
+     */
+    rule.add('email', function(val, param = {}){
+        // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
+        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(val);
+    }, ['halfsize']);
+})();
+
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @param {String}   val
+     * @param {Object}   param
+     * @param {String[]} param.list
+     */
+    rule.add('blacklist', function(val, param){
+        let result = true;
+        if(!param.list) return result;
+
+        for(let i = 0, l = param.list.length; i < l; i++){
+            let reg = new RegExp(param.list[i]);
+            if(reg.test(val)){
+                result = false;
+                break;
+            }
+        }
+        return result;
+    });
+
+})();
+
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @param {string}   val
+     * @param {Object}   param
+     * @param {string[]} param.list
+     */
+    rule.add('whitelist', function(val, param){
+        let result = false;
+        if(!param.list) return result;
+
+        for(let i = 0, l = param.list.length; i < l; i++){
+            let reg = new RegExp(param.list[i]);
+            if(reg.test(val)){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    });
+
+})();
 
 // (()=>{
 //   let rule  = Kensho.rule;
@@ -748,79 +821,77 @@ let Kensho = (()=>{
 //
 // })();
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}       val
-//    * @param {String|HTML}  param
-//    */
-//   rule.add('match', function(val, param){
-//     param = typeof param === 'string' ? document.querySelector(param) : param;
-//     return param.value === val;
-//   });
-//
-// })();
+(()=>{
+    let rule  = Kensho.rule;
 
-// (()=>{
-//     let maps = {};
-//     maps = Object.assign(maps, {
-//         '０' : '0', '１' : '1', '２' : '2', '３' : '3', '４' : '4',
-//         '５' : '5', '６' : '6', '７' : '7', '８' : '8', '９' : '9'
-//     });
-//     maps = Object.assign(maps, {
-//         'ａ' : 'a', 'ｂ' : 'b', 'ｃ' : 'c', 'ｄ' : 'd', 'ｅ' : 'e',
-//         'ｆ' : 'f', 'ｇ' : 'g', 'ｈ' : 'h', 'ｉ' : 'i', 'ｊ' : 'j',
-//         'ｋ' : 'k', 'ｌ' : 'l', 'ｍ' : 'm', 'ｎ' : 'n', 'ｏ' : 'o',
-//         'ｐ' : 'p', 'ｑ' : 'q', 'ｒ' : 'r', 'ｓ' : 's', 'ｔ' : 't',
-//         'ｕ' : 'u', 'ｖ' : 'v', 'ｗ' : 'w', 'ｘ' : 'x', 'ｙ' : 'y',
-//         'ｚ' : 'z'
-//     });
-//     maps = Object.assign(maps, {
-//         'Ａ' : 'A', 'Ｂ' : 'B', 'Ｃ' : 'C', 'Ｄ' : 'D', 'Ｅ' : 'E',
-//         'Ｆ' : 'F', 'Ｇ' : 'G', 'Ｈ' : 'H', 'Ｉ' : 'I', 'Ｊ' : 'J',
-//         'Ｋ' : 'K', 'Ｌ' : 'L', 'Ｍ' : 'M', 'Ｎ' : 'N', 'Ｏ' : 'O',
-//         'Ｐ' : 'P', 'Ｑ' : 'Q', 'Ｒ' : 'R', 'Ｓ' : 'S', 'Ｔ' : 'T',
-//         'Ｕ' : 'U', 'Ｖ' : 'V', 'Ｗ' : 'W', 'Ｘ' : 'X', 'Ｙ' : 'Y',
-//         'Ｚ' : 'Z'
-//     });
-//     maps = Object.assign(maps, {
-//         '－' : '-', '（' : '(', '）' : ')', '＿' : '_', '／' : '/',
-//         '＋' : '+', '：' : ':', '；' : ';', '］' : ']', '［' : '[',
-//         '＠' : '@', '！' : '!', '＜' : '<', '＞' : '>', '？' : '?',
-//         '｛' : '{', '｝' : '}', '＊' : '*', '”' : '"', '’' : "'",
-//         '〜' : '~', '＾' : '^', '￥' : '¥', '｜' : '|', '＆' : '&',
-//         '％' : '%', '＃' : '#', '＄' : '$', '　' : ' ', '＝' : '='
-//     });
-//     let full2half = function(val){
-//         let result = '';
-//         val.split('').forEach((s)=>{
-//             s = maps[s] ? maps[s] : s;
-//             result += s;
-//         });
-//         return result;
-//     }
-//     full2half.addMap = (userMap)=>{
-//         maps = Object.assign(maps, userMap);
-//     }
-//     Kensho.plugin.add('full2half', full2half);
-// })();
+    /**
+     * @param {String}      val
+     * @param {String|HTML} param
+     */
+    rule.add('match', function(val, param){
+        param = typeof param === 'string' ? document.querySelector(param) : param;
+        return param.value === val;
+    });
 
-// (()=>{
-//
-//   isNbyte = function(half){
-//     return function(val){
-//       let code = val.charCodeAt(0);
-//       let f    = (code >= 0x0 && code < 0x81) || (code == 0xf8f0) || (code >= 0xff61 && code < 0xffa0) || (code >= 0xf8f1 && code < 0xf8f4);
-//       return !(f ^ half);
-//     }
-//   }
-//
-//   Kensho.plugin.add('is1byte', isNbyte(true));
-//
-//   Kensho.plugin.add('is2byte', isNbyte(false));
-//
-// })();
+})();
+
+(()=>{
+    let maps = {};
+    maps = Object.assign(maps, {
+        '０' : '0', '１' : '1', '２' : '2', '３' : '3', '４' : '4',
+        '５' : '5', '６' : '6', '７' : '7', '８' : '8', '９' : '9'
+    });
+    maps = Object.assign(maps, {
+        'ａ' : 'a', 'ｂ' : 'b', 'ｃ' : 'c', 'ｄ' : 'd', 'ｅ' : 'e',
+        'ｆ' : 'f', 'ｇ' : 'g', 'ｈ' : 'h', 'ｉ' : 'i', 'ｊ' : 'j',
+        'ｋ' : 'k', 'ｌ' : 'l', 'ｍ' : 'm', 'ｎ' : 'n', 'ｏ' : 'o',
+        'ｐ' : 'p', 'ｑ' : 'q', 'ｒ' : 'r', 'ｓ' : 's', 'ｔ' : 't',
+        'ｕ' : 'u', 'ｖ' : 'v', 'ｗ' : 'w', 'ｘ' : 'x', 'ｙ' : 'y',
+        'ｚ' : 'z'
+    });
+    maps = Object.assign(maps, {
+        'Ａ' : 'A', 'Ｂ' : 'B', 'Ｃ' : 'C', 'Ｄ' : 'D', 'Ｅ' : 'E',
+        'Ｆ' : 'F', 'Ｇ' : 'G', 'Ｈ' : 'H', 'Ｉ' : 'I', 'Ｊ' : 'J',
+        'Ｋ' : 'K', 'Ｌ' : 'L', 'Ｍ' : 'M', 'Ｎ' : 'N', 'Ｏ' : 'O',
+        'Ｐ' : 'P', 'Ｑ' : 'Q', 'Ｒ' : 'R', 'Ｓ' : 'S', 'Ｔ' : 'T',
+        'Ｕ' : 'U', 'Ｖ' : 'V', 'Ｗ' : 'W', 'Ｘ' : 'X', 'Ｙ' : 'Y',
+        'Ｚ' : 'Z'
+    });
+    maps = Object.assign(maps, {
+        '－' : '-', '（' : '(', '）' : ')', '＿' : '_', '／' : '/',
+        '＋' : '+', '：' : ':', '；' : ';', '］' : ']', '［' : '[',
+        '＠' : '@', '！' : '!', '＜' : '<', '＞' : '>', '？' : '?',
+        '｛' : '{', '｝' : '}', '＊' : '*', '”' : '"', '’' : "'",
+        '〜' : '~', '＾' : '^', '￥' : '¥', '｜' : '|', '＆' : '&',
+        '％' : '%', '＃' : '#', '＄' : '$', '　' : ' ', '＝' : '='
+    });
+    let full2half = function(val){
+        let result = '';
+        val.split('').forEach((s)=>{
+            s = maps[s] ? maps[s] : s;
+            result += s;
+        });
+        return result;
+    }
+    full2half.addMap = (userMap)=>{
+        maps = Object.assign(maps, userMap);
+    }
+    Kensho.plugin.add('full2half', full2half);
+})();
+
+(()=>{
+
+    let isNbyte = function(half){
+        return function(val){
+            let code = val.charCodeAt(0);
+            let f    = (code >= 0x0 && code < 0x81) || (code == 0xf8f0) || (code >= 0xff61 && code < 0xffa0) || (code >= 0xf8f1 && code < 0xf8f4);
+            return !(f ^ half);
+        }
+    }
+    Kensho.plugin.add('is1byte', isNbyte(true));
+    Kensho.plugin.add('is2byte', isNbyte(false));
+
+})();
 
 // NodeJS
 if(typeof process !== "undefined" && typeof require !== "undefined"){

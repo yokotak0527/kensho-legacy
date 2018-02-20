@@ -51,6 +51,7 @@
   </style>
 </head>
 <body>
+    <input type="text" name="my-name">
     <form action="./index.html" novalidate id="my-form">
         <!-- TEXT -->
         <div class="unit">
@@ -64,25 +65,62 @@
                 <li>keyup</li>
             </ul>
             <div>
-                <input type="text" name="text" data-k-name="text">
-                <p class="err text" data-k-name="text--err"></p>
+                <input type="text" name="my-name">
+                <p class="err text"></p>
+            </div>
+            <div>
+                <textarea name="my-comment" id="" cols="30" rows="10"></textarea>
+                <p class="err text"></p>
+            </div>
+            <!-- radio -->
+            <div>
+                <input type="radio" name="my-radio" value="1">
+                <input type="radio" name="my-radio" value="2">
+                <input type="radio" name="my-radio" value="3">
+                <p class="error"></p>
+            </div>
+            <!-- checkbox -->
+            <div>
+                <input type="checkbox" name="my-checkbox">
+                <p class="error"></p>
             </div>
         </div>
         <input type="submit" id="submit">
     </form>
     <script>
         var validate = new Kensho('#my-form');
-        // console.log(validate);
-        // validate.add();
-        // var hook = new Kensho.Hook();
-
-        // hook.add('action', 'myHook', 'test1', function(){
-        //     console.log('action');
-        // });
-        // hook.action('myHook');
-        // hook.remove('action', 'myHook', 'test1');
-        // console.log(hook);
-        // var kensho = new Kensho('#my-form');
+        
+        validate
+            // .add(
+            //     ['input[name="my-name"]'], 'input[name="my-name"] + .err',
+            //     {
+            //         'required' : '必須です'
+            //     },
+            //     'init|keyup|blur'
+            // )
+            .add(
+                'input[name="my-radio"]', 'input[name="my-radio"] + .err',
+                {
+                    'required' : '必須です'
+                },
+                'init|keyup|blur|checked'
+            )
+            // .add(
+            //     'textarea[name="my-comment"]', 'textarea[name="my-comment"] + .err',
+            //     {
+            //         'required' : '必須です'
+            //     },
+            //     'keyup|blur'
+            // );
+            // .add(
+            //     'input[name="my-checkbox"]', 'input[name="my-checkbox"] + .err',
+            //     {
+            //         'required' : '必須です'
+            //     },
+            //     'change'
+            //     // 'keyup|blur'
+            // );
+            
   </script>
 </body>
 </html>

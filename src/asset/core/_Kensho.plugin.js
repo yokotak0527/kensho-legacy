@@ -3,30 +3,54 @@
      * @namespace Kensho.plugin
      */
     let plugin = Object.create(null);
-    let _list  = {};
+    let list   = {};
     /**
-     * Add plugins.
-     *
+     * Add plugins.<br>
+     * You have to call before the Kensho be created a instance.
+     * 
      * @method  Kensho.plugin.add
-     * @version 0.0.1
-     *
-     * @param  {string}   name       A plugin name.
-     * @param  {Function} callback   A plugin initialize function.
-     * @param  {Object}   [param={}] Paramerters in order to pass to the initialize function.
-     * @return {void}
+     * @version 1.0.0
+     * 
+     * @arg {string}   name       - A plugin name.
+     * @arg {Function} func       - A plugin function.
+     * @arg {Object}   [param={}] - 
+     * 
+     * @return {this}
      */
-    plugin.add = function(name, callback, param = {}){
-//     if(Kensho.isInitialize()){
-//       console.error(`plug-in is must be added before create instance.`);
-//       return false;
-//     }
-//     Kensho.plugin[name] = callback;
-//     // _list[name] = {
-//     //   param    : param,
-//     //   callback : callback
-//     // };
+    plugin.add = function(name, func, param = {}){
+        list[name] = {
+            'name'  : name,
+            'func'  : func,
+            'param' : param
+        };
+        return this;
     }
-    // plugin._list = _list;
+    /**
+     * remove plugins.
+     * 
+     * @method  Kensho.plugin.remove
+     * @version 1.0.0
+     * 
+     * @arg {string} name - A plugin name.
+     * 
+     * @return {this}
+     */
+    plugin.remove = function(name){
+        delete list[name];
+        return this;
+    }
+    /**
+     * get plugin function.
+     * 
+     * @method  Kensho.plugin.get
+     * @version 1.0.0
+     * 
+     * @arg    {string} name - 
+     * @return {any}         - 
+     */
+    plugin.get = function(name){
+        return list[name];
+    }
 
     Kensho.plugin = plugin;
 })();
