@@ -70,7 +70,7 @@ let Kensho = (()=>{
             }else{
                 inputElement = Array.prototype.map.call(inputElement, v => v );
             }
-            
+
             errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement)    : errorElement;
             event        = typeof event        === 'string' ? event.split('|') : event;
 
@@ -150,7 +150,7 @@ let Kensho = (()=>{
         }
         /**
          * Return bool value that form has invalid data whether or hasn't.
-         * 
+         *
          * @version 0.0.1
          * @memberof Kensho
          * @instance
@@ -197,69 +197,48 @@ let Kensho = (()=>{
             let wrapTag        = Kensho.config.get('errorMessageWrapper');
             let errorClassName = Kensho.config.get('errorClassName');
 
-            for(let ruleName in applyRules){
+            // state reset
+            unit.errorElement.innerHTML = '';
+            unit.errorElement.classList.remove(errorClassName);
+            unit.error = [];
+            unit.inputElement.forEach( elm => {
+                elm.classList.remove('invalid');
+                elm.classList.remove('valid');
+            });
 
+            for(let ruleName in applyRules){
                 // validate
+                let _val;
                 let values    = [];
                 let ruleParam = applyRules[ruleName]['param'];
                 inputElement.filter( elm => {
                     if( unit.type === 'radio' ){
-                        values.push(elm.checked);
+                        _val = elm.checked;
                     }else if( unit.type === 'checkbox' ){
-                        values.push(elm.checked);
+                        _val = elm.checked;
                     }else{
-                        values.push(elm.value);
+                        _val = elm.value;
                     }
+                    _val = this.hook.filter('pre-validate-value', _val, this);
+                    values.push(_val);
                 });
-                Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
-
-                
-                // for(let i = 0, l = inputElement.length; i < l; i++){
-                // 
-                //     // let val = 
-                //     // console.log(inputElement[i].checked);
-                // }
-                
-                // console.log(inputElement);
-                // console.log(applyRules[key]);
+                let result = Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
+                if(!result){
+                    let message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
+                    message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
+                    unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
+                    if(!verbose) break;
+                }
             }
 
-            // if(unit.type === 'text'){
-            //     value = unit.inputElement.value;
-            // }else{
-            //     value = this.formElement[unit.name] ? this.formElement[unit.name] : value;
-            // }
-            // // console.log(value);
-            // if(unit.type === 'textarea'){
-            //     // console.log();
-            // }
-            // 
-            // unit.errorElement.innerHTML = '';
-            // unit.errorElement.classList.remove(errorClassName);
-            // unit.error                  = [];
-            // // if(Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
-            // unit.inputElement.classList.remove('invalid');
-            // unit.inputElement.classList.remove('valid');
-            // 
-            // value = this.hook.filter('pre-validate-value', value, this);
-            // 
-            // for(let key in applyRules){
-            //     let result = Kensho.validate.call(this, key, value, applyRules[key].param);
-            //     if(!result){
-            //         let message = document.createTextNode(applyRules[key].errorMessage).nodeValue;
-            //         message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
-            //         unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
-            //         if(!verbose) break;
-            //     }
-            // }
-            // if(unit.error.length){
-            //     unit.errorElement.classList.add(errorClassName);
-            //     unit.errorElement.innerHTML = unit.error.join('\n');
-            //     unit.inputElement.classList.add('invalid');
-            // }else{
-            //     unit.inputElement.classList.add('valid');
-            // }
-            // return this;
+            if(unit.error.length){
+                unit.errorElement.classList.add(errorClassName);
+                unit.errorElement.innerHTML = unit.error.join('\n');
+                unit.inputElement.forEach( elm => { elm.classList.add('invalid') });
+            }else{
+                unit.inputElement.forEach( elm => { elm.classList.add('valid') });
+            }
+            return this;
         }
         /**
          * static validation.
@@ -270,7 +249,7 @@ let Kensho = (()=>{
          * @param  {string} name       - validation rule name.
          * @param  {any}    value      - input values.
          * @param  {Object} [param={}] - in order to pass to a rule function.
-         * 
+         *
          * @return {boolean}
          */
         static validate(name, value, param = {}){
@@ -580,51 +559,31 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @arg {any}     val                - 
-     * @arg {Object}  [param={}]         - 
-     * @arg {boolean} [param.trim=false] - 
-     * @arg {string}  [type='']          - input type based on Kensho's own sorting rule
+     * @arg {any|any[]} val                -
+     * @arg {Object}    [param={}]         -
+     * @arg {boolean}   [param.trim=false] -
+     * @arg {string}    [type='']          - input type based on Kensho's own sorting rule
      */
     Kensho.rule.add('required', function(val, param = {}, type = ''){
         let trimFlg = param.trim === true ? true : false;
 
-        let result;
-        if(type === 'radio' || type === 'checkbox'){
-            result = false;
-            if( Array.isArray(val) ){
-                for(let i = 0, l = val.length; i < l; i++){
-                    if(val[i]){
-                        result = true;
-                        break;
-                    }
-                }
+        if(Array.isArray(val)){
+            let result;
+            if(type === 'radio' || type === 'checkbox'){
+                result = false;
+                val.forEach( v => { if(v) result = true } );
             }else{
-                
+                result = true;
+                val.forEach( v =>{
+                    if(!this.check(v, param, type)) result = false;
+                });
             }
-        } else {
-            if( Array.isArray(val) ){
-                for(let i = 0, l = val.length; i < l; i++){
-                    let v = val[i];
-                    if(trimFlg) v = v.trim();
-                    if(!v){
-                        result = true;
-                        break;
-                    }
-                }
-            }
+            return result;
+        }else{
+            if(typeof val === 'boolean') return val;
+            if(trimFlg) val = val.trim();
+            return val ? true : false;
         }
-        console.log(result);
-
-        // if ( val instanceof HTMLElement ) {
-        //     let tagName = val.tagName.toLowerCase();
-        //     // checkbox support
-        //     if( tagName === 'input' && val.getAttribute('type') === 'checkbox' ){
-        //         return val.checked;
-        //     }
-        // } else {
-        //     if(trimFlg) val = val.trim();
-        //     return val ? true : false;
-        // }
     });
 
 })();
@@ -677,7 +636,7 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @arg {string}  val                      - 
+     * @arg {string|string[]}  val             -
      * @arg {Object}  [param={}]               -
      * @arg {boolean} [param.allow2byte=false] -
      * @arg {boolean} [param.trim=false]       -
@@ -685,15 +644,25 @@ let Kensho = (()=>{
      * @return {boolean}
      */
     rule.add('number', function(val, param = {}){
-        let allow2byteFlg = param.allow2byte === true ? true : false;
-        let trimFlg       = param.trim       === true ? true : false;
-        let full2half = Kensho.plugin.get('full2half');
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!this.check(v, param)) result = false;
+            });
+            return result;
+        } else {
+            let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
+            let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
+            let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
+            let full2half      = Kensho.plugin.get('full2half');
 
-        if(allow2byteFlg) val = full2half.func(val);
-        if(trimFlg) val = val.trim();
+            if(allow2byteFlg) val = full2half.func(val);
+            if(trimFlg) val = val.trim();
 
-        if(!/^[0-9]*$/.test(val)) return false;
-        return true;
+            if(val.length === 0 && empty) return true;
+            if(!/^[0-9]*$/.test(val)) return false;
+            return true;
+        }
     });
 
 })();
@@ -702,25 +671,36 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {string}  val
-     * @param {Object}  [param={}]
-     * @param {boolean} [param.allow2byte=false]
-     * @param {number}  [param.maxAge=125]
-     * @param {boolean} [param.trim=false]
+     * @param {string|string[]}  val
+     * @param {Object}           [param={}]
+     * @param {number}           [param.maxAge=125]
+     * @param {boolean}          [param.allow2byte=false]
+     * @param {boolean}          [param.trim=false]
+     * @param {boolean}          [param.empty=true]
      */
     rule.add('age', function(val, param = {}){
-        let maxAge        = param.maxAage             ? param.maxAage : 125;
-        let allow2byteFlg = param.allow2byte === true ? true : false;
-        let trimFlg       = param.trim       === true ? true : false;
-        let full2half     = Kensho.plugin.get('full2half');
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!this.check(v, param)) result = false;
+            });
+            return result;
+        }else{
+            let maxAge        = param.maxAage ? param.maxAage : 125;
+            let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
+            let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
+            let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
+            let full2half     = Kensho.plugin.get('full2half');
 
-        if(allow2byteFlg) val = full2half.func(val);
-        if(trimFlg) val = val.trim();
+            if(allow2byteFlg) val = full2half.func(val);
+            if(trimFlg) val = val.trim();
 
-        if(!/^[0-9]{1,3}$/.test(val)) return false;          // ex. a1,1234, -5
-        if(val.length !== 1 && /^0/.test(val)) return false; // first number is 0
-        if(val > maxAge) return false;                       // limit
-        return true;
+            if(val.length === 0 && empty) return true;           // empty
+            if(!/^[0-9]{1,3}$/.test(val)) return false;          // ex. a1,1234, -5
+            if(val.length !== 1 && /^0/.test(val)) return false; // first number is 0
+            if(val > maxAge) return false;                       // limit
+            return true;
+        }
     }, ['number']);
 
 })();

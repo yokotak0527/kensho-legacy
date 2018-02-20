@@ -70,7 +70,7 @@ let Kensho = (()=>{
             }else{
                 inputElement = Array.prototype.map.call(inputElement, v => v );
             }
-            
+
             errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement)    : errorElement;
             event        = typeof event        === 'string' ? event.split('|') : event;
 
@@ -150,7 +150,7 @@ let Kensho = (()=>{
         }
         /**
          * Return bool value that form has invalid data whether or hasn't.
-         * 
+         *
          * @version 0.0.1
          * @memberof Kensho
          * @instance
@@ -197,69 +197,48 @@ let Kensho = (()=>{
             let wrapTag        = Kensho.config.get('errorMessageWrapper');
             let errorClassName = Kensho.config.get('errorClassName');
 
-            for(let ruleName in applyRules){
+            // state reset
+            unit.errorElement.innerHTML = '';
+            unit.errorElement.classList.remove(errorClassName);
+            unit.error = [];
+            unit.inputElement.forEach( elm => {
+                elm.classList.remove('invalid');
+                elm.classList.remove('valid');
+            });
 
+            for(let ruleName in applyRules){
                 // validate
+                let _val;
                 let values    = [];
                 let ruleParam = applyRules[ruleName]['param'];
                 inputElement.filter( elm => {
                     if( unit.type === 'radio' ){
-                        values.push(elm.checked);
+                        _val = elm.checked;
                     }else if( unit.type === 'checkbox' ){
-                        values.push(elm.checked);
+                        _val = elm.checked;
                     }else{
-                        values.push(elm.value);
+                        _val = elm.value;
                     }
+                    _val = this.hook.filter('pre-validate-value', _val, this);
+                    values.push(_val);
                 });
-                Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
-
-                
-                // for(let i = 0, l = inputElement.length; i < l; i++){
-                // 
-                //     // let val = 
-                //     // console.log(inputElement[i].checked);
-                // }
-                
-                // console.log(inputElement);
-                // console.log(applyRules[key]);
+                let result = Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
+                if(!result){
+                    let message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
+                    message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
+                    unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
+                    if(!verbose) break;
+                }
             }
 
-            // if(unit.type === 'text'){
-            //     value = unit.inputElement.value;
-            // }else{
-            //     value = this.formElement[unit.name] ? this.formElement[unit.name] : value;
-            // }
-            // // console.log(value);
-            // if(unit.type === 'textarea'){
-            //     // console.log();
-            // }
-            // 
-            // unit.errorElement.innerHTML = '';
-            // unit.errorElement.classList.remove(errorClassName);
-            // unit.error                  = [];
-            // // if(Kensho.config.get('validationPseudoClass')) unit.inputElement.setCustomValidity('');
-            // unit.inputElement.classList.remove('invalid');
-            // unit.inputElement.classList.remove('valid');
-            // 
-            // value = this.hook.filter('pre-validate-value', value, this);
-            // 
-            // for(let key in applyRules){
-            //     let result = Kensho.validate.call(this, key, value, applyRules[key].param);
-            //     if(!result){
-            //         let message = document.createTextNode(applyRules[key].errorMessage).nodeValue;
-            //         message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
-            //         unit.error.push(`<${wrapTag} class="kensho-error-message">${message}</${wrapTag}>`);
-            //         if(!verbose) break;
-            //     }
-            // }
-            // if(unit.error.length){
-            //     unit.errorElement.classList.add(errorClassName);
-            //     unit.errorElement.innerHTML = unit.error.join('\n');
-            //     unit.inputElement.classList.add('invalid');
-            // }else{
-            //     unit.inputElement.classList.add('valid');
-            // }
-            // return this;
+            if(unit.error.length){
+                unit.errorElement.classList.add(errorClassName);
+                unit.errorElement.innerHTML = unit.error.join('\n');
+                unit.inputElement.forEach( elm => { elm.classList.add('invalid') });
+            }else{
+                unit.inputElement.forEach( elm => { elm.classList.add('valid') });
+            }
+            return this;
         }
         /**
          * static validation.
@@ -270,7 +249,7 @@ let Kensho = (()=>{
          * @param  {string} name       - validation rule name.
          * @param  {any}    value      - input values.
          * @param  {Object} [param={}] - in order to pass to a rule function.
-         * 
+         *
          * @return {boolean}
          */
         static validate(name, value, param = {}){

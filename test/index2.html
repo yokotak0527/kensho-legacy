@@ -89,22 +89,28 @@
     </form>
     <script>
         var validate = new Kensho('#my-form');
-        
+
         validate
+            .add(
+                ['input[name="my-name"]'], 'input[name="my-name"] + .err',
+                {
+                    'required' : '必須',
+                    'number' : {
+                        'errorMessage' : '数値',
+                        'param' : {
+                            'allow2byte' : true
+                        }
+                    }
+                },
+                'keyup|blur'
+            )
             // .add(
-            //     ['input[name="my-name"]'], 'input[name="my-name"] + .err',
+            //     'input[name="my-radio"]', 'input[name="my-radio"] + .err',
             //     {
             //         'required' : '必須です'
             //     },
-            //     'init|keyup|blur'
+            //     'init|keyup|blur|checked'
             // )
-            .add(
-                'input[name="my-radio"]', 'input[name="my-radio"] + .err',
-                {
-                    'required' : '必須です'
-                },
-                'init|keyup|blur|checked'
-            )
             // .add(
             //     'textarea[name="my-comment"]', 'textarea[name="my-comment"] + .err',
             //     {
@@ -120,7 +126,7 @@
             //     'change'
             //     // 'keyup|blur'
             // );
-            
+
   </script>
 </body>
 </html>
