@@ -44,14 +44,15 @@ let Kensho = (()=>{
          * @memberof Kensho
          * @instance
          *
-         * @arg {(string|HTMLElement|HTMLElement[])} inputElement - form input HTML element or its CSS selector string.
-         * @arg {(string|HTMLElement)}               errorElement - wrapper element of output error message or its CSS selector string.
-         * @arg {Object}                             rule         - the key is rule name. The value is error message.
-         * @arg {string|string[]}                    [event=['']] - trigger events.
+         * @arg {(string|HTMLElement|HTMLElement[])} inputElement  - form input HTML element or its CSS selector string.
+         * @arg {(string|HTMLElement)}               errorElement  - wrapper element of output error message or its CSS selector string.
+         * @arg {Object}                             rule          - the key is rule name. The value is error message.
+         * @arg {string|string[]}                    [event=['']]  - trigger events.
+         * @arg {string}                             [unitName=''] -
          *
          * @return {this}
          */
-        add(inputElement, errorElement, rule, event = ['']){
+        add(inputElement, errorElement, rule, event = [''], unitName = ''){
             // for example, name attribute of radio buttons are seted same value.
             // querySelector return matched first HTML element and 2nd and subsequent matched element is ignored.
             // so, InputElement not use querySelector but use querySelectorAll.
@@ -75,7 +76,7 @@ let Kensho = (()=>{
             event        = typeof event        === 'string' ? event.split('|') : event;
 
 
-            let name    = inputElement[0].getAttribute('name');  // input name attr.
+            let name    = unitName ? unitName : inputElement[0].getAttribute('name');  // input name attr.
             let tagName = inputElement[0].tagName.toLowerCase(); // tag name
             let type    = null;                                  // Input type based on Kensho's own sorting rule
             if(tagName === 'input') type = inputElement[0].getAttribute('type');
@@ -128,7 +129,7 @@ let Kensho = (()=>{
                 error        : []
             }
 
-            unit = this.hook.filter('validate-filed', unit);
+            unit = this.hook.filter('validate-unit', unit);
 
             this.inputs[name] = unit;
 
@@ -145,7 +146,7 @@ let Kensho = (()=>{
                 }
             });
 
-            this.hook.action('set-validate-field', {unit : unit});
+            this.hook.action('set-validate-unit', {unit : unit});
             return this;
         }
         /**
@@ -219,7 +220,8 @@ let Kensho = (()=>{
                     }else{
                         _val = elm.value;
                     }
-                    _val = this.hook.filter('pre-validate-value', _val, this);
+                    _val = this.hook.filter(`validate-val--${unit.type}`, _val);
+                    // console.log('unit');
                     values.push(_val);
                 });
                 let result = Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);

@@ -9,5 +9,6 @@ fractal.components.set('path', __dirname + '/guide/components');
 
 // Tell Fractal where the documentation pages will live
 fractal.docs.set('path', __dirname + '/guide/docs');
+fractal.docs.set('markdown.smartypants', false);
 
 fractal.web.set('builder.dest', 'dest/guide');

@@ -66,6 +66,7 @@
             </ul>
             <div>
                 <input type="text" name="my-name">
+                <input type="text" name="my-name2">
                 <p class="err text"></p>
             </div>
             <div>
@@ -90,12 +91,21 @@
     <script>
         var validate = new Kensho('#my-form');
 
+
+        // console.log('２' === '2');
+        // console.log(Kensho.plugin.get('full2half').func('２') === '2');
+
+        validate.hook.add('filter', 'validate-val--text', 'change-val', (v)=>{
+            v = 'a@a.com';
+            return v;
+        });
+
         validate
             .add(
-                ['input[name="my-name"]'], 'input[name="my-name"] + .err',
+                ['input[name="my-name"]','input[name="my-name2"]'], 'input[name="my-name2"] + .err',
                 {
-                    'required' : '必須',
-                    'number' : {
+                    // 'required' : '必須',
+                    'email' : {
                         'errorMessage' : '数値',
                         'param' : {
                             'allow2byte' : true

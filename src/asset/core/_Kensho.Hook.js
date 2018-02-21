@@ -119,7 +119,7 @@
         filter(hookName, data, thisObject = this){
             let callbacks = this.filters[hookName];
             if(callbacks){
-                callback.forEach((listener)=>{
+                callbacks.forEach((listener)=>{
                     data = listener.callback.call(thisObject, data);
                 });
             };

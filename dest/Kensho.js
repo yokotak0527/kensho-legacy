@@ -50,10 +50,11 @@ var Kensho = function () {
          * @memberof Kensho
          * @instance
          *
-         * @arg {(string|HTMLElement|HTMLElement[])} inputElement - form input HTML element or its CSS selector string.
-         * @arg {(string|HTMLElement)}               errorElement - wrapper element of output error message or its CSS selector string.
-         * @arg {Object}                             rule         - the key is rule name. The value is error message.
-         * @arg {string|string[]}                    [event=['']] - trigger events.
+         * @arg {(string|HTMLElement|HTMLElement[])} inputElement  - form input HTML element or its CSS selector string.
+         * @arg {(string|HTMLElement)}               errorElement  - wrapper element of output error message or its CSS selector string.
+         * @arg {Object}                             rule          - the key is rule name. The value is error message.
+         * @arg {string|string[]}                    [event=['']]  - trigger events.
+         * @arg {string}                             [unitName=''] -
          *
          * @return {this}
          */
@@ -63,6 +64,7 @@ var Kensho = function () {
             var _this = this;
 
             var event = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [''];
+            var unitName = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
 
             // for example, name attribute of radio buttons are seted same value.
             // querySelector return matched first HTML element and 2nd and subsequent matched element is ignored.
@@ -94,7 +96,7 @@ var Kensho = function () {
             errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement) : errorElement;
             event = typeof event === 'string' ? event.split('|') : event;
 
-            var name = inputElement[0].getAttribute('name'); // input name attr.
+            var name = unitName ? unitName : inputElement[0].getAttribute('name'); // input name attr.
             var tagName = inputElement[0].tagName.toLowerCase(); // tag name
             var type = null; // Input type based on Kensho's own sorting rule
             if (tagName === 'input') type = inputElement[0].getAttribute('type');else type = tagName;
@@ -146,7 +148,7 @@ var Kensho = function () {
                 error: []
             };
 
-            unit = this.hook.filter('validate-filed', unit);
+            unit = this.hook.filter('validate-unit', unit);
 
             this.inputs[name] = unit;
 
@@ -163,7 +165,7 @@ var Kensho = function () {
                 }
             });
 
-            this.hook.action('set-validate-field', { unit: unit });
+            this.hook.action('set-validate-unit', { unit: unit });
             return this;
         };
         /**
@@ -247,7 +249,8 @@ var Kensho = function () {
                     } else {
                         _val = elm.value;
                     }
-                    _val = _this3.hook.filter('pre-validate-value', _val, _this3);
+                    _val = _this3.hook.filter('validate-val--' + unit.type, _val);
+                    // console.log('unit');
                     values.push(_val);
                 });
                 var result = Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
@@ -500,7 +503,7 @@ var Kensho = function () {
 
             var callbacks = this.filters[hookName];
             if (callbacks) {
-                callback.forEach(function (listener) {
+                callbacks.forEach(function (listener) {
                     data = listener.callback.call(thisObject, data);
                 });
             };
@@ -645,8 +648,6 @@ var Kensho = function () {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
-        var trimFlg = param.trim === true ? true : false;
-
         if (Array.isArray(val)) {
             var result = void 0;
             if (type === 'radio' || type === 'checkbox') {
@@ -662,6 +663,7 @@ var Kensho = function () {
             }
             return result;
         } else {
+            var trimFlg = param.trim === true ? true : false;
             if (typeof val === 'boolean') return val;
             if (trimFlg) val = val.trim();
             return val ? true : false;
@@ -802,11 +804,22 @@ var Kensho = function () {
      * @param {Object} [param={}]
      */
     rule.add('email', function (val) {
+        var _this7 = this;
+
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-        // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(val);
+
+        if (Array.isArray(val)) {
+            var result = true;
+            val.forEach(function (v) {
+                if (!_this7.check(v, param)) result = false;
+            });
+            return result;
+        } else {
+            // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(val);
+        }
     }, ['halfsize']);
 })();
 

@@ -8,8 +8,6 @@
      * @arg {string}    [type='']          - input type based on Kensho's own sorting rule
      */
     Kensho.rule.add('required', function(val, param = {}, type = ''){
-        let trimFlg = param.trim === true ? true : false;
-
         if(Array.isArray(val)){
             let result;
             if(type === 'radio' || type === 'checkbox'){
@@ -23,6 +21,7 @@
             }
             return result;
         }else{
+            let trimFlg = param.trim === true ? true : false;
             if(typeof val === 'boolean') return val;
             if(trimFlg) val = val.trim();
             return val ? true : false;
