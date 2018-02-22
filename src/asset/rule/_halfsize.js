@@ -2,12 +2,14 @@
     let rule  = Kensho.rule;
 
     /**
-     * @param {String} val
+     * 
+     * @param {string} val
      * @param {Object} [param={}]
+     * @param {string} [type='']
      */
-    rule.add('halfsize', function(val, param = {}){
+    let halfsizeFunc = function(val, param = {}, type = ''){
         let result  = true;
-        let is1byte = Kensho.plugin.get('is1byte');
+        let is1byte = Kensho.plugin.get('is1byte').func;
 
         for(let i = 0, l = val.length; i < l; i++){
             if(!is1byte.func(val[i])){
@@ -16,6 +18,7 @@
             };
         }
         return result;
-    });
+    }
+    rule.add('halfsize', halfsizeFunc);
 
 })();

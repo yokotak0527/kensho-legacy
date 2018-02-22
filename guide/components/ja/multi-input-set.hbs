@@ -1,0 +1,54 @@
+<!-- 
+この例ではあえてkensho.add()メソッドで引数unitNameの設定をしていません。
+その場合、各ユニットの名前がどのように登録されているかを確認出来るようにコンソールに出力していますので、ブラウザのコンソールからご確認ください。
+-->
+<form action="" id="my-form">
+    <div class="set1">
+        <p class="text">複数のテキスト入力</p>
+        姓<input type="text" name="your-name1">
+        名<input type="text" name="your-name2">
+        <p class="error"></p>
+    </div>
+    <div class="set2">
+        <p class="text">複数のチェックボックス</p>
+        <div>
+            <label><input type="checkbox" name="my-check[]">値1</label>
+            <label><input type="checkbox" name="my-check[]">値2</label>
+            <label><input type="checkbox" name="my-check[]">値3</label>
+            <label><input type="checkbox" name="my-check[]">値4</label>
+            <label><input type="checkbox" name="my-check[]">値5</label>
+        </div>
+        <p class="error"></p>
+    </div>
+    <input type="submit" value="一括検証">
+</form>
+
+<script>
+    var kensho = new Kensho('#my-form');
+    // your-nameの検証ユニット
+    kensho.add(
+        ['.set1 input[name="your-name1"]', '.set1 input[name="your-name2"]'],
+        '.set1 .error',
+        
+        {
+            'required' : '必須項目です'
+        },
+        'keyup|blur'
+    );
+    // my-checkの検証ユニット 
+    kensho.add(
+        '.set2 input',
+        '.set2 .error',
+        
+        {
+            'required' : '必須項目です'
+        },
+        'change'
+    );
+    var $submit = document.querySelector('input[type="submit"]');
+    $submit.addEventListener('click', function(e){
+        e.preventDefault();
+        kensho.allValidate();
+    });
+    console.log(kensho.inputs);
+</script>

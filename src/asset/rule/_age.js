@@ -1,19 +1,22 @@
 (()=>{
-    let rule  = Kensho.rule;
+    let rule = Kensho.rule;
 
     /**
-     * @param {string|string[]}  val
-     * @param {Object}           [param={}]
-     * @param {number}           [param.maxAge=125]
-     * @param {boolean}          [param.allow2byte=false]
-     * @param {boolean}          [param.trim=false]
-     * @param {boolean}          [param.empty=true]
+     * 
+     * @param {string|string[]}  val                      - 
+     * @param {Object}           [param={}]               - 
+     * @param {number}           [param.maxAge=125]       - 
+     * @param {boolean}          [param.allow2byte=false] - 
+     * @param {boolean}          [param.trim=false]       - 
+     * @param {boolean}          [param.empty=true]       - 
+     *
+     * @return {boolean}
      */
-    rule.add('age', function(val, param = {}){
+    let ageFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!this.check(v, param)) result = false;
+                if(!ageFunc(v, param, type)) result = false;
             });
             return result;
         }else{
@@ -22,6 +25,17 @@
             let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
             let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
             let full2half     = Kensho.plugin.get('full2half');
+            let numberRule    = Kensho.rule.get('number');
+            
+            let result = true;
+            result = numberRule(val, {
+                'allow2byte' : allow2byteFlg,
+                'trim'       : trimFlg,
+                'empty'      : empty,
+                'signed'     : false,
+                'point'      : false
+            }, type);
+            if(!result) return false;
 
             if(allow2byteFlg) val = full2half.func(val);
             if(trimFlg) val = val.trim();
@@ -32,6 +46,7 @@
             if(val > maxAge) return false;                       // limit
             return true;
         }
-    }, ['number']);
+    }
+    rule.add('age', ageFunc);
 
 })();

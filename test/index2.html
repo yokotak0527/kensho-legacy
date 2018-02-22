@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Document</title>
     <meta name="viewport" content="width=device-width">
+    <script src="../dest/polyfill.min.js"></script>
     <script src="../dest/kensho.js"></script>
     <style>
     @import url(//fonts.googleapis.com/earlyaccess/notosansjp.css);
@@ -95,10 +96,10 @@
         // console.log('２' === '2');
         // console.log(Kensho.plugin.get('full2half').func('２') === '2');
 
-        validate.hook.add('filter', 'validate-val--text', 'change-val', (v)=>{
-            v = 'a@a.com';
-            return v;
-        });
+        // validate.hook.add('filter', 'validate-val--text', 'change-val', (v)=>{
+        //     v = 'a@a.com';
+        //     return v;
+        // });
 
         validate
             .add(

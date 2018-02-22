@@ -1,34 +1,56 @@
 (()=>{
-    let rule  = Kensho.rule;
+    let rule = Kensho.rule;
 
     /**
-     * @arg {string|string[]}  val             -
-     * @arg {Object}  [param={}]               -
-     * @arg {boolean} [param.allow2byte=false] -
-     * @arg {boolean} [param.trim=false]       -
+     * 
+     * @arg {string|string[]} val                      -
+     * @arg {Object}          [param={}]               -
+     * @arg {boolean}         [param.allow2byte=false] -
+     * @arg {boolean}         [param.trim=false]       -
+     * @arg {boolean}         [param.empty=true]       -
+     * @arg {boolean}         [param.signed]           - 
+     * @arg {boolean}         [param.point]            - 
+     * @arg {string}          [type='']                - input type based on Kensho's own sorting rule
      *
      * @return {boolean}
      */
-    rule.add('number', function(val, param = {}){
+    let numberFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!this.check(v, param)) result = false;
+                if(!numberFunc(v, param, type)) result = false;
             });
             return result;
         } else {
             let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
             let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
             let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
-            let full2half      = Kensho.plugin.get('full2half');
+            let signed        = typeof param.signed     === 'boolean' ? param.signed     : false;
+            let point         = typeof param.point      === 'boolean' ? param.point      : false; // decimal point
+            let full2half     = Kensho.plugin.get('full2half');
 
             if(allow2byteFlg) val = full2half.func(val);
             if(trimFlg) val = val.trim();
 
             if(val.length === 0 && empty) return true;
-            if(!/^[0-9]*$/.test(val)) return false;
+            
+            let regExpText = '^';
+            let regExpPtn  = ['0-9'];
+            
+            if(signed) regExpText += '[\-\+]?';
+
+            if(point) regExpPtn.push('\.');
+
+            regExpText += `[${regExpPtn.join('')}]+`;
+            
+            regExpText += '[0-9]$';
+
+            let regExp = new RegExp(regExpText);
+            
+            if(!regExp.test(val)) return false;
             return true;
         }
-    });
+    }
+    rule.add('number', numberFunc);
 
 })();

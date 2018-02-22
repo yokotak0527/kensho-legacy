@@ -2,12 +2,13 @@
     let rule  = Kensho.rule;
 
     /**
+     * 
      * @arg {any|any[]} val                -
      * @arg {Object}    [param={}]         -
      * @arg {boolean}   [param.trim=false] -
      * @arg {string}    [type='']          - input type based on Kensho's own sorting rule
      */
-    Kensho.rule.add('required', function(val, param = {}, type = ''){
+    let requiredFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
             let result;
             if(type === 'radio' || type === 'checkbox'){
@@ -16,7 +17,7 @@
             }else{
                 result = true;
                 val.forEach( v =>{
-                    if(!this.check(v, param, type)) result = false;
+                    if(!requiredFunc(v, param, type, type)) result = false;
                 });
             }
             return result;
@@ -26,6 +27,8 @@
             if(trimFlg) val = val.trim();
             return val ? true : false;
         }
-    });
+    }
+    
+    Kensho.rule.add('required', requiredFunc);
 
 })();

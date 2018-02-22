@@ -63,7 +63,10 @@ conf.options.babel = {
         ['env', {
             'loose'    : true,
             'modules'  : false,
-            'browsers' : ['last 3 version']
+            'browsers' : [
+                'Explorer 11',
+                'last 3 version'
+            ]
         }]
     ]
 };

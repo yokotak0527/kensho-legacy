@@ -13,17 +13,12 @@
      * @method Kensho.rule.add
      * @version 0.0.1
      *
-     * @param  {string}            name       - validation rule name
-     * @param  {Function}          callback   - rule method.
-     * @param  {(string|string[])} dependency - other rule that this rule depend on
+     * @param  {string}            name     - validation rule name
+     * @param  {Function}          callback - rule method
      * @return {void}
      */
-    rule.add = function(name, callback, dependency = []){
-        dependency = typeof dependency === 'string' ? [dependency] : dependency;
-        ruleBook[name] = {
-            check      : callback,
-            dependency : dependency
-        };
+    rule.add = function(name, callback){
+        ruleBook[name] = callback;
     };
     /**
      * Remove validation rule.

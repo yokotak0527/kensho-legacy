@@ -73,8 +73,7 @@ let Kensho = (()=>{
             }
 
             errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement)    : errorElement;
-            event        = typeof event        === 'string' ? event.split('|') : event;
-
+            event        = typeof event        === 'string' ? event.split('|') : !event ? [''] : event;
 
             let name    = unitName ? unitName : inputElement[0].getAttribute('name');  // input name attr.
             let tagName = inputElement[0].tagName.toLowerCase(); // tag name
@@ -177,8 +176,7 @@ let Kensho = (()=>{
          * @return {void}
          */
         allValidate(){
-            let _ = this._.get(this);
-            Object.keys(_.inputs).map((key, i)=>{
+            Object.keys(this.inputs).map((key, i)=>{
                 this.validate(key);
             });
         }
@@ -224,7 +222,7 @@ let Kensho = (()=>{
                     // console.log('unit');
                     values.push(_val);
                 });
-                let result = Kensho.rule.get(ruleName).check(values, ruleParam, unit.type);
+                let result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);
                 if(!result){
                     let message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
                     message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
@@ -257,11 +255,7 @@ let Kensho = (()=>{
         static validate(name, value, param = {}){
             let rule = this.rule.get(name);
             let result = true;
-            for(let i = 0, l = rule.dependency.length; i < l; i++){
-                result = Kensho.rule.get(rule.dependency[i]).check(value, param);
-                if(!result) break;
-            }
-            if(result) result = rule.check(value, param);
+            if(result) result = rule(value, param);
             return result;
         }
     }

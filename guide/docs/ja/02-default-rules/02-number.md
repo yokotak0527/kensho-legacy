@@ -12,6 +12,8 @@ label: number
 | empty        | boolean | true   | 未入力の場合は検証しない |
 | allow2byte   | boolean | false  | 2バイト文字を受け付けるか |
 | trim         | boolean | false  | 文字列左右端の空白を削除するか |
+| signed       | boolean | false  | 符合を許可するか |
+| point        | boolean | false  | 小数点を許可するか |
 
 ## 利用できるタグ
 
