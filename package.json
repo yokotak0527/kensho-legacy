@@ -1,14 +1,17 @@
 {
-    "name": "Kensho",
+    "name": "@yokotak0527/kensho",
     "version": "1.0.0",
     "description": "form validation library.",
     "main": "index.js",
     "scripts": {
         "gulp": "gulp",
         "fractal": "fractal",
+        "karma": "karma",
         "test": "karma start",
+        "concat": "gulp concat",
         "build:doc": "jsdoc dest/kensho.js -c jsdoc.json -d dest/jsdoc",
-        "build:guide": "NODE_ENV=product fractal build",
+        "build:guide": "NODE_ENV=production fractal build",
+        "build:js": "NODE_ENV=production gulp build",
         "watch:js": "NODE_ENV=development gulp watch",
         "watch:guide": "NODE_ENV=development fractal start --sync"
     },
@@ -22,31 +25,24 @@
     "author": "yokotak0527",
     "license": "MIT",
     "devDependencies": {
+        "@frctl/fractal": "^1.1.7",
         "babel-core": "^6.26.0",
-        "babel-polyfill": "^6.26.0",
-        "babel-preset-env": "^1.6.0",
-        "es6-shim": "^0.35.3",
-        "eslint": "^4.18.0",
-        "gulp": "^3.9.1",
-        "gulp-babel": "^7.0.0",
-        "gulp-changed": "^3.1.0",
+        "babel-preset-env": "^1.6.1",
+        "gulp": "^4.0.0",
+        "gulp-babel": "^7.0.1",
+        "gulp-changed": "^3.2.0",
         "gulp-concat": "^2.6.1",
         "gulp-if": "^2.0.2",
-        "gulp-ignore": "^2.0.2",
-        "gulp-plumber": "^1.1.0",
-        "gulp-sourcemaps": "^2.6.1",
-        "jasmine": "^3.0.0",
-        "jsdoc": "^3.5.5",
+        "gulp-plumber": "^1.2.0",
+        "gulp-rename": "^1.2.2",
+        "gulp-sourcemaps": "^2.6.4",
+        "jasmine-core": "^2.99.1",
         "karma": "^2.0.0",
-        "karma-jasmine": "^1.1.0",
-        "karma-mocha-reporter": "^2.2.4",
+        "karma-jasmine": "^1.1.1",
+        "karma-mocha-reporter": "^2.2.5",
         "karma-phantomjs-launcher": "^1.0.4",
         "minami": "^1.2.3",
-        "node-notifier": "^5.1.2",
-        "run-sequence": "^2.1.0",
-        "tui-jsdoc-template": "^1.2.2"
+        "node-notifier": "^5.2.1"
     },
-    "dependencies": {
-        "@frctl/fractal": "^1.1.7"
-    }
+    "dependencies": {}
 }

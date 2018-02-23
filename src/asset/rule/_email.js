@@ -4,6 +4,7 @@
     /**
      * @param {string} val
      * @param {Object} [param={}]
+     * @param {string} [type='']
      */
     let emailFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){

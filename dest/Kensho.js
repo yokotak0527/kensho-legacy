@@ -666,21 +666,32 @@ var Kensho = function () {
     /**
      * @param {String} val
      * @param {Object} [param={}]
+     * @param {string} [type='']
      */
-    rule.add('fullsize', function (val) {
+    var fullsizeFunc = function fullsizeFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
-        var result = true;
-        var is2byte = Kensho.plugin.get('is2byte');
+        if (Array.isArray(val)) {
+            var result = true;
+            val.forEach(function (v) {
+                if (!fullsizeFunc(v, param, type)) result = false;
+            });
+            return result;
+        } else {
+            var _result = true;
+            var is2byte = Kensho.plugin.get('is2byte');
 
-        for (var i = 0, l = val.length; i < l; i++) {
-            if (!is2byte.func(val[i])) {
-                result = false;
-                break;
-            };
+            for (var i = 0, l = val.length; i < l; i++) {
+                if (!is2byte.func(val[i])) {
+                    _result = false;
+                    break;
+                };
+            }
+            return _result;
         }
-        return result;
-    });
+    };
+    rule.add('fullsize', fullsizeFunc);
 })();
 
 (function () {
@@ -696,16 +707,25 @@ var Kensho = function () {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
-        var result = true;
-        var is1byte = Kensho.plugin.get('is1byte').func;
 
-        for (var i = 0, l = val.length; i < l; i++) {
-            if (!is1byte.func(val[i])) {
-                result = false;
-                break;
-            };
+        if (Array.isArray(val)) {
+            var result = true;
+            val.forEach(function (v) {
+                if (!halfsizeFunc(v, param, type)) result = false;
+            });
+            return result;
+        } else {
+            var _result2 = true;
+            var is1byte = Kensho.plugin.get('is1byte');
+
+            for (var i = 0, l = val.length; i < l; i++) {
+                if (!is1byte.func(val[i])) {
+                    _result2 = false;
+                    break;
+                };
+            }
+            return _result2;
         }
-        return result;
     };
     rule.add('halfsize', halfsizeFunc);
 })();
@@ -754,12 +774,14 @@ var Kensho = function () {
 
             if (signed) regExpText += '[\-\+]?';
 
-            if (point) regExpPtn.push('\.');
+            if (point) {
+                if (/^[\.]/.test(val)) return false;
+                if (val.split('.').length > 2) return false;
+                if (/[\.]$/.test(val)) return false;
+                regExpPtn.push('\.');
+            }
 
-            regExpText += '[' + regExpPtn.join('') + ']+';
-
-            regExpText += '[0-9]$';
-
+            regExpText += '[' + regExpPtn.join('') + ']+$';
             var regExp = new RegExp(regExpText);
 
             if (!regExp.test(val)) return false;
@@ -794,22 +816,22 @@ var Kensho = function () {
             });
             return result;
         } else {
-            var maxAge = param.maxAage ? param.maxAage : 125;
+            var maxAge = param.maxAge ? param.maxAge : 125;
             var allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
             var trimFlg = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
             var full2half = Kensho.plugin.get('full2half');
             var numberRule = Kensho.rule.get('number');
 
-            var _result = true;
-            _result = numberRule(val, {
+            var _result3 = true;
+            _result3 = numberRule(val, {
                 'allow2byte': allow2byteFlg,
                 'trim': trimFlg,
                 'empty': empty,
                 'signed': false,
                 'point': false
             }, type);
-            if (!_result) return false;
+            if (!_result3) return false;
 
             if (allow2byteFlg) val = full2half.func(val);
             if (trimFlg) val = val.trim();
@@ -830,6 +852,7 @@ var Kensho = function () {
     /**
      * @param {string} val
      * @param {Object} [param={}]
+     * @param {string} [type='']
      */
     var emailFunc = function emailFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -842,9 +865,9 @@ var Kensho = function () {
             });
             return result;
         } else {
-            var _result2 = true;
+            var _result4 = true;
             var halfsizeRule = Kensho.rule.get('halfsize');
-            _result2 = halfsizeRule(val, {}, type);
+            _result4 = halfsizeRule(val, {}, type);
 
             // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -900,39 +923,53 @@ var Kensho = function () {
     });
 })();
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}   val
-//    * @param {Object}   [param]
-//    * @param {Number}   [param.min]
-//    * @param {Number}   [param.max]
-//    * @param {Boolean}  [param.trim=true]
-//    * @param {Boolean}  [param.undefinedThrough=false]
-//    */
-//   rule.add('range', function(val, param = {}){
-//     let result           = true;
-//     let trimFlg          = param.trim === true ? true : false;
-//     let undefinedThrough = param.undefinedThrough === true ? true : false;
-//     if(trimFlg) val = val.trim();
-//     if ( undefinedThrough && val.length === 0 ) return true;
-//
-//     if(param.min === undefined && param.max === undefined) return result;
-//
-//     if(param.min === undefined && typeof param.max === 'number'){
-//       if(val.length > param.max) result = false;
-//     }
-//     if(typeof param.min === 'number' && param.max === undefined){
-//       if(val.length < param.min) result = false;
-//     }
-//     if(param.min !== undefined && param.max !== undefined){
-//       if(val.length < param.min || val.length > param.max) result = false;
-//     }
-//     return result;
-//   });
-//
-// })();
+(function () {
+    var rule = Kensho.rule;
+
+    /**
+     * @param {string}   val
+     * @param {Object}   [param]
+     * @param {number}   [param.min]
+     * @param {number}   [param.max]
+     * @param {boolean}  [param.trim=true]
+     * @param {boolean}  [param.empty=true]
+     * @param {boolean}  [type='']
+     */
+    var rangeFunc = function rangeFunc(val) {
+        var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+
+        if (Array.isArray(val)) {
+            var result = true;
+            val.forEach(function (v) {
+                if (!rangeFunc(v, param, type)) result = false;
+            });
+            return result;
+        } else {
+            var _result5 = true;
+
+            var trimFlg = typeof param.trim === 'boolean' ? param.trim : false;
+            var empty = typeof param.empty === 'boolean' ? param.empty : true;
+
+            if (trimFlg) val = val.trim();
+            if (empty && val.length === 0) return true;
+
+            if (param.min === undefined && param.max === undefined) return _result5;
+
+            if (param.min === undefined && typeof param.max === 'number') {
+                if (val.length > param.max) _result5 = false;
+            }
+            if (typeof param.min === 'number' && param.max === undefined) {
+                if (val.length < param.min) _result5 = false;
+            }
+            if (param.min !== undefined && param.max !== undefined) {
+                if (val.length < param.min || val.length > param.max) _result5 = false;
+            }
+            return _result5;
+        }
+    };
+    rule.add('range', rangeFunc);
+})();
 
 (function () {
     var rule = Kensho.rule;

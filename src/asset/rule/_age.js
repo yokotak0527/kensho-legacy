@@ -20,7 +20,7 @@
             });
             return result;
         }else{
-            let maxAge        = param.maxAage ? param.maxAage : 125;
+            let maxAge        = param.maxAge ? param.maxAge : 125;
             let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
             let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
             let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;

@@ -39,12 +39,14 @@
             
             if(signed) regExpText += '[\-\+]?';
 
-            if(point) regExpPtn.push('\.');
+            if(point){
+                if(/^[\.]/.test(val))         return false;
+                if(val.split('.').length > 2) return false;
+                if(/[\.]$/.test(val))         return false;
+                regExpPtn.push('\.');
+            }
 
-            regExpText += `[${regExpPtn.join('')}]+`;
-            
-            regExpText += '[0-9]$';
-
+            regExpText += `[${regExpPtn.join('')}]+$`;
             let regExp = new RegExp(regExpText);
             
             if(!regExp.test(val)) return false;

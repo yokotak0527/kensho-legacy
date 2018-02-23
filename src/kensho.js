@@ -587,19 +587,29 @@ let Kensho = (()=>{
     /**
      * @param {String} val
      * @param {Object} [param={}]
+     * @param {string} [type='']
      */
-    rule.add('fullsize', function(val, param = {}){
-        let result  = true;
-        let is2byte = Kensho.plugin.get('is2byte');
+    let fullsizeFunc = function(val, param = {}, type = ''){
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!fullsizeFunc(v, param, type)) result = false;
+            });
+            return result;
+        }else{
+            let result  = true;
+            let is2byte = Kensho.plugin.get('is2byte');
 
-        for(let i = 0, l = val.length; i < l; i++){
-            if(!is2byte.func(val[i])){
-                result = false;
-                break;
-            };
+            for(let i = 0, l = val.length; i < l; i++){
+                if(!is2byte.func(val[i])){
+                    result = false;
+                    break;
+                };
+            }
+            return result;
         }
-        return result;
-    });
+    }
+    rule.add('fullsize', fullsizeFunc);
 
 })();
 
@@ -613,16 +623,25 @@ let Kensho = (()=>{
      * @param {string} [type='']
      */
     let halfsizeFunc = function(val, param = {}, type = ''){
-        let result  = true;
-        let is1byte = Kensho.plugin.get('is1byte').func;
+        
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!halfsizeFunc(v, param, type)) result = false;
+            });
+            return result;
+        }else{
+            let result  = true;
+            let is1byte = Kensho.plugin.get('is1byte');
 
-        for(let i = 0, l = val.length; i < l; i++){
-            if(!is1byte.func(val[i])){
-                result = false;
-                break;
-            };
+            for(let i = 0, l = val.length; i < l; i++){
+                if(!is1byte.func(val[i])){
+                    result = false;
+                    break;
+                };
+            }
+            return result;
         }
-        return result;
     }
     rule.add('halfsize', halfsizeFunc);
 
@@ -669,12 +688,14 @@ let Kensho = (()=>{
             
             if(signed) regExpText += '[\-\+]?';
 
-            if(point) regExpPtn.push('\.');
+            if(point){
+                if(/^[\.]/.test(val))         return false;
+                if(val.split('.').length > 2) return false;
+                if(/[\.]$/.test(val))         return false;
+                regExpPtn.push('\.');
+            }
 
-            regExpText += `[${regExpPtn.join('')}]+`;
-            
-            regExpText += '[0-9]$';
-
+            regExpText += `[${regExpPtn.join('')}]+$`;
             let regExp = new RegExp(regExpText);
             
             if(!regExp.test(val)) return false;
@@ -707,7 +728,7 @@ let Kensho = (()=>{
             });
             return result;
         }else{
-            let maxAge        = param.maxAage ? param.maxAage : 125;
+            let maxAge        = param.maxAge ? param.maxAge : 125;
             let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
             let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
             let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
@@ -744,6 +765,7 @@ let Kensho = (()=>{
     /**
      * @param {string} val
      * @param {Object} [param={}]
+     * @param {string} [type='']
      */
     let emailFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
@@ -815,39 +837,51 @@ let Kensho = (()=>{
 
 })();
 
-// (()=>{
-//   let rule  = Kensho.rule;
-//
-//   /**
-//    * @param {String}   val
-//    * @param {Object}   [param]
-//    * @param {Number}   [param.min]
-//    * @param {Number}   [param.max]
-//    * @param {Boolean}  [param.trim=true]
-//    * @param {Boolean}  [param.undefinedThrough=false]
-//    */
-//   rule.add('range', function(val, param = {}){
-//     let result           = true;
-//     let trimFlg          = param.trim === true ? true : false;
-//     let undefinedThrough = param.undefinedThrough === true ? true : false;
-//     if(trimFlg) val = val.trim();
-//     if ( undefinedThrough && val.length === 0 ) return true;
-//
-//     if(param.min === undefined && param.max === undefined) return result;
-//
-//     if(param.min === undefined && typeof param.max === 'number'){
-//       if(val.length > param.max) result = false;
-//     }
-//     if(typeof param.min === 'number' && param.max === undefined){
-//       if(val.length < param.min) result = false;
-//     }
-//     if(param.min !== undefined && param.max !== undefined){
-//       if(val.length < param.min || val.length > param.max) result = false;
-//     }
-//     return result;
-//   });
-//
-// })();
+(()=>{
+    let rule  = Kensho.rule;
+
+    /**
+     * @param {string}   val
+     * @param {Object}   [param]
+     * @param {number}   [param.min]
+     * @param {number}   [param.max]
+     * @param {boolean}  [param.trim=true]
+     * @param {boolean}  [param.empty=true]
+     * @param {boolean}  [type='']
+     */
+    let rangeFunc = function(val, param = {}, type = ''){
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!rangeFunc(v, param, type)) result = false;
+            });
+            return result;
+        }else{
+            let result = true;
+
+            let trimFlg = typeof param.trim  === 'boolean' ? param.trim       : false;
+            let empty   = typeof param.empty === 'boolean' ? param.empty      : true;
+
+            if(trimFlg) val = val.trim();
+            if ( empty && val.length === 0 ) return true;
+
+            if(param.min === undefined && param.max === undefined) return result;
+
+            if(param.min === undefined && typeof param.max === 'number'){
+                if(val.length > param.max) result = false;
+            }
+            if(typeof param.min === 'number' && param.max === undefined){
+                if(val.length < param.min) result = false;
+            }
+            if(param.min !== undefined && param.max !== undefined){
+                if(val.length < param.min || val.length > param.max) result = false;
+            }
+            return result;
+        }
+    }
+    rule.add('range', rangeFunc);
+
+})();
 
 (()=>{
     let rule  = Kensho.rule;
