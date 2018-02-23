@@ -8,9 +8,9 @@
         "fractal": "fractal",
         "test": "karma start",
         "build:doc": "jsdoc dest/kensho.js -c jsdoc.json -d dest/jsdoc",
-        "build:guide": "fractal build",
+        "build:guide": "NODE_ENV=product fractal build",
         "watch:js": "NODE_ENV=development gulp watch",
-        "watch:guide": "fractal start --sync"
+        "watch:guide": "NODE_ENV=development fractal start --sync"
     },
     "engines": {
         "node": ">=8.9.3",

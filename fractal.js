@@ -1,19 +1,18 @@
-const fractal    = module.exports = require('@frctl/fractal').create();
-const mandelbrot = require('@frctl/mandelbrot');
+const fractal     = module.exports = require('@frctl/fractal').create();
+const mandelbrot  = require('@frctl/mandelbrot');
+const packageConf = require('./package.json');
+const ENV         = process.env.NODE_ENV;
 
-
-// const ENV     = process.env.NODE_ENV;
-
-// console.log(process.env);
+console.log();
 
 // タイトル
-fractal.set('project.title', 'Kensho Usage Guide');
+fractal.set('project.title', `Kensho usage Guide v${packageConf.version}`);
 
-// Tell Fractal where the components will live
-fractal.components.set('path', __dirname + '/guide/components');
+// componentsの設定
+fractal.components.set('path', __dirname + '/guide/asset/components');
 
-// document設定
-fractal.docs.set('path', __dirname + '/guide/docs');
+// documentの設定
+fractal.docs.set('path', __dirname + '/guide/asset/docs');
 fractal.docs.set('markdown.smartypants', false);
 
 // 静的ファイル
@@ -26,4 +25,4 @@ fractal.web.theme(mandelbrot({
 }));
 
 // 静的ファイル出力先
-fractal.web.set('builder.dest', 'dest/guide');
+fractal.web.set('builder.dest', 'guide/dest');
