@@ -1,2 +1,2 @@
-let Kensho = require('./dest/Kensho.js');
+let Kensho = require('./dest/Kensho.min.js');
 module.exports = Kensho;
