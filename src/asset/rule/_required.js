@@ -2,11 +2,13 @@
     let rule  = Kensho.rule;
 
     /**
-     * 
-     * @arg {any|any[]} val                -
-     * @arg {Object}    [param={}]         -
-     * @arg {boolean}   [param.trim=false] -
-     * @arg {string}    [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @arg {(any|any[])} val                -
+     * @arg {Object}      [param={}]         -
+     * @arg {boolean}     [param.trim=false] -
+     * @arg {string}      [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @return {boolean}
      */
     let requiredFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
@@ -28,7 +30,7 @@
             return val ? true : false;
         }
     }
-    
+
     Kensho.rule.add('required', requiredFunc);
 
 })();

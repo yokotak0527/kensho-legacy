@@ -38,7 +38,7 @@ let Kensho = (()=>{
             formElement.classList.add('kensho-form');
         }
         /**
-         *  検証対象(input)を追加する
+         *  add a validate data unit.
          *
          * @version 0.0.1
          * @memberof Kensho
@@ -172,6 +172,7 @@ let Kensho = (()=>{
          *
          * @version 0.0.1
          * @memberof Kensho
+         * @instance
          *
          * @return {void}
          */
@@ -181,9 +182,11 @@ let Kensho = (()=>{
             });
         }
         /**
+         * validate input values
          *
          * @version 0.0.1
          * @memberof Kensho
+         * @instance
          *
          * @param  {string} name - name属性
          * @return {kensho}

@@ -1,121 +1,159 @@
 // =============================================================================
 // required
-// 
+//
 // describe('required', function(){
-//     describe('expect TRUE', function(){
-//         it('boolean', function(){
-//             expect(Kensho.validate('required', true)).toBeTruthy();
-//         });
-//         it('string', function(){
-//             expect(Kensho.validate('required', 'aaa')).toBeTruthy();
-//         });
+//     it('valid values', function(){
+//         expect( Kensho.validate( 'required', true  ) ).toBeTruthy();
+//         expect( Kensho.validate( 'required', 'aaa' ) ).toBeTruthy();
 //     });
-//     describe('expect FALSE', function(){
-//         it('boolean', function(){
-//             expect(Kensho.validate('required', false)).toBeFalsy();
-//         });
-//         it('null', function(){
-//             expect(Kensho.validate('required', null)).toBeFalsy();
-//         });
-//         it('undefined', function(){
-//             expect(Kensho.validate('required')).toBeFalsy();
-//         });
+//     it('invalid values', function(){
+//         expect( Kensho.validate( 'required'        ) ).toBeFalsy();
+//         expect( Kensho.validate( 'required', false ) ).toBeFalsy();
+//         expect( Kensho.validate( 'required', null  ) ).toBeFalsy();
 //     });
 // });
 // =============================================================================
 // number
-// 
+//
 // describe('number', function(){
-//     describe('expect TRUE', function(){
-//         it('integer', function(){
-//             expect(Kensho.validate('number', '0')).toBeTruthy();
-//             expect(Kensho.validate('number', '111')).toBeTruthy();
-//         });
-//         it('signed', function(){
-//             expect(Kensho.validate('number', '-1', {signed : true})).toBeTruthy();
-//             expect(Kensho.validate('number', '+20', {signed : true})).toBeTruthy();
-//         });
-//         it('decimal point', function(){
-//             expect(Kensho.validate('number', '1.0', {point : true})).toBeTruthy();
-//             expect(Kensho.validate('number', '0.1111', {point : true})).toBeTruthy();
-//         });
-//         it('2byte number', function(){
-//             expect(Kensho.validate('number', '２', {allow2byte : true})).toBeTruthy();
-//         });
+//     it('valid values', function(){
+//         expect( Kensho.validate( 'number', '0'                             ) ).toBeTruthy();
+//         expect( Kensho.validate( 'number', '111'                           ) ).toBeTruthy();
+//         expect( Kensho.validate( 'number', '-1',     { signed     : true } ) ).toBeTruthy();
+//         expect( Kensho.validate( 'number', '+20',    { signed     : true } ) ).toBeTruthy();
+//         expect( Kensho.validate( 'number', '1.0',    { point      : true } ) ).toBeTruthy();
+//         expect( Kensho.validate( 'number', '0.1111', { point      : true } ) ).toBeTruthy();
+//         expect( Kensho.validate( 'number', '２',     { allow2byte : true } ) ).toBeTruthy();
 //     });
-//     describe('expect FALSE', function(){
-//         it('invalid type', function(){
-//             expect(Kensho.validate('number', true)).toBeFalsy();
-//         });
-//         it('signed', function(){
-//             expect(Kensho.validate('number', '-11')).toBeFalsy();
-//             expect(Kensho.validate('number', '=11', {signed : true})).toBeFalsy();
-//             expect(Kensho.validate('number', '++++11', {signed : true})).toBeFalsy();
-//             expect(Kensho.validate('number', '11+', {signed : true})).toBeFalsy();
-//         });
-//         it('decimal point', function(){
-//             expect(Kensho.validate('number', '1.1')).toBeFalsy();
-//             expect(Kensho.validate('number', '.11', {point : true})).toBeFalsy();
-//             expect(Kensho.validate('number', '1....1', {point : true})).toBeFalsy();
-//             expect(Kensho.validate('number', '1.', {point : true})).toBeFalsy();
-//             expect(Kensho.validate('number', '1.1.1.1', {point : true})).toBeFalsy();
-//         });
+//     it('invalid values', function(){
+//         expect( Kensho.validate( 'number', true                         ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '-11'                        ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '1.1'                        ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '=11',     { signed : true } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '++++11',  { signed : true } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '11+',     { signed : true } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '.11',     { point  : true } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '1....1',  { point  : true } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '1.',      { point  : true } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'number', '1.1.1.1', { point  : true } ) ).toBeFalsy();
 //     });
 // });
 // =============================================================================
 // age
-// 
+//
 // describe('age', function(){
-//     describe('expect TRUE', function(){
-//         it('valid value', function(){
-//             expect(Kensho.validate('age', '0')).toBeTruthy();
-//             expect(Kensho.validate('age', '100')).toBeTruthy();
-//             expect(Kensho.validate('age', '400', {maxAge : 500})).toBeTruthy();
-//         });
+//     it('valid values', function(){
+//         expect( Kensho.validate( 'age', '0'                     ) ).toBeTruthy();
+//         expect( Kensho.validate( 'age', '100'                   ) ).toBeTruthy();
+//         expect( Kensho.validate( 'age', '400', { maxAge : 500 } ) ).toBeTruthy();
+//         expect( Kensho.validate( 'age', '５６', { allow2byte : true } ) ).toBeTruthy();
 //     });
-//     describe('expect FALSE', function(){
-//         it('invalid value', function(){
-//             expect(Kensho.validate('age', '-10')).toBeFalsy();
-//             expect(Kensho.validate('age', '1000')).toBeFalsy();
-//         });
+//     it('invalid values', function(){
+//         expect( Kensho.validate( 'age', '-10'  ) ).toBeFalsy();
+//         expect( Kensho.validate( 'age', '1000' ) ).toBeFalsy();
+//         expect( Kensho.validate( 'age', '0123' ) ).toBeFalsy();
 //     });
 // });
-// 
 // =============================================================================
 // halfsize
-// 
+//
 // describe('halfsize', function(){
-//     it('valid value', function(){
-//         expect(Kensho.validate('halfsize', '1234abasf34-%')).toBeTruthy();
+//     it('valid values', function(){
+//         expect( Kensho.validate( 'halfsize', '1234abasf34-%' ) ).toBeTruthy();
 //     });
-//     it('invalid value', function(){
-//         expect(Kensho.validate('halfsize', '１２３')).toBeFalsy();
+//     it('invalid values', function(){
+//         expect( Kensho.validate( 'halfsize', '１２３'                   ) ).toBeFalsy();
+//         expect( Kensho.validate( 'halfsize', '',      { empty : false } ) ).toBeFalsy();
 //     });
 // });
 // =============================================================================
 // fullsize
-// 
+//
 // describe('fullsize', function(){
 //     it('valid value', function(){
-//         expect(Kensho.validate('fullsize', '１２３')).toBeTruthy();
+//         expect( Kensho.validate( 'fullsize', '１２３' ) ).toBeTruthy();
 //     });
 //     it('invalid value', function(){
-//         expect(Kensho.validate('fullsize', '1234abasf34-%')).toBeFalsy();
+//         expect( Kensho.validate( 'fullsize', '1234abasf34-%'                   ) ).toBeFalsy();
+//         expect( Kensho.validate( 'fullsize', '',             { empty : false } ) ).toBeFalsy();
 //     });
 // });
 // =============================================================================
 // email
-// 
+//
 // describe('email', function(){
 //     it('valid value', function(){
-//         expect(Kensho.validate('email', 'a@a.com')).toBeTruthy();
+//         expect( Kensho.validate( 'email', 'a@a.com' ) ).toBeTruthy();
 //     });
 //     it('invalid value', function(){
-//         expect(Kensho.validate('email', 'aaa')).toBeFalsy();
-//         expect(Kensho.validate('email', 'a.a@a.c')).toBeFalsy();
-//         expect(Kensho.validate('email', 'a.a@a..com')).toBeFalsy();
+//         expect( Kensho.validate( 'email', 'aaa'        ) ).toBeFalsy();
+//         expect( Kensho.validate( 'email', 'a.a@a.c'    ) ).toBeFalsy();
+//         expect( Kensho.validate( 'email', 'a.a@a..com' ) ).toBeFalsy();
+//         expect( Kensho.validate( 'email', 'あ@c.com'   ) ).toBeFalsy();
 //     });
 // });
 
-describe('range', function(){
+// =============================================================================
+// range
+//
+// describe('range', function(){
+//     it('valid value', function(){
+//         expect( Kensho.validate( 'range', 'あいう'                       ) ).toBeTruthy(); // do nothing
+//         expect( Kensho.validate( 'range', 'あいう', { min : 1 }          ) ).toBeTruthy();
+//         expect( Kensho.validate( 'range', 'あいう', { min : 0, max : 5 } ) ).toBeTruthy();
+//         expect( Kensho.validate( 'range', 'あいう', { max : 5          } ) ).toBeTruthy();
+//     });
+//     it('invalid value', function(){
+//         expect( Kensho.validate( 'range', '',        { empty : false } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'range', 'あいう',  { min   : 10    } ) ).toBeFalsy();
+//         expect( Kensho.validate( 'range', 'あいう',  { max   : 1     } ) ).toBeFalsy();
+//     });
+// });
+
+// =============================================================================
+// blacklist
+//
+// describe('blacklost', function(){
+//     it('valid value', function(){
+//         expect( Kensho.validate('blacklist', 'abc' )).toBeTruthy(); // do nothing
+//         expect( Kensho.validate('blacklist', 'abc', {
+//             list : /^[0-9]/
+//         } )).toBeTruthy();
+//         expect( Kensho.validate('blacklist', 'abc', {
+//             list : [
+//                 /^[0-9]/,
+//                 'abd'
+//             ]
+//         } )).toBeTruthy();
+//     });
+//     it('invalid value', function(){
+//         expect( Kensho.validate( 'blacklist', '', { empty : false })).toBeFalsy();
+//         expect( Kensho.validate( 'blacklist', 'abc', {
+//             list : 'abc'
+//         })).toBeFalsy();
+//     });
+// });
+
+// =============================================================================
+// whitelist
+//
+describe('whitelist', function(){
+    it('valid value', function(){
+        expect( Kensho.validate('whitelist', 'abc' )).toBeTruthy(); // do nothing
+        expect( Kensho.validate('whitelist', 'abc', {
+            list : /^[a-z]/
+        } )).toBeTruthy();
+        expect( Kensho.validate('whitelist', 'abc', {
+            list : [
+                /^[0-9]$/,
+                'abc'
+            ]
+        } )).toBeTruthy();
+    });
+    it('invalid value', function(){
+        expect( Kensho.validate( 'whitelist', '', { empty : false })).toBeFalsy();
+        expect( Kensho.validate( 'whitelist', 'abc', {
+            list : 'abd'
+        })).toBeFalsy();
+    });
 });

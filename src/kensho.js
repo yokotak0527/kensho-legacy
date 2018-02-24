@@ -38,7 +38,7 @@ let Kensho = (()=>{
             formElement.classList.add('kensho-form');
         }
         /**
-         *  検証対象(input)を追加する
+         *  add a validate data unit.
          *
          * @version 0.0.1
          * @memberof Kensho
@@ -172,6 +172,7 @@ let Kensho = (()=>{
          *
          * @version 0.0.1
          * @memberof Kensho
+         * @instance
          *
          * @return {void}
          */
@@ -181,9 +182,11 @@ let Kensho = (()=>{
             });
         }
         /**
+         * validate input values
          *
          * @version 0.0.1
          * @memberof Kensho
+         * @instance
          *
          * @param  {string} name - name属性
          * @return {kensho}
@@ -550,11 +553,13 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * 
-     * @arg {any|any[]} val                -
-     * @arg {Object}    [param={}]         -
-     * @arg {boolean}   [param.trim=false] -
-     * @arg {string}    [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @arg {(any|any[])} val                -
+     * @arg {Object}      [param={}]         -
+     * @arg {boolean}     [param.trim=false] -
+     * @arg {string}      [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @return {boolean}
      */
     let requiredFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
@@ -576,7 +581,7 @@ let Kensho = (()=>{
             return val ? true : false;
         }
     }
-    
+
     Kensho.rule.add('required', requiredFunc);
 
 })();
@@ -585,9 +590,12 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {String} val
-     * @param {Object} [param={}]
-     * @param {string} [type='']
+     *
+     * @arg {(string|string[])} val                -
+     * @arg {Object}            [param={}]         -
+     * @arg {boolean}           [param.trim=false] -
+     * @arg {boolean}           [param.empty=true] -
+     * @arg {string}            [type='']          - input type based on Kensho's own sorting rule
      */
     let fullsizeFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
@@ -598,7 +606,13 @@ let Kensho = (()=>{
             return result;
         }else{
             let result  = true;
+
+            let trim    = typeof param.trim  === 'boolean' ? param.trim  : false;
+            let empty   = typeof param.empty === 'boolean' ? param.empty : true;
             let is2byte = Kensho.plugin.get('is2byte');
+
+            if(trim) val = val.trim();
+            if ( val.length === 0 ) return empty ? true : false;
 
             for(let i = 0, l = val.length; i < l; i++){
                 if(!is2byte.func(val[i])){
@@ -617,13 +631,17 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * 
-     * @param {string} val
-     * @param {Object} [param={}]
-     * @param {string} [type='']
+     *
+     * @arg {(string|string[])}  val              -
+     * @arg {Object}           [param={}]         -
+     * @arg {boolean}          [param.trim=false] -
+     * @arg {boolean}          [param.empty=true] -
+     * @arg {string}           [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @return {boolean}
      */
     let halfsizeFunc = function(val, param = {}, type = ''){
-        
+
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
@@ -632,7 +650,13 @@ let Kensho = (()=>{
             return result;
         }else{
             let result  = true;
+
+            let trim    = typeof param.trim  === 'boolean' ? param.trim  : false;
+            let empty   = typeof param.empty === 'boolean' ? param.empty : true;
             let is1byte = Kensho.plugin.get('is1byte');
+
+            if(trim) val = val.trim();
+            if ( val.length === 0 ) return empty ? true : false;
 
             for(let i = 0, l = val.length; i < l; i++){
                 if(!is1byte.func(val[i])){
@@ -651,14 +675,12 @@ let Kensho = (()=>{
     let rule = Kensho.rule;
 
     /**
-     * 
+     *
      * @arg {string|string[]} val                      -
      * @arg {Object}          [param={}]               -
      * @arg {boolean}         [param.allow2byte=false] -
      * @arg {boolean}         [param.trim=false]       -
      * @arg {boolean}         [param.empty=true]       -
-     * @arg {boolean}         [param.signed]           - 
-     * @arg {boolean}         [param.point]            - 
      * @arg {string}          [type='']                - input type based on Kensho's own sorting rule
      *
      * @return {boolean}
@@ -674,32 +696,16 @@ let Kensho = (()=>{
             let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
             let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
             let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
-            let signed        = typeof param.signed     === 'boolean' ? param.signed     : false;
-            let point         = typeof param.point      === 'boolean' ? param.point      : false; // decimal point
             let full2half     = Kensho.plugin.get('full2half');
 
             if(allow2byteFlg) val = full2half.func(val);
             if(trimFlg) val = val.trim();
+            if ( val.length === 0 ) return empty ? true : false;
 
             if(val.length === 0 && empty) return true;
-            
-            let regExpText = '^';
-            let regExpPtn  = ['0-9'];
-            
-            if(signed) regExpText += '[\-\+]?';
 
-            if(point){
-                if(/^[\.]/.test(val))         return false;
-                if(val.split('.').length > 2) return false;
-                if(/[\.]$/.test(val))         return false;
-                regExpPtn.push('\.');
-            }
-
-            regExpText += `[${regExpPtn.join('')}]+$`;
-            let regExp = new RegExp(regExpText);
-            
-            if(!regExp.test(val)) return false;
-            return true;
+            val *= 1;
+            return isNaN(val) ? false : true;
         }
     }
     rule.add('number', numberFunc);
@@ -710,13 +716,14 @@ let Kensho = (()=>{
     let rule = Kensho.rule;
 
     /**
-     * 
-     * @param {string|string[]}  val                      - 
-     * @param {Object}           [param={}]               - 
-     * @param {number}           [param.maxAge=125]       - 
-     * @param {boolean}          [param.allow2byte=false] - 
-     * @param {boolean}          [param.trim=false]       - 
-     * @param {boolean}          [param.empty=true]       - 
+     *
+     * @arg {(string|string[])} val                      -
+     * @arg {Object}            [param={}]               -
+     * @arg {number}            [param.maxAge=125]       -
+     * @arg {boolean}           [param.allow2byte=false] -
+     * @arg {boolean}           [param.trim=false]       -
+     * @arg {boolean}           [param.empty=true]       -
+     * @arg {string}            [type='']                - input type based on Kensho's own sorting rule
      *
      * @return {boolean}
      */
@@ -730,28 +737,17 @@ let Kensho = (()=>{
         }else{
             let maxAge        = param.maxAge ? param.maxAge : 125;
             let allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
-            let trimFlg       = typeof param.trim       === 'boolean' ? param.trim       : false;
+            let trim          = typeof param.trim       === 'boolean' ? param.trim       : false;
             let empty         = typeof param.empty      === 'boolean' ? param.empty      : true;
             let full2half     = Kensho.plugin.get('full2half');
-            let numberRule    = Kensho.rule.get('number');
-            
-            let result = true;
-            result = numberRule(val, {
-                'allow2byte' : allow2byteFlg,
-                'trim'       : trimFlg,
-                'empty'      : empty,
-                'signed'     : false,
-                'point'      : false
-            }, type);
-            if(!result) return false;
 
             if(allow2byteFlg) val = full2half.func(val);
-            if(trimFlg) val = val.trim();
+            if(trim) val = val.trim();
+            if ( val.length === 0 ) return empty ? true : false;
 
-            if(val.length === 0 && empty) return true;           // empty
-            if(!/^[0-9]{1,3}$/.test(val)) return false;          // ex. a1,1234, -5
-            if(val.length !== 1 && /^0/.test(val)) return false; // first number is 0
-            if(val > maxAge) return false;                       // limit
+            if(val.length === 0 && empty) return true; // empty
+            if(!/^[0-9]+$/.test(val) || /^0/.test(val)) return false;
+            if(val > maxAge) return false; // limit
             return true;
         }
     }
@@ -763,9 +759,14 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {string} val
-     * @param {Object} [param={}]
-     * @param {string} [type='']
+     *
+     * @arg {(string|string[])} val                -
+     * @arg {Object}            [param={}]         -
+     * @arg {boolean}           [param.trim=false] -
+     * @arg {boolean}           [param.empty=true] -
+     * @arg {string}            [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @return {boolean}
      */
     let emailFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
@@ -776,11 +777,16 @@ let Kensho = (()=>{
             return result;
         }else{
             let result       = true;
+            let trim         = typeof param.trim  === 'boolean' ? param.trim  : false;
+            let empty        = typeof param.empty === 'boolean' ? param.empty : true;
             let halfsizeRule = Kensho.rule.get('halfsize');
-            result = halfsizeRule(val, {
-                
-            }, type);
-            
+
+            if(trim) val = val.trim();
+            if ( val.length === 0 ) return empty ? true : false;
+
+            result = halfsizeRule(val, {}, type);
+            if(!result) return result;
+
             // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
             let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(val);
@@ -793,23 +799,51 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {String}   val
-     * @param {Object}   param
-     * @param {String[]} param.list
+     *
+     * @arg {(string|string[])}     val                -
+     * @arg {Object}                [param={}]         -
+     * @arg {(string|RegExp|any[])} param.list         -
+     * @arg {boolean}               [param.trim=false] -
+     * @arg {boolean}               [param.empty=true] -
+     * @arg {string}                [type='']          - input type based on Kensho's own sorting rule
+     *
+     * @return {boolean}
      */
-    rule.add('blacklist', function(val, param){
-        let result = true;
-        if(!param.list) return result;
+    let blacklistFunc = function(val, param, type = ''){
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!blacklistFunc(v, param, type)) result = false;
+            });
+            return result;
+        }else{
+            let result = true;
+            let trim   = typeof param.trim  === 'boolean' ? param.trim  : false;
+            let empty  = typeof param.empty === 'boolean' ? param.empty : true;
 
-        for(let i = 0, l = param.list.length; i < l; i++){
-            let reg = new RegExp(param.list[i]);
-            if(reg.test(val)){
-                result = false;
-                break;
+            if(trim) val = val.trim();
+            if(val.length === 0) return empty ? true : false;
+            if(!param.list) return true; // do noting
+
+            param.list = Array.isArray(param.list) ? param.list : [param.list];
+
+            for(let i = 0, l = param.list.length; i < l; i++){
+                let reg;
+                if(toString.call(param.list[i]) === '[object RegExp]'){
+                    reg = param.list[i];
+                }else{
+                    reg = new RegExp(param.list[i]);
+                }
+                if(reg.test(val)){
+                    result = false;
+                    break;
+                }
             }
+            return result;
         }
-        return result;
-    });
+
+    }
+    rule.add('blacklist', blacklistFunc);
 
 })();
 
@@ -817,23 +851,49 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {string}   val
-     * @param {Object}   param
-     * @param {string[]} param.list
+     *
+     * @arg {(string|string[])}     val                -
+     * @arg {Object}                [param={}]         -
+     * @arg {(string|RegExp|any[])} param.list         -
+     * @arg {boolean}               [param.trim=false] -
+     * @arg {boolean}               [param.empty=true] -
+     *
+     * @return {boolean}
      */
-    rule.add('whitelist', function(val, param){
-        let result = false;
-        if(!param.list) return result;
+    let whitelistFunc = function(val, param, type = ''){
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!whitelistFunc(v, param, type)) result = false;
+            });
+            return result;
+        }else{
+            let result = false;
+            let trim   = typeof param.trim  === 'boolean' ? param.trim  : false;
+            let empty  = typeof param.empty === 'boolean' ? param.empty : true;
 
-        for(let i = 0, l = param.list.length; i < l; i++){
-            let reg = new RegExp(param.list[i]);
-            if(reg.test(val)){
-                result = true;
-                break;
+            if(trim) val = val.trim();
+            if(val.length === 0) return empty ? true : false;
+            if(!param.list) return true; // do noting
+
+            param.list = Array.isArray(param.list) ? param.list : [param.list];
+
+            for(let i = 0, l = param.list.length; i < l; i++){
+                let reg;
+                if(toString.call(param.list[i]) === '[object RegExp]'){
+                    reg = param.list[i];
+                }else{
+                    reg = new RegExp(param.list[i]);
+                }
+                if(reg.test(val)){
+                    result = true;
+                    break;
+                }
             }
+            return result;
         }
-        return result;
-    });
+    }
+    rule.add('whitelist', whitelistFunc);
 
 })();
 
@@ -841,13 +901,15 @@ let Kensho = (()=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {string}   val
-     * @param {Object}   [param]
-     * @param {number}   [param.min]
-     * @param {number}   [param.max]
-     * @param {boolean}  [param.trim=true]
-     * @param {boolean}  [param.empty=true]
-     * @param {boolean}  [type='']
+     * @param {(string|string[])} val                   -
+     * @param {Object}            [param]               -
+     * @param {number}            [param.min=undefined] -
+     * @param {number}            [param.max=undefined] -
+     * @param {boolean}           [param.trim=true]     -
+     * @param {boolean}           [param.empty=true]    -
+     * @param {boolean}           [type='']             - input type based on Kensho's own sorting rule
+     *
+     * @return {boolean}
      */
     let rangeFunc = function(val, param = {}, type = ''){
         if(Array.isArray(val)){
@@ -859,13 +921,13 @@ let Kensho = (()=>{
         }else{
             let result = true;
 
-            let trimFlg = typeof param.trim  === 'boolean' ? param.trim       : false;
-            let empty   = typeof param.empty === 'boolean' ? param.empty      : true;
+            let trim  = typeof param.trim  === 'boolean' ? param.trim  : false;
+            let empty = typeof param.empty === 'boolean' ? param.empty : true;
 
-            if(trimFlg) val = val.trim();
-            if ( empty && val.length === 0 ) return true;
+            if ( trim ) val = val.trim();
+            if ( val.length === 0 ) return empty ? true : false;
 
-            if(param.min === undefined && param.max === undefined) return result;
+            if(param.min === undefined && param.max === undefined) return true;
 
             if(param.min === undefined && typeof param.max === 'number'){
                 if(val.length > param.max) result = false;
@@ -884,16 +946,29 @@ let Kensho = (()=>{
 })();
 
 (()=>{
-    let rule  = Kensho.rule;
+    let rule = Kensho.rule;
 
     /**
-     * @param {String}      val
-     * @param {String|HTML} param
+     *
+     * @arg {(string|string[])}           val        -
+     * @arg {(string|HTMLElement|Object)} [param={}] ~
+     *
+     * @return {boolean}
      */
-    rule.add('match', function(val, param){
-        param = typeof param === 'string' ? document.querySelector(param) : param;
-        return param.value === val;
-    });
+    let matchFunc = function(val, param, type = ''){
+        if(Array.isArray(val)){
+            let result = true;
+            val.forEach( v => {
+                if(!matchFunc(v, param, type)) result = false;
+            });
+            return result;
+        }else{
+
+        }
+        // param = typeof param === 'string' ? document.querySelector(param) : param;
+        // return param.value === val;
+    }
+    rule.add('match', matchFunc);
 
 })();
 

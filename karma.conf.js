@@ -11,35 +11,15 @@ module.exports = function(config){
         'browsers'  : [ 'PhantomJS' ],
         'reporters' : [ 'mocha' ]
     };
-    
+
     // =========================================================================
     // TRAVIS
     // =========================================================================
     if(process.env.TRAVIS){
         param.singleRun = true;
         param.autoWatch = false;
+    }else{
+        param.autoWatch = true;
     }
-    // =========================================================================
-    // LOCAL
-    // =========================================================================
-    else{
-        //   param = {
-        //     basePath: '',
-        //     frameworks: ['jasmine'],
-        //     files: [
-        //       // 'node_modules/es6-shim/es6-shim.js',
-        //       'dest/Kensho.js',
-        //       'test/*Spec.js'
-        //     ],
-        //     reporters: ['jasmine'],
-        //     colors: true,
-        //     logLevel: config.LOG_INFO,
-        //     autoWatch: true,
-        //     browsers: ['chrome'],
-        //     singleRun: false,
-        //     concurrency: Infinity
-        //   }
-    }
-    console.log(config);
     config.set(param);
 }
