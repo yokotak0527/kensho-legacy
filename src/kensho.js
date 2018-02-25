@@ -155,18 +155,20 @@ let Kensho = (()=>{
          * @memberof Kensho
          * @instance
          *
+         * @arg {string} [name='']
+         *
          * @return {boolean}
          */
-        hasError(){
-        let _      = this._.get(this);
-        let result = false;
-        for(let key in _.inputs){
-        if(_.inputs[key].error.length !== 0){
-        result = true;
-        break;
-        }
-        }
-        return result;
+        hasError(name = ''){
+            // let _      = this._.get(this);
+            // let result = false;
+            // for(let key in _.inputs){
+            // if(_.inputs[key].error.length !== 0){
+            // result = true;
+            // break;
+            // }
+            // }
+            return result;
         }
         /**
          *
