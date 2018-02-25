@@ -9,10 +9,6 @@ label: 使い方
 <script src="./kensho.js"></script>
 ```
 
-依存しているライブラリはありません。  
-基本的には単独で動作しますが、IE11に限ってはKenshoライブラリを呼ぶ前に
-[babelのpolyfill](https://babeljs.io/docs/usage/polyfill/)などを呼んでください。
-
 ## 2. form要素を用意します
 
 ```html
@@ -27,7 +23,7 @@ label: 使い方
 ```js
 /**
  * constructor(formElement)
- * 
+ *
  * @arg {(string|HTMLElement)} - formタグへのCSSセレクタ文字列かHTMLELement
  */
 var kensho = new Kensho('#my-form');

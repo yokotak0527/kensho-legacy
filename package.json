@@ -20,13 +20,16 @@
         "npm": ">=5.6.0"
     },
     "keywords": [
-        "form validation library"
+        "form",
+        "validation",
+        "library"
     ],
     "author": "yokotak0527",
     "license": "MIT",
     "devDependencies": {
         "@frctl/fractal": "^1.1.7",
         "babel-core": "^6.26.0",
+        "babel-plugin-transform-runtime": "^6.23.0",
         "babel-preset-env": "^1.6.1",
         "gulp": "^4.0.0",
         "gulp-babel": "^7.0.1",

@@ -9,9 +9,9 @@ label: age
 
 | オプション | 型      | 初期値 | 説明             |
 |------------|---------|--------|------------------|
-| empty      | boolean | true   | 未入力の場合は検証しない |
-| maxAage    | number  | 125    | 入力できる最大値 |
+| maxAge     | number  | 125    | 入力できる最大値 |
 | allow2byte | boolean | false  | 2バイト文字を受け付けるか |
+| empty      | boolean | true   | 未入力の場合は検証しない |
 | trim       | boolean | false  | 文字列左右端の空白を削除するか |
 
 ## 利用できるタグ
@@ -28,7 +28,3 @@ label: age
 ## 依存しているプラグイン
 
 - full2half
-
-## 依存しているルール
-
-- number

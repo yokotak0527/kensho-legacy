@@ -69,6 +69,14 @@ conf.options.babel = {
                 'last 3 version'
             ]
         }]
+    ],
+    plugins : [
+        ['transform-runtime', {
+            'helpers': false,
+            'polyfill': false,
+            'regenerator': true,
+            'moduleName': 'babel-runtime'
+        }]
     ]
 };
 // -----------------------------------------------------------------------------
