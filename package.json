@@ -19,12 +19,18 @@
         "node": ">=8.9.3",
         "npm": ">=5.6.0"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yokotak0527/kensho"
+    },
+    "bugs": {
+        "url": "https://github.com/yokotak0527/kensho/issues"
+    },
     "keywords": [
         "form",
-        "validation",
-        "library"
+        "validation"
     ],
-    "author": "yokotak0527",
+    "author": "yokota kenji",
     "license": "MIT",
     "devDependencies": {
         "@frctl/fractal": "^1.1.7",
