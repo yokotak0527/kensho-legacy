@@ -1,0 +1,68 @@
+<form action="" id="my-form">
+    <!-- 検証1 -->
+    <div class="set1">
+        <p class="text">2つの項目の値が一致しているか</p>
+        <input type="text" name="your-name">
+        <input type="text" name="your-name2">
+        <p class="error"></p>
+    </div>
+    <!-- 検証2 -->
+    <div class="set2">
+        <p class="text">入力された値が「set2」か</p>
+        <input type="text" name="your-name">
+        <p class="error"></p>
+    </div>
+    <!-- 検証3 -->
+    <div class="set3">
+        <p class="text">入力された値が全て「set3」か</p>
+        <input type="text" name="your-name">
+        <input type="text" name="your-name2">
+        <p class="error"></p>
+    </div>
+</form>
+
+<script>
+    var kensho = new Kensho('#my-form');
+    // 検証1
+    kensho.add(
+        [
+            '.set1 input[name="your-name"]',
+            '.set1 input[name="your-name2"]'
+        ],
+        '.set1 input[name="your-name2"] + .error',
+
+        {
+            'match' : '値が一致しません'
+        },
+        'keyup|blur'
+    );
+    // 検証2
+    kensho.add(
+        '.set2 input[name="your-name"]',
+        '.set2 input[name="your-name"] + .error',
+
+        {
+            'match' : {
+                'errorMessage' : '値が一致しません',
+                'param' : { 'val' : 'set2' }
+            }
+        },
+        'keyup|blur'
+    );
+    // 検証3
+    kensho.add(
+        [
+            '.set3 input[name="your-name"]',
+            '.set3 input[name="your-name2"]'
+        ],
+        '.set3 input[name="your-name2"] + .error',
+
+        {
+            'match' : {
+                'errorMessage' : '値が一致しません',
+                'param' : { 'val' : 'set3' }
+            }
+        },
+        'keyup|blur'
+    );
+</script>

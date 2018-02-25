@@ -5,6 +5,8 @@ label: whitelist
 
 listで指定した値とマッチするか
 
+param.listにはstring,RegExpもしくはそれらの配列が渡せます。
+
 ## オプション項目
 
 | オプション | 型                                 | 初期値 | 説明             |

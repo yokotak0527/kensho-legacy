@@ -1047,23 +1047,40 @@ var Kensho = function () {
 
     /**
      *
-     * @arg {(string|string[])}           val        -
-     * @arg {(string|HTMLElement|Object)} [param={}] ~
+     * @arg {(string|string[])}           val                -
+     * @arg {(string|HTMLElement|Object)} [param={}]         ~
+     * @arg {boolean}                     [param.empty=true] -
+     * @arg {string}                      [param.val='']     - fixed value
+     * @arg {string}                      [type='']          - input type based on Kensho's own sorting rule
      *
      * @return {boolean}
      */
-    var matchFunc = function matchFunc(val, param) {
+    var matchFunc = function matchFunc(val) {
+        var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
+        var empty = typeof param.empty === 'boolean' ? param.empty : true;
+
         if (Array.isArray(val)) {
-            var _result16 = true;
-            val.forEach(function (v) {
-                if (!matchFunc(v, param, type)) _result16 = false;
+            var arr = val;
+            var v = param.val ? param.val : arr[0];
+            var filtered = arr.filter(function (_v) {
+                return v === _v;
             });
-            return _result16;
-        } else {}
-        // param = typeof param === 'string' ? document.querySelector(param) : param;
-        // return param.value === val;
+
+            if (arr.length === filtered.length) {
+                if (!filtered[0].length) return empty;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // do noting
+            if (!param.val) return true;
+
+            if (!val.length) return empty;
+            return val === param.val ? true : false;
+        }
     };
     rule.add('match', matchFunc);
 })();

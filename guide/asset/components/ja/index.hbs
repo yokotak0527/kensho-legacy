@@ -1,19 +1,18 @@
 <form action="" id="my-form">
     <p class="text"></p>
     <input type="text" name="your-name">
+    <input type="text" name="your-name2">
     <p class="error"></p>
 </form>
 
 <script>
     var kensho = new Kensho('#my-form');
     kensho.add(
-        'input[name="your-name"]',
-        'input[name="your-name"] + .error',
-        
+        ['input[name="your-name"]', 'input[name="your-name2"]'],
+        'input[name="your-name2"] + .error',
         {
-            'required' : '必須項目です'
+            'match' : '値が一致しません'
         },
         'keyup|blur'
     );
-    console.log(kensho);
 </script>

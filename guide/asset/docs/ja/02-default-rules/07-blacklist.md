@@ -3,7 +3,9 @@ title: blacklist
 label: blacklist
 ---
 
-listで指定した値とマッチしないか
+param.listで指定した値とマッチしないか
+
+param.listにはstring,RegExpもしくはそれらの配列が渡せます。
 
 ## オプション項目
 
