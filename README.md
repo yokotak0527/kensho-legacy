@@ -6,6 +6,12 @@ The JavaScript form validation library.
 [![codecov](https://codecov.io/gh/yokotak0527/kensho/branch/master/graph/badge.svg)](https://codecov.io/gh/yokotak0527/kensho)
 ![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
 
+## Install
+
+```bash
+$ npm install @yokotak0527/kensho
+```
+
 ## How to use
 
 ```js
@@ -45,3 +51,9 @@ kensho.add(
 07. blacklist
 08. halfsize
 09. fullsize
+
+## Usage guide
+
+japanese only..
+
+http://yokotakenji.me/product/kensho/guide/

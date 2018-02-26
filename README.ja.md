@@ -6,6 +6,12 @@
 [![codecov](https://codecov.io/gh/yokotak0527/kensho/branch/master/graph/badge.svg)](https://codecov.io/gh/yokotak0527/kensho)
 ![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
 
+## インストール
+
+```bash
+$ npm install @yokotak0527/kensho
+```
+
 ## 使い方
 
 ```js
@@ -45,3 +51,7 @@ kensho.add(
 07. blacklist
 08. halfsize
 09. fullsize
+
+## ガイド
+
+http://yokotakenji.me/product/kensho/guide/
