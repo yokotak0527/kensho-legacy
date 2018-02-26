@@ -224,7 +224,7 @@ let Kensho = (()=>{
                         _val = elm.value;
                     }
                     _val = this.hook.filter(`validate-val--${unit.type}`, _val);
-                    // console.log('unit');
+                    _val = this.hook.filter(`validate-val--${unit.name}`, _val);
                     values.push(_val);
                 });
                 let result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);

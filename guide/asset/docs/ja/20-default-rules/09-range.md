@@ -17,3 +17,14 @@ label: range
 | trim       | boolean | false     | 文字列左右端の空白を削除するか |
 | min        | number  | undefined | |
 | max        | number  | undefined | |
+
+## 利用できるタグ
+
+| タグ種別               | 補足 |
+|------------------------|------|
+| input[type="text"]     |      |
+| input[type="password"] |      |
+| input[type="search"]   |      |
+| input[type="tel"]      |      |
+| input[type="number"]   |      |
+| textarea               |      |

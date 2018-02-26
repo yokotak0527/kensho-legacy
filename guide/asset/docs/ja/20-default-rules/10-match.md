@@ -15,4 +15,15 @@ label: match
 param.valが見指定の場合、入力項目が全て一致しているかどうかを検証します。  
 param.valが指定された場合、入力項目が全てparam.valと等しいかどうかを検証します。
 
-[サンプル]({{ path '/components/detail/match-rule-sample' }})
+[サンプル](/components/detail/ja-match-rule-sample)
+
+## 利用できるタグ
+
+| タグ種別               | 補足 |
+|------------------------|------|
+| input[type="text"]     |      |
+| input[type="password"] |      |
+| input[type="search"]   |      |
+| input[type="tel"]      |      |
+| input[type="number"]   |      |
+| textarea               |      |

@@ -256,7 +256,7 @@ var Kensho = function () {
                         _val = elm.value;
                     }
                     _val = _this3.hook.filter('validate-val--' + unit.type, _val);
-                    // console.log('unit');
+                    _val = _this3.hook.filter('validate-val--' + unit.name, _val);
                     values.push(_val);
                 });
                 var result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);

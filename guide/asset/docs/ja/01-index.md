@@ -38,7 +38,12 @@ var kensho = new Kensho('#my-form');
  * @arg {string}                             [unitName=''] - ユニットの名前、省略時はinputElement1つめのname属性の値が使われます
  */
 kensho.add(
-    ''
+    'input[name="my-name"]',
+    '.error',
+    { // キーが利用する検証ルール名、値がエラー時の文章
+        'required' : '必須項目です'
+    },
+    'keyup|blur' // バリデート処理が発火するイベント
 );
 ```
 
@@ -48,8 +53,41 @@ kensho.add()メソッドを利用すると、Kenshoは入力された内容を�
 
 inputElementが1つのときは、unitNameの省略を気にする必要はありませんがinputElementが複数がある場合は気をつけてください。
 想定外のunitNameが利用されている場合があります。  
-詳しくは[aaa]({{@ja-multi-input-set}})
+詳しくは[複数inputセット](/components/detail/ja-multi-input-set)
+
+## ルールにパラメータを渡す
 
 ```
-{{view @ja/multi-input-set }}
+kensho.add(
+    'input[name="my-name"]',
+    '.error-msg',
+    {
+        'reqired'  : {
+            'errorMessage' : '必須項目です',
+            'param'        : { 'trim' : true }
+        },
+        'fullsize' : '全角のみ入力できます'
+    },
+    'keyup|blur'
+);
 ```
+
+## Kensho.jsの動作を変更する
+
+静的メンバ関数Kensho.config.set()を使うことでKensho.jsの挙動を変更することが出来ます。
+
+```
+Kensho.config.set('errorMessageWrapper', 'li');
+```
+
+### {boolean} [verbose=true]
+
+エラーを冗長的に出力するかを指定します。  
+
+### {string} [errorMessageWrapper='span']
+
+エラーメッセージを包むHTML要素を指定します。
+
+### {string} [errorClassName='kensho-has-error']
+
+エラーメッセージを包むHTML要素のclass属性に設定する値を指定します。

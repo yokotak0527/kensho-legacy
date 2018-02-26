@@ -1,17 +1,23 @@
 <form action="" id="my-form">
     <p class="text"></p>
     <input type="text" name="your-name">
-    <input type="text" name="your-name2">
     <p class="error"></p>
 </form>
 
 <script>
+    console.log(Kensho.plugin.get('full2half').func);
     var kensho = new Kensho('#my-form');
     kensho.add(
-        ['input[name="your-name"]', 'input[name="your-name2"]'],
-        'input[name="your-name2"] + .error',
+        'input[name="your-name"]',
+        'input[name="your-name"] + .error',
         {
-            'match' : '値が一致しません'
+            'required' : '値が一致しません',
+            'halfsize' : {
+                'errorMessage' : '1バイトのみ',
+                'param'        : {
+                    'empty' : false
+                }
+            }
         },
         'keyup|blur'
     );
