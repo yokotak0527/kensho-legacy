@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/yokotak0527/kensho/branch/master/graph/badge.svg)](https://codecov.io/gh/yokotak0527/kensho)
 ![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
 
-- [ドキュメント](http://yokotakenji.me/product/kensho/guide/)
+- [ドキュメント](http://yokotakenji.me/product/kensho/doc/)
 - [ガイド](http://yokotakenji.me/product/kensho/guide/)
 
 ## 仕様

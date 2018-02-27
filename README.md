@@ -6,7 +6,7 @@ The JavaScript form validation library.
 [![codecov](https://codecov.io/gh/yokotak0527/kensho/branch/master/graph/badge.svg)](https://codecov.io/gh/yokotak0527/kensho)
 ![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
 
-- [document](http://yokotakenji.me/product/kensho/guide/)
+- [document](http://yokotakenji.me/product/kensho/doc/)
 - [Usage guide](http://yokotakenji.me/product/kensho/guide/)(japanese only..:frowning:)
 
 
