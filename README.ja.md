@@ -6,6 +6,24 @@
 [![codecov](https://codecov.io/gh/yokotak0527/kensho/branch/master/graph/badge.svg)](https://codecov.io/gh/yokotak0527/kensho)
 ![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
 
+- [ドキュメント](http://yokotakenji.me/product/kensho/guide/)
+- [ガイド](http://yokotakenji.me/product/kensho/guide/)
+
+## 仕様
+
+- 依存しているライブラリ無し
+- 2バイト文字のサポート
+- オリジナルのバリデーションルール、プラグイン、フックが設定可能.
+- フォームに不正な値があるかのチェック
+
+| Browsers |
+|----------|
+| Chrome   |
+| FireFox  |
+| Safari   |
+| IE11     |
+| Edge     |
+
 ## インストール
 
 ```bash
@@ -26,19 +44,57 @@ kensho.add(
 );
 ```
 
-## 仕様
+### バリデーションオプション指定
 
-- 依存しているライブラリ無し
-- 2バイト文字のサポート
-- オリジナルのバリデーションルール、プラグイン、フックが設定可能
+```js
+var kensho = new Kensho('#my-form');
+kensho.add(
+    'input[name=name]',
+    'p.error-msg',
+    {
+        'age' : {
+            'errorMessage' : 'under 20 only.',
+            'param' : {
+                'maxAge' : 20
+            }
+        },
+    },
+    'keyup|blur'
+);
+```
 
-| Browsers |
-|----------|
-| Chrome   |
-| FireFox  |
-| Safari   |
-| IE11     |
-| Edge     |
+### 手動バリデーション
+
+```js
+var kensho = new Kensho('#my-form');
+kensho.add(
+    'input[name=name]',
+    'p.error-msg',
+    {
+        'required' : 'this is required.',
+    },
+    'keyup|blur'
+);
+kensho.validate('name'); // return boolean
+```
+
+### 一括でバリデーション
+
+if you want to stop the form send event, when a form has invalid values.
+
+```js
+var $send = document.querySelector('#send');
+$send.addEventlistener('click', (e)=>{
+    kensho.allValidate();
+    if ( kensho.hasError() ) e.preventDefault();
+});
+```
+
+### 静的なバリデーション
+
+```js
+Kensho.validate('email', 'a@a.com'); // return boolean
+```
 
 ## デフォルトバリデーションルール一覧
 
@@ -51,7 +107,3 @@ kensho.add(
 07. blacklist
 08. halfsize
 09. fullsize
-
-## ガイド
-
-http://yokotakenji.me/product/kensho/guide/
