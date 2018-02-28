@@ -34,20 +34,21 @@
         {
             'match' : '値が一致しません'
         },
-        'keyup|blur'
+        'keyup|blur',
+        'validate1'
     );
     // 検証2
     kensho.add(
         '.set2 input[name="your-name"]',
         '.set2 input[name="your-name"] + .error',
-
         {
             'match' : {
                 'errorMessage' : '値が一致しません',
                 'param' : { 'val' : 'set2' }
             }
         },
-        'keyup|blur'
+        'keyup|blur',
+        'validate2'
     );
     // 検証3
     kensho.add(
@@ -63,6 +64,8 @@
                 'param' : { 'val' : 'set3' }
             }
         },
-        'keyup|blur'
+        'keyup|blur',
+        'validate3'
     );
+    console.log(kensho);
 </script>
