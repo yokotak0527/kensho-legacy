@@ -184,15 +184,18 @@ var Kensho = function () {
         Kensho.prototype.hasError = function hasError() {
             var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-            // let _      = this._.get(this);
-            // let result = false;
-            // for(let key in _.inputs){
-            // if(_.inputs[key].error.length !== 0){
-            // result = true;
-            // break;
-            // }
-            // }
-            return result;
+            var result = false;
+            if (name) {
+                return this.inputs[name].error.length !== 0;
+            } else {
+                for (var key in this.inputs) {
+                    if (this.inputs[key].error.length !== 0) {
+                        result = true;
+                        break;
+                    }
+                }
+                return result;
+            }
         };
         /**
          *
@@ -645,19 +648,19 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result = void 0;
+            var result = void 0;
             if (type === 'radio' || type === 'checkbox') {
-                _result = false;
+                result = false;
                 val.forEach(function (v) {
-                    if (v) _result = true;
+                    if (v) result = true;
                 });
             } else {
-                _result = true;
+                result = true;
                 val.forEach(function (v) {
-                    if (!requiredFunc(v, param, type, type)) _result = false;
+                    if (!requiredFunc(v, param, type, type)) result = false;
                 });
             }
-            return _result;
+            return result;
         } else {
             var trimFlg = param.trim === true ? true : false;
             if (typeof val === 'boolean') return val;
@@ -685,13 +688,13 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result2 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!fullsizeFunc(v, param, type)) _result2 = false;
+                if (!fullsizeFunc(v, param, type)) result = false;
             });
-            return _result2;
+            return result;
         } else {
-            var _result3 = true;
+            var _result = true;
 
             var trim = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
@@ -702,11 +705,11 @@ var Kensho = function () {
 
             for (var i = 0, l = val.length; i < l; i++) {
                 if (!is2byte.func(val[i])) {
-                    _result3 = false;
+                    _result = false;
                     break;
                 };
             }
-            return _result3;
+            return _result;
         }
     };
     rule.add('fullsize', fullsizeFunc);
@@ -731,13 +734,13 @@ var Kensho = function () {
 
 
         if (Array.isArray(val)) {
-            var _result4 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!halfsizeFunc(v, param, type)) _result4 = false;
+                if (!halfsizeFunc(v, param, type)) result = false;
             });
-            return _result4;
+            return result;
         } else {
-            var _result5 = true;
+            var _result2 = true;
 
             var trim = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
@@ -748,11 +751,11 @@ var Kensho = function () {
 
             for (var i = 0, l = val.length; i < l; i++) {
                 if (!is1byte.func(val[i])) {
-                    _result5 = false;
+                    _result2 = false;
                     break;
                 };
             }
-            return _result5;
+            return _result2;
         }
     };
     rule.add('halfsize', halfsizeFunc);
@@ -777,11 +780,11 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result6 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!numberFunc(v, param, type)) _result6 = false;
+                if (!numberFunc(v, param, type)) result = false;
             });
-            return _result6;
+            return result;
         } else {
             var allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
             var trimFlg = typeof param.trim === 'boolean' ? param.trim : false;
@@ -821,11 +824,11 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result7 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!ageFunc(v, param, type)) _result7 = false;
+                if (!ageFunc(v, param, type)) result = false;
             });
-            return _result7;
+            return result;
         } else {
             var maxAge = param.maxAge ? param.maxAge : 125;
             var allow2byteFlg = typeof param.allow2byte === 'boolean' ? param.allow2byte : false;
@@ -864,13 +867,13 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result8 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!emailFunc(v, param, type)) _result8 = false;
+                if (!emailFunc(v, param, type)) result = false;
             });
-            return _result8;
+            return result;
         } else {
-            var _result9 = true;
+            var _result3 = true;
             var trim = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
             var halfsizeRule = Kensho.rule.get('halfsize');
@@ -878,8 +881,8 @@ var Kensho = function () {
             if (trim) val = val.trim();
             if (val.length === 0) return empty ? true : false;
 
-            _result9 = halfsizeRule(val, {}, type);
-            if (!_result9) return _result9;
+            _result3 = halfsizeRule(val, {}, type);
+            if (!_result3) return _result3;
 
             // https://stackoverflow.com/questions/46155/how-to-validate-email-address-in-javascript
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -907,13 +910,13 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result10 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!blacklistFunc(v, param, type)) _result10 = false;
+                if (!blacklistFunc(v, param, type)) result = false;
             });
-            return _result10;
+            return result;
         } else {
-            var _result11 = true;
+            var _result4 = true;
             var trim = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
 
@@ -931,11 +934,11 @@ var Kensho = function () {
                     reg = new RegExp(param.list[i]);
                 }
                 if (reg.test(val)) {
-                    _result11 = false;
+                    _result4 = false;
                     break;
                 }
             }
-            return _result11;
+            return _result4;
         }
     };
     rule.add('blacklist', blacklistFunc);
@@ -958,13 +961,13 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result12 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!whitelistFunc(v, param, type)) _result12 = false;
+                if (!whitelistFunc(v, param, type)) result = false;
             });
-            return _result12;
+            return result;
         } else {
-            var _result13 = false;
+            var _result5 = false;
             var trim = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
 
@@ -982,11 +985,11 @@ var Kensho = function () {
                     reg = new RegExp(param.list[i]);
                 }
                 if (reg.test(val)) {
-                    _result13 = true;
+                    _result5 = true;
                     break;
                 }
             }
-            return _result13;
+            return _result5;
         }
     };
     rule.add('whitelist', whitelistFunc);
@@ -1011,13 +1014,13 @@ var Kensho = function () {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
         if (Array.isArray(val)) {
-            var _result14 = true;
+            var result = true;
             val.forEach(function (v) {
-                if (!rangeFunc(v, param, type)) _result14 = false;
+                if (!rangeFunc(v, param, type)) result = false;
             });
-            return _result14;
+            return result;
         } else {
-            var _result15 = true;
+            var _result6 = true;
 
             var trim = typeof param.trim === 'boolean' ? param.trim : false;
             var empty = typeof param.empty === 'boolean' ? param.empty : true;
@@ -1028,15 +1031,15 @@ var Kensho = function () {
             if (param.min === undefined && param.max === undefined) return true;
 
             if (param.min === undefined && typeof param.max === 'number') {
-                if (val.length > param.max) _result15 = false;
+                if (val.length > param.max) _result6 = false;
             }
             if (typeof param.min === 'number' && param.max === undefined) {
-                if (val.length < param.min) _result15 = false;
+                if (val.length < param.min) _result6 = false;
             }
             if (param.min !== undefined && param.max !== undefined) {
-                if (val.length < param.min || val.length > param.max) _result15 = false;
+                if (val.length < param.min || val.length > param.max) _result6 = false;
             }
-            return _result15;
+            return _result6;
         }
     };
     rule.add('range', rangeFunc);
