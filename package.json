@@ -1,18 +1,18 @@
 {
     "name": "@yokotak0527/kensho",
-    "version": "1.0.2",
+    "version": "1.1.2",
     "description": "form validation library.",
     "main": "index.js",
     "scripts": {
-        "gulp": "gulp",
+        "webpack": "webpack",
         "fractal": "fractal",
         "karma": "karma",
         "test": "karma start",
         "concat": "gulp concat",
         "build:doc": "jsdoc dest/kensho.js -c jsdoc.json -d doc",
         "build:guide": "NODE_ENV=production fractal build",
-        "build:js": "NODE_ENV=production gulp build",
-        "watch:js": "NODE_ENV=development gulp watch",
+        "build:js": "webpack --mode production",
+        "watch:js": "webpack --mode development",
         "watch:guide": "NODE_ENV=development fractal start --sync"
     },
     "engines": {
@@ -35,16 +35,8 @@
     "devDependencies": {
         "@frctl/fractal": "^1.1.7",
         "babel-core": "^6.26.0",
-        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-loader": "^7.1.4",
         "babel-preset-env": "^1.6.1",
-        "gulp": "^4.0.0",
-        "gulp-babel": "^7.0.1",
-        "gulp-changed": "^3.2.0",
-        "gulp-concat": "^2.6.1",
-        "gulp-if": "^2.0.2",
-        "gulp-plumber": "^1.2.0",
-        "gulp-rename": "^1.2.2",
-        "gulp-sourcemaps": "^2.6.4",
         "jasmine-core": "^2.99.1",
         "jsdoc": "^3.5.5",
         "karma": "^2.0.0",
@@ -52,7 +44,8 @@
         "karma-mocha-reporter": "^2.2.5",
         "karma-phantomjs-launcher": "^1.0.4",
         "minami": "^1.2.3",
-        "node-notifier": "^5.2.1"
-    },
-    "dependencies": {}
+        "node-notifier": "^5.2.1",
+        "webpack": "^4.0.1",
+        "webpack-cli": "^2.0.10"
+    }
 }
