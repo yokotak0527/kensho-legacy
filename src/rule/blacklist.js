@@ -1,4 +1,4 @@
-(()=>{
+export default (Kensho)=>{
     let rule  = Kensho.rule;
 
     /**
@@ -8,18 +8,21 @@
      * @arg {(string|RegExp|any[])} param.list         -
      * @arg {boolean}               [param.trim=false] -
      * @arg {boolean}               [param.empty=true] -
+     * @arg {string}                [type='']          - input type based on Kensho's own sorting rule
      *
      * @return {boolean}
      */
-    let whitelistFunc = function(val, param, type = ''){
+    let blacklistFunc = function(val, param, type = ''){
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!whitelistFunc(v, param, type)) result = false;
+                if(!blacklistFunc(v, param, type)) result = false;
             });
             return result;
         }else{
-            let result = false;
+            if(val === null) return false;
+
+            let result = true;
             let trim   = typeof param.trim  === 'boolean' ? param.trim  : false;
             let empty  = typeof param.empty === 'boolean' ? param.empty : true;
 
@@ -37,13 +40,14 @@
                     reg = new RegExp(param.list[i]);
                 }
                 if(reg.test(val)){
-                    result = true;
+                    result = false;
                     break;
                 }
             }
             return result;
         }
-    }
-    rule.add('whitelist', whitelistFunc);
 
-})();
+    }
+    rule.add('blacklist', blacklistFunc);
+
+};

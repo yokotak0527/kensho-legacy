@@ -1,4 +1,4 @@
-(()=>{
+export default (Kensho)=>{
 
     let isNbyte = function(half){
         return function(val){
@@ -9,5 +9,4 @@
     }
     Kensho.plugin.add('is1byte', isNbyte(true));
     Kensho.plugin.add('is2byte', isNbyte(false));
-
-})();
+};

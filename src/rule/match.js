@@ -1,4 +1,4 @@
-(()=>{
+export default (Kensho)=>{
     let rule = Kensho.rule;
 
     /**
@@ -26,6 +26,8 @@
                 return false;
             }
         }else{
+            if(val === null) return false;
+
             // do noting
             if(!param.val) return true;
 
@@ -35,4 +37,4 @@
     }
     rule.add('match', matchFunc);
 
-})();
+};

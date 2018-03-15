@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 /**
  * HTMLフォームバリデーションクラス
  *
@@ -271,8 +272,21 @@ import _Hook   from 'core/Kensho.Hook.js';   Kensho.Hook   = _Hook;
 import _rule   from 'core/Kensho.rule.js';   Kensho.rule   = _rule;
 import _plugin from 'core/Kensho.plugin.js'; Kensho.plugin = _plugin;
 
+// plugins
+import _full2halfPlugin from 'plugin/full2half.js'; _full2halfPlugin(Kensho);
+import _isNbytePlugin   from 'plugin/is-n-byte.js'; _isNbytePlugin(Kensho);
 
-import _requiredRule from 'rule/required.js'; _requiredRule(Kensho);
+// rules
+import _requiredRule  from 'rule/required.js';  _requiredRule(Kensho);
+import _numberdRule   from 'rule/number.js';    _numberdRule(Kensho);
+import _agedRule      from 'rule/age.js';       _agedRule(Kensho);
+import _emaildRule    from 'rule/email.js';     _emaildRule(Kensho);
+import _rangedRule    from 'rule/range.js';     _rangedRule(Kensho);
+import _fullsizedRule from 'rule/fullsize.js';  _fullsizedRule(Kensho);
+import _halfsizeRule  from 'rule/halfsize.js';  _halfsizeRule(Kensho);
+import _whitelistRule from 'rule/whitelist.js'; _whitelistRule(Kensho);
+import _blacklistRule from 'rule/blacklist.js'; _blacklistRule(Kensho);
+import _matchRule     from 'rule/match.js';     _matchRule(Kensho);
 
 if(window) window.Kensho = Kensho;
 

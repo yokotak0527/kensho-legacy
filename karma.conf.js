@@ -2,8 +2,7 @@ module.exports = function(config){
     let param = {
         'frameworks' : ['jasmine'],
         'files'      : [
-            'node_modules/babel-polyfill/dist/polyfill.min.js',
-            'dest/kensho.js',
+            'dist/kensho.js',
             'test/*Spec.js'
         ],
         'colors'    : true,

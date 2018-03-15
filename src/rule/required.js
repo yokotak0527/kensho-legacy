@@ -25,6 +25,8 @@ export default (Kensho)=>{
             }
             return result;
         }else{
+            if(val === null) return false;
+
             let trimFlg = param.trim === true ? true : false;
             if(typeof val === 'boolean') return val;
             if(trimFlg) val = val.trim();

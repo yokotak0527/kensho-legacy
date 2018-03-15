@@ -1,4 +1,4 @@
-(()=>{
+export default (Kensho)=>{
     let rule  = Kensho.rule;
 
     /**
@@ -20,6 +20,8 @@
             });
             return result;
         }else{
+            if(val === null) return false;
+
             let result = true;
 
             let trim  = typeof param.trim  === 'boolean' ? param.trim  : false;
@@ -44,4 +46,4 @@
     }
     rule.add('range', rangeFunc);
 
-})();
+};

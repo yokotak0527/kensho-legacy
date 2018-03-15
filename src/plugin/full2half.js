@@ -1,4 +1,4 @@
-(()=>{
+export default (Kensho)=>{
     let maps = {};
     maps = Object.assign(maps, {
         '０' : '0', '１' : '1', '２' : '2', '３' : '3', '４' : '4',
@@ -40,4 +40,4 @@
         maps = Object.assign(maps, userMap);
     }
     Kensho.plugin.add('full2half', full2half);
-})();
+};
