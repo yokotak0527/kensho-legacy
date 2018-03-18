@@ -14,7 +14,10 @@ module.exports = (env, argv) => {
         ]
     };
     param.output  = {
-        path : path.resolve(__dirname, 'dist/')
+        path          : path.resolve(__dirname, 'dist/'),
+        library       : 'Kensho',
+        libraryTarget : 'umd',
+        globalObject  : 'this'
     };
     param.entry = './core/Kensho.js';
     param.module = {};

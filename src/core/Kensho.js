@@ -287,8 +287,4 @@ import _whitelistRule from 'rule/whitelist.js'; _whitelistRule(Kensho);
 import _blacklistRule from 'rule/blacklist.js'; _blacklistRule(Kensho);
 import _matchRule     from 'rule/match.js';     _matchRule(Kensho);
 
-if(typeof window !== 'undefined') window.Kensho = Kensho;
-if(typeof process !== "undefined" && typeof require !== "undefined"){
-    module.exports = Kensho;
-}
-export default Kensho;
+module.exports = Kensho;
