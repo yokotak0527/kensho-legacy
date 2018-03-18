@@ -8391,7 +8391,7 @@ Kensho.plugin = _KenshoPlugin2.default;
 (0, _blacklist2.default)(Kensho);
 (0, _match2.default)(Kensho);
 
-if (window) window.Kensho = Kensho;
+if (typeof window !== 'undefined') window.Kensho = Kensho;
 if (typeof process !== "undefined" && "function" !== "undefined") {
     module.exports = Kensho;
 }
