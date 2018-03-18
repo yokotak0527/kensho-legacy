@@ -16,7 +16,7 @@ fractal.docs.set('path', __dirname + '/guide/asset/docs');
 fractal.docs.set('markdown.smartypants', false);
 
 // 静的ファイル
-fractal.web.set('static.path', __dirname + '/dest');
+fractal.web.set('static.path', __dirname + '/dist');
 
 // テーマ
 fractal.web.theme(mandelbrot({

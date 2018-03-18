@@ -23,7 +23,6 @@ class Kensho{
             console.error('form not found.');
             return false;
         }
-
         this.formElement = formElement;
         this.rule        = Kensho.rule;
         this.plugin      = Kensho.plugin;
@@ -289,5 +288,7 @@ import _blacklistRule from 'rule/blacklist.js'; _blacklistRule(Kensho);
 import _matchRule     from 'rule/match.js';     _matchRule(Kensho);
 
 if(window) window.Kensho = Kensho;
-
+if(typeof process !== "undefined" && typeof require !== "undefined"){
+    module.exports = Kensho;
+}
 export default Kensho;
