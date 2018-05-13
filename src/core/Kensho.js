@@ -228,7 +228,7 @@ class Kensho{
                 _val = this.hook.filter(`validate-val--${unit.name}`, _val);
                 values.push(_val);
             });
-            let result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);
+            let result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type, unit.inputElement);
             if(!result){
                 let message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
                 message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
@@ -252,16 +252,19 @@ class Kensho{
      * @version 0.0.1
      * @memberof Kensho
      *
-     * @param  {string} name       - validation rule name.
-     * @param  {any}    value      - input values.
-     * @param  {Object} [param={}] - in order to pass to a rule function.
+     * @param  {string}             name           - validation rule name.
+     * @param  {any}                value          - input values.
+     * @param  {Object}             [param={}]     - in order to pass to a rule function.
+     * @param  {string}             type=undefined - input type
+     * @param  {array[HTMLElement]} inputElement   - 
      *
      * @return {boolean}
      */
-    static validate(name, value, param = {}){
+    static validate(name, value, param = {}, type = undefined, inputElement = undefined){
         let rule = this.rule.get(name);
         let result = true;
-        if(result) result = rule(value, param);
+        inputElement = inputElement ? [inputElement] : inputElement;
+        if(result) result = rule(value, param, type, inputElement);
         return result;
     }
 }

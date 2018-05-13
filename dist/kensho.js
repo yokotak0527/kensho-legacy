@@ -8125,7 +8125,7 @@ var Kensho = function () {
                     _val = _this3.hook.filter('validate-val--' + unit.name, _val);
                     values.push(_val);
                 });
-                var result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);
+                var result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type, unit.inputElement);
                 if (!result) {
                     var message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
                     message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
@@ -8159,9 +8159,11 @@ var Kensho = function () {
          * @version 0.0.1
          * @memberof Kensho
          *
-         * @param  {string} name       - validation rule name.
-         * @param  {any}    value      - input values.
-         * @param  {Object} [param={}] - in order to pass to a rule function.
+         * @param  {string}             name           - validation rule name.
+         * @param  {any}                value          - input values.
+         * @param  {Object}             [param={}]     - in order to pass to a rule function.
+         * @param  {string}             type=undefined - input type
+         * @param  {array[HTMLElement]} inputElement   - 
          *
          * @return {boolean}
          */
@@ -8170,10 +8172,13 @@ var Kensho = function () {
         key: 'validate',
         value: function validate(name, value) {
             var param = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+            var type = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
+            var inputElement = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : undefined;
 
             var rule = this.rule.get(name);
             var result = true;
-            if (result) result = rule(value, param);
+            inputElement = inputElement ? [inputElement] : inputElement;
+            if (result) result = rule(value, param, type, inputElement);
             return result;
         }
     }]);
