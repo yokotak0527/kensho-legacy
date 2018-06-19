@@ -63,6 +63,23 @@ kensho.add(
 );
 ```
 
+配列を使ってより短く書くことも出来ます。
+
+```js
+var kensho = new Kensho('#my-form');
+kensho.add(
+    'input[name=name]',
+    'p.error-msg',
+    {
+        'age' : [
+            'under 20 only.',
+            { 'maxAge' : 20 }
+        ],
+    },
+    'keyup|blur'
+);
+```
+
 ### 手動バリデーション
 
 ```js
