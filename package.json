@@ -1,6 +1,6 @@
 {
     "name": "@yokotak0527/kensho",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "form validation library.",
     "main": "dist/kensho.min.js",
     "scripts": {
@@ -33,17 +33,17 @@
     "license": "MIT",
     "devDependencies": {
         "@frctl/fractal": "^1.1.7",
-        "babel-core": "^6.26.0",
+        "babel-core": "^6.26.3",
         "babel-loader": "^7.1.4",
-        "babel-preset-env": "^1.6.1",
+        "babel-preset-env": "^1.7.0",
         "jasmine-core": "^3.1.0",
         "jsdoc": "^3.5.5",
-        "karma": "^2.0.0",
-        "karma-jasmine": "^1.1.1",
+        "karma": "^2.0.3",
+        "karma-jasmine": "^1.1.2",
         "karma-mocha-reporter": "^2.2.5",
         "karma-phantomjs-launcher": "^1.0.4",
         "minami": "^1.2.3",
-        "webpack": "^4.1.1",
-        "webpack-cli": "^2.0.10"
+        "webpack": "^4.12.0",
+        "webpack-cli": "^3.0.8"
     }
 }

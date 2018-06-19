@@ -8,6 +8,21 @@
     <title>Document</title>
 </head>
 <body>
+    <form action="" id="my-form">
+        <input type="text" name="name">
+        <p class="err-msg"></p>
+    </form>
 
+<script>
+    var kensho = new Kensho('#my-form');
+    kensho.add(
+        'input[name="name"]',
+        'p.err-msg',
+        {
+            'age' : false
+        },
+        'keyup|blur'
+    );
+</script>
 </body>
 </html>

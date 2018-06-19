@@ -73,44 +73,48 @@ class Kensho{
         errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement)    : errorElement;
         event        = typeof event        === 'string' ? event.split('|') : !event ? [''] : event;
 
-        let name    = unitName ? unitName : inputElement[0].getAttribute('name');  // input name attr.
-        let tagName = inputElement[0].tagName.toLowerCase(); // tag name
-        let type    = null;                                  // Input type based on Kensho's own sorting rule
-        if(tagName === 'input') type = inputElement[0].getAttribute('type');
+        let name    = unitName ? unitName : inputElement[0].getAttribute('name'); // input name attr.
+        let tagName = inputElement[0].tagName.toLowerCase();                      // tag name
+        let type    = null;                                                       // Input type based on Kensho's own sorting rule
+        if( tagName === 'input' ) type = inputElement[0].getAttribute('type');
         else type = tagName;
 
         // the following types are handled as text type
-        switch(type){
-            case 'password' :
-                type = 'text';
-                break;
-            case 'search' :
-                type = 'text';
-                break;
-            case 'tel' :
-                type = 'text';
-                break;
-            case 'email' :
-                type = 'text';
-                break;
-            case 'url' :
-                type = 'text';
-                break;
-            case 'number' :
-                type = 'text';
-                break;
-        }
+        if(
+            type === 'password' || type === 'search' || type === 'tel'    ||
+            type === 'email'    || type === 'url'    || type === 'number' ||
+            type === 'datetime' || type === 'date'   || type === 'month'  ||
+            type === 'week'     || type === 'time'   || type === 'datetime-local'
+        ) type = 'text';
 
         // rule data formatting.
         let _rule = {};
         for(let key in rule){
-            if(typeof rule[key] === 'string'){
+            if ( typeof rule[key] === 'string' ) { // String
                 _rule[key] = {
-                    param        : {},
-                    errorMessage : rule[key]
+                    errorMessage : rule[key],
+                    param        : {}
                 };
-            }else{
-                _rule[key] = rule[key];
+            } else if ( Array.isArray(rule[key]) ) { // Array
+                _rule[key] = {
+                    errorMessage : rule[key][0],
+                    param        : rule[key][1] ? rule[key][1] : flase
+                };
+            } else if ( typeof rule[key] === 'object' ) { // Object
+                if ( !rule[key].errorMessage ) {
+                    _rule[key] = {
+                        errorMessage : '',
+                        param        : _rule[key]
+                    };
+                } else {
+                    _rule[key] = rule[key];
+                }
+            } else { // Others
+                _rule[key] = {
+                    errorMessage : '',
+                    param        : {}
+                };
+                console.error('rule values must be String, Array or Object.');
             }
         }
         rule = _rule;

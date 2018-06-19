@@ -64,6 +64,24 @@ kensho.add(
 );
 ```
 
+or you can write more simply with Array.
+
+```js
+var kensho = new Kensho('#my-form');
+kensho.add(
+    'input[name=name]',
+    'p.error-msg',
+    {
+        'age' : [
+            'under 20 only.',
+            { 'maxAge' : 20 }
+        ]
+    },
+    'keyup|blur'
+);
+```
+
+
 ### manual validate
 
 ```js
