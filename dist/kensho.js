@@ -803,7 +803,7 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.3' };
+var core = module.exports = { version: '2.5.7' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -1434,7 +1434,6 @@ var LIBRARY = __webpack_require__(/*! ./_library */ "../node_modules/core-js/mod
 var $export = __webpack_require__(/*! ./_export */ "../node_modules/core-js/modules/_export.js");
 var redefine = __webpack_require__(/*! ./_redefine */ "../node_modules/core-js/modules/_redefine.js");
 var hide = __webpack_require__(/*! ./_hide */ "../node_modules/core-js/modules/_hide.js");
-var has = __webpack_require__(/*! ./_has */ "../node_modules/core-js/modules/_has.js");
 var Iterators = __webpack_require__(/*! ./_iterators */ "../node_modules/core-js/modules/_iterators.js");
 var $iterCreate = __webpack_require__(/*! ./_iter-create */ "../node_modules/core-js/modules/_iter-create.js");
 var setToStringTag = __webpack_require__(/*! ./_set-to-string-tag */ "../node_modules/core-js/modules/_set-to-string-tag.js");
@@ -1461,7 +1460,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
   var VALUES_BUG = false;
   var proto = Base.prototype;
   var $native = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
-  var $default = (!BUGGY && $native) || getMethod(DEFAULT);
+  var $default = $native || getMethod(DEFAULT);
   var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod('entries') : undefined;
   var $anyNative = NAME == 'Array' ? proto.entries || $native : $native;
   var methods, key, IteratorPrototype;
@@ -1472,7 +1471,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
       // Set @@toStringTag to native iterators
       setToStringTag(IteratorPrototype, TAG, true);
       // fix for some old engines
-      if (!LIBRARY && !has(IteratorPrototype, ITERATOR)) hide(IteratorPrototype, ITERATOR, returnThis);
+      if (!LIBRARY && typeof IteratorPrototype[ITERATOR] != 'function') hide(IteratorPrototype, ITERATOR, returnThis);
     }
   }
   // fix Array#{values, @@iterator}.name in V8 / FF
@@ -1773,7 +1772,8 @@ module.exports = function () {
     };
   // environments with maybe non-completely correct, but existent Promise
   } else if (Promise && Promise.resolve) {
-    var promise = Promise.resolve();
+    // Promise.resolve without an argument throws an error in LG WebOS 2
+    var promise = Promise.resolve(undefined);
     notify = function () {
       promise.then(flush);
     };
@@ -2456,12 +2456,18 @@ module.exports = function (key) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+var core = __webpack_require__(/*! ./_core */ "../node_modules/core-js/modules/_core.js");
 var global = __webpack_require__(/*! ./_global */ "../node_modules/core-js/modules/_global.js");
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
-module.exports = function (key) {
-  return store[key] || (store[key] = {});
-};
+
+(module.exports = function (key, value) {
+  return store[key] || (store[key] = value !== undefined ? value : {});
+})('versions', []).push({
+  version: core.version,
+  mode: __webpack_require__(/*! ./_library */ "../node_modules/core-js/modules/_library.js") ? 'pure' : 'global',
+  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+});
 
 
 /***/ }),
@@ -4757,10 +4763,13 @@ var task = __webpack_require__(/*! ./_task */ "../node_modules/core-js/modules/_
 var microtask = __webpack_require__(/*! ./_microtask */ "../node_modules/core-js/modules/_microtask.js")();
 var newPromiseCapabilityModule = __webpack_require__(/*! ./_new-promise-capability */ "../node_modules/core-js/modules/_new-promise-capability.js");
 var perform = __webpack_require__(/*! ./_perform */ "../node_modules/core-js/modules/_perform.js");
+var userAgent = __webpack_require__(/*! ./_user-agent */ "../node_modules/core-js/modules/_user-agent.js");
 var promiseResolve = __webpack_require__(/*! ./_promise-resolve */ "../node_modules/core-js/modules/_promise-resolve.js");
 var PROMISE = 'Promise';
 var TypeError = global.TypeError;
 var process = global.process;
+var versions = process && process.versions;
+var v8 = versions && versions.v8 || '';
 var $Promise = global[PROMISE];
 var isNode = classof(process) == 'process';
 var empty = function () { /* empty */ };
@@ -4775,7 +4784,13 @@ var USE_NATIVE = !!function () {
       exec(empty, empty);
     };
     // unhandled rejections tracking support, NodeJS Promise without it fails @@species test
-    return (isNode || typeof PromiseRejectionEvent == 'function') && promise.then(empty) instanceof FakePromise;
+    return (isNode || typeof PromiseRejectionEvent == 'function')
+      && promise.then(empty) instanceof FakePromise
+      // v8 6.6 (Node 10 and Chrome 66) have a bug with resolving custom thenables
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=830565
+      // we can't detect it synchronously, so just check versions
+      && v8.indexOf('6.6') !== 0
+      && userAgent.indexOf('Chrome/66') === -1;
   } catch (e) { /* empty */ }
 }();
 
@@ -4797,7 +4812,7 @@ var notify = function (promise, isReject) {
       var resolve = reaction.resolve;
       var reject = reaction.reject;
       var domain = reaction.domain;
-      var result, then;
+      var result, then, exited;
       try {
         if (handler) {
           if (!ok) {
@@ -4807,8 +4822,11 @@ var notify = function (promise, isReject) {
           if (handler === true) result = value;
           else {
             if (domain) domain.enter();
-            result = handler(value);
-            if (domain) domain.exit();
+            result = handler(value); // may throw
+            if (domain) {
+              domain.exit();
+              exited = true;
+            }
           }
           if (result === reaction.promise) {
             reject(TypeError('Promise-chain cycle'));
@@ -4817,6 +4835,7 @@ var notify = function (promise, isReject) {
           } else resolve(result);
         } else reject(value);
       } catch (e) {
+        if (domain && !exited) domain.exit();
         reject(e);
       }
     };
@@ -5372,9 +5391,11 @@ function set(target, propertyKey, V /* , receiver */) {
   }
   if (has(ownDesc, 'value')) {
     if (ownDesc.writable === false || !isObject(receiver)) return false;
-    existingDescriptor = gOPD.f(receiver, propertyKey) || createDesc(0);
-    existingDescriptor.value = V;
-    dP.f(receiver, propertyKey, existingDescriptor);
+    if (existingDescriptor = gOPD.f(receiver, propertyKey)) {
+      if (existingDescriptor.get || existingDescriptor.set || existingDescriptor.writable === false) return false;
+      existingDescriptor.value = V;
+      dP.f(receiver, propertyKey, existingDescriptor);
+    } else dP.f(receiver, propertyKey, createDesc(0, V));
     return true;
   }
   return ownDesc.set === undefined ? false : (ownDesc.set.call(receiver, V), true);
@@ -6049,12 +6070,12 @@ $export($export.P + $export.U + $export.F * __webpack_require__(/*! ./_fails */ 
     if ($slice !== undefined && end === undefined) return $slice.call(anObject(this), start); // FF fix
     var len = anObject(this).byteLength;
     var first = toAbsoluteIndex(start, len);
-    var final = toAbsoluteIndex(end === undefined ? len : end, len);
-    var result = new (speciesConstructor(this, $ArrayBuffer))(toLength(final - first));
+    var fin = toAbsoluteIndex(end === undefined ? len : end, len);
+    var result = new (speciesConstructor(this, $ArrayBuffer))(toLength(fin - first));
     var viewS = new $DataView(this);
     var viewT = new $DataView(result);
     var index = 0;
-    while (first < final) {
+    while (first < fin) {
       viewT.setUint8(index++, viewS.getUint8(first++));
     } return result;
   }
@@ -7927,7 +7948,7 @@ var Kensho = function () {
      *
      * @arg {(string|HTMLElement|HTMLElement[])} inputElement  - form input HTML element or its CSS selector string.
      * @arg {(string|HTMLElement)}               errorElement  - wrapper element of output error message or its CSS selector string.
-     * @arg {Object}                             rule          - the key is rule name. The value is error message.
+     * @arg {Object|any[]}                       rule          - the key is rule name. The value is error message.
      * @arg {string|string[]}                    [event=['']]  - trigger events.
      * @arg {string}                             [unitName=''] -
      *
@@ -8145,7 +8166,7 @@ var Kensho = function () {
                     _val = _this3.hook.filter('validate-val--' + unit.name, _val);
                     values.push(_val);
                 });
-                var result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);
+                var result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type, unit.inputElement);
                 if (!result) {
                     var message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
                     message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');
@@ -8477,12 +8498,14 @@ exports.default = function (Kensho) {
      * @arg {boolean}           [param.trim=false]       -
      * @arg {boolean}           [param.empty=true]       -
      * @arg {string}            [type='']                - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]             - 
      *
      * @return {boolean}
      */
     var ageFunc = function ageFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;
@@ -8550,11 +8573,13 @@ exports.default = function (Kensho) {
      * @arg {boolean}               [param.trim=false] -
      * @arg {boolean}               [param.empty=true] -
      * @arg {string}                [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}         [elem=false]       - 
      *
      * @return {boolean}
      */
     var blacklistFunc = function blacklistFunc(val, param) {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;
@@ -8619,12 +8644,14 @@ exports.default = function (Kensho) {
      * @arg {boolean}           [param.trim=false] -
      * @arg {boolean}           [param.empty=true] -
      * @arg {string}            [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]       - 
      *
      * @return {boolean}
      */
     var emailFunc = function emailFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;
@@ -8680,10 +8707,12 @@ exports.default = function (Kensho) {
      * @arg {boolean}           [param.trim=false] -
      * @arg {boolean}           [param.empty=true] -
      * @arg {string}            [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]       - 
      */
     var fullsizeFunc = function fullsizeFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;
@@ -8741,12 +8770,14 @@ exports.default = function (Kensho) {
      * @arg {boolean}          [param.trim=false] -
      * @arg {boolean}          [param.empty=true] -
      * @arg {string}           [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}    [elem=false]       - 
      *
      * @return {boolean}
      */
     var halfsizeFunc = function halfsizeFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
 
         if (Array.isArray(val)) {
@@ -8805,12 +8836,14 @@ exports.default = function (Kensho) {
      * @arg {boolean}                     [param.empty=true] -
      * @arg {string}                      [param.val='']     - fixed value
      * @arg {string}                      [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}               [elem=false]       - 
      *
      * @return {boolean}
      */
     var matchFunc = function matchFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         var empty = typeof param.empty === 'boolean' ? param.empty : true;
 
@@ -8867,12 +8900,14 @@ exports.default = function (Kensho) {
      * @arg {boolean}         [param.trim=false]       -
      * @arg {boolean}         [param.empty=true]       -
      * @arg {string}          [type='']                - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}   [elem=false]             - 
      *
      * @return {boolean}
      */
     var numberFunc = function numberFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;
@@ -8921,19 +8956,21 @@ exports.default = function (Kensho) {
     var rule = Kensho.rule;
 
     /**
-     * @param {(string|string[])} val                   -
-     * @param {Object}            [param]               -
-     * @param {number}            [param.min=undefined] -
-     * @param {number}            [param.max=undefined] -
-     * @param {boolean}           [param.trim=true]     -
-     * @param {boolean}           [param.empty=true]    -
-     * @param {boolean}           [type='']             - input type based on Kensho's own sorting rule
+     * @arg {(string|string[])} val                   -
+     * @arg {Object}            [param]               -
+     * @arg {number}            [param.min=undefined] -
+     * @arg {number}            [param.max=undefined] -
+     * @arg {boolean}           [param.trim=true]     -
+     * @arg {boolean}           [param.empty=true]    -
+     * @arg {boolean}           [type='']             - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]          - 
      *
      * @return {boolean}
      */
     var rangeFunc = function rangeFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;
@@ -8990,16 +9027,18 @@ exports.default = function (Kensho) {
 
     /**
      *
-     * @arg {(any|any[])} val                -
-     * @arg {Object}      [param={}]         -
-     * @arg {boolean}     [param.trim=false] -
-     * @arg {string}      [type='']          - input type based on Kensho's own sorting rule
+     * @arg {(any|any[])}   val                -
+     * @arg {Object}        [param={}]         -
+     * @arg {boolean}       [param.trim=false] -
+     * @arg {string}        [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]} [elem=false]       - 
      *
      * @return {boolean}
      */
     var requiredFunc = function requiredFunc(val) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = void 0;
@@ -9054,11 +9093,13 @@ exports.default = function (Kensho) {
      * @arg {(string|RegExp|any[])} param.list         -
      * @arg {boolean}               [param.trim=false] -
      * @arg {boolean}               [param.empty=true] -
+     * @arg {HTMLELement[]}         [elem=false]       - 
      *
      * @return {boolean}
      */
     var whitelistFunc = function whitelistFunc(val, param) {
         var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
         if (Array.isArray(val)) {
             var result = true;

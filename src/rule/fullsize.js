@@ -8,8 +8,9 @@ export default (Kensho)=>{
      * @arg {boolean}           [param.trim=false] -
      * @arg {boolean}           [param.empty=true] -
      * @arg {string}            [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]       - 
      */
-    let fullsizeFunc = function(val, param = {}, type = ''){
+    let fullsizeFunc = function(val, param = {}, type = '', elem = false){
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {

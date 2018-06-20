@@ -44,7 +44,7 @@ class Kensho{
      *
      * @arg {(string|HTMLElement|HTMLElement[])} inputElement  - form input HTML element or its CSS selector string.
      * @arg {(string|HTMLElement)}               errorElement  - wrapper element of output error message or its CSS selector string.
-     * @arg {Object}                             rule          - the key is rule name. The value is error message.
+     * @arg {Object|any[]}                       rule          - the key is rule name. The value is error message.
      * @arg {string|string[]}                    [event=['']]  - trigger events.
      * @arg {string}                             [unitName=''] -
      *
@@ -232,7 +232,7 @@ class Kensho{
                 _val = this.hook.filter(`validate-val--${unit.name}`, _val);
                 values.push(_val);
             });
-            let result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type);
+            let result = Kensho.rule.get(ruleName)(values, ruleParam, unit.type, unit.inputElement);
             if(!result){
                 let message = document.createTextNode(applyRules[ruleName].errorMessage).nodeValue;
                 message = message.replace(/\<+script[\s\S]*\/script[^>]*>/img, '');

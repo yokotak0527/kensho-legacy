@@ -8,10 +8,11 @@ export default (Kensho)=>{
      * @arg {boolean}                     [param.empty=true] -
      * @arg {string}                      [param.val='']     - fixed value
      * @arg {string}                      [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}               [elem=false]       - 
      *
      * @return {boolean}
      */
-    let matchFunc = function(val, param = {}, type = ''){
+    let matchFunc = function(val, param = {}, type = '', elem = false){
         let empty = typeof param.empty === 'boolean' ? param.empty : true;
 
         if ( Array.isArray(val) ) {

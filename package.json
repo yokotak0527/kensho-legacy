@@ -12,7 +12,9 @@
         "build:guide": "NODE_ENV=production fractal build",
         "build:js": "webpack --mode production",
         "watch:js": "webpack --mode development",
-        "watch:guide": "NODE_ENV=development fractal start --sync"
+        "watch:guide": "NODE_ENV=development fractal start --sync",
+        "development": "npm run watch:js & npm run watch:guide",
+        "production": "npm run build:js && npm run build:guide && npm run build:doc"
     },
     "engines": {
         "node": ">=8.9.3",
