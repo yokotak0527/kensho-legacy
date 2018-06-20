@@ -124,3 +124,10 @@ Kensho.validate('email', 'a@a.com'); // return boolean
 07. blacklist
 08. halfsize
 09. fullsize
+
+## チェンジログ
+
+### v1.1
+
+- ルールのコールバック関数にHTMLElement配列を追加
+- kensho.add関数のrule引数に配列をサポートするように変更
