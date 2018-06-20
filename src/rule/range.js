@@ -2,17 +2,18 @@ export default (Kensho)=>{
     let rule  = Kensho.rule;
 
     /**
-     * @param {(string|string[])} val                   -
-     * @param {Object}            [param]               -
-     * @param {number}            [param.min=undefined] -
-     * @param {number}            [param.max=undefined] -
-     * @param {boolean}           [param.trim=true]     -
-     * @param {boolean}           [param.empty=true]    -
-     * @param {boolean}           [type='']             - input type based on Kensho's own sorting rule
+     * @arg {(string|string[])} val                   -
+     * @arg {Object}            [param]               -
+     * @arg {number}            [param.min=undefined] -
+     * @arg {number}            [param.max=undefined] -
+     * @arg {boolean}           [param.trim=true]     -
+     * @arg {boolean}           [param.empty=true]    -
+     * @arg {boolean}           [type='']             - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]          - 
      *
      * @return {boolean}
      */
-    let rangeFunc = function(val, param = {}, type = ''){
+    let rangeFunc = function(val, param = {}, type = '', elem = false){
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {

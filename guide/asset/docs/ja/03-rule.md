@@ -22,13 +22,14 @@ callback関数は以下の引数をとります。
 
 ```js
 /**
- * @arg {(string|string[])} val        - 入力された値、inputが複数ある場合は配列に格納されます
- * @arg {Object}            [param={}] - callback内で利用するパラメータ
- * @arg {string}            [type='']  - Kenshoの独自ルールに基づいたinputのタイプ名が入ります
+ * @arg {(string|string[])} val          - 入力された値、inputが複数ある場合は配列に格納されます
+ * @arg {Object}            [param={}]   - callback内で利用するパラメータ
+ * @arg {string}            [type='']    - Kenshoの独自ルールに基づいたinputのタイプ名が入ります
+ * @arg {HTMLElement[]}     [elem=false] - 
  *
  * @return {boolean}
  */
-callback(val, param = {}, type = ''){
+callback(val, param = {}, type = '', elem = false){
     let result;
     // 何かしらの処理
     return result;

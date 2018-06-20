@@ -8,10 +8,11 @@ export default (Kensho)=>{
      * @arg {(string|RegExp|any[])} param.list         -
      * @arg {boolean}               [param.trim=false] -
      * @arg {boolean}               [param.empty=true] -
+     * @arg {HTMLELement[]}         [elem=false]       - 
      *
      * @return {boolean}
      */
-    let whitelistFunc = function(val, param, type = ''){
+    let whitelistFunc = function(val, param, type = '', elem = false){
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {

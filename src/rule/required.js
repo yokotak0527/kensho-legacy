@@ -4,14 +4,15 @@ export default (Kensho)=>{
 
     /**
      *
-     * @arg {(any|any[])} val                -
-     * @arg {Object}      [param={}]         -
-     * @arg {boolean}     [param.trim=false] -
-     * @arg {string}      [type='']          - input type based on Kensho's own sorting rule
+     * @arg {(any|any[])}   val                -
+     * @arg {Object}        [param={}]         -
+     * @arg {boolean}       [param.trim=false] -
+     * @arg {string}        [type='']          - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]} [elem=false]       - 
      *
      * @return {boolean}
      */
-    let requiredFunc = function(val, param = {}, type = ''){
+    let requiredFunc = function(val, param = {}, type = '', elem = false){
         if(Array.isArray(val)){
             let result;
             if(type === 'radio' || type === 'checkbox'){

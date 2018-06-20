@@ -63,6 +63,23 @@ kensho.add(
 );
 ```
 
+配列を使ってより短く書くことも出来ます。
+
+```js
+var kensho = new Kensho('#my-form');
+kensho.add(
+    'input[name=name]',
+    'p.error-msg',
+    {
+        'age' : [
+            'under 20 only.',
+            { 'maxAge' : 20 }
+        ],
+    },
+    'keyup|blur'
+);
+```
+
 ### 手動バリデーション
 
 ```js
@@ -107,3 +124,10 @@ Kensho.validate('email', 'a@a.com'); // return boolean
 07. blacklist
 08. halfsize
 09. fullsize
+
+## チェンジログ
+
+### v1.1
+
+- ルールのコールバック関数にHTMLElement配列を追加
+- kensho.add関数のrule引数に配列をサポートするように変更

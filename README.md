@@ -64,6 +64,24 @@ kensho.add(
 );
 ```
 
+or you can write more simply with Array.
+
+```js
+var kensho = new Kensho('#my-form');
+kensho.add(
+    'input[name=name]',
+    'p.error-msg',
+    {
+        'age' : [
+            'under 20 only.',
+            { 'maxAge' : 20 }
+        ]
+    },
+    'keyup|blur'
+);
+```
+
+
 ### manual validate
 
 ```js
@@ -108,3 +126,10 @@ Kensho.validate('email', 'a@a.com'); // return boolean
 07. blacklist
 08. halfsize
 09. fullsize
+
+## Change log
+
+### v1.1
+
+- added HTMLElement array arugment in rule callback functions.
+- changed to support array in rule argument of kensho.add function.
