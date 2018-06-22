@@ -7897,6 +7897,10 @@ var _match = __webpack_require__(/*! rule/match.js */ "./rule/match.js");
 
 var _match2 = _interopRequireDefault(_match);
 
+var _regexp = __webpack_require__(/*! rule/regexp.js */ "./rule/regexp.js");
+
+var _regexp2 = _interopRequireDefault(_regexp);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -8247,6 +8251,7 @@ Kensho.plugin = _KenshoPlugin2.default;
 (0, _whitelist2.default)(Kensho);
 (0, _blacklist2.default)(Kensho);
 (0, _match2.default)(Kensho);
+(0, _regexp2.default)(Kensho);
 
 module.exports = Kensho;
 
@@ -8515,7 +8520,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!ageFunc(v, param, type)) result = false;
+                if (!ageFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -8589,7 +8594,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!blacklistFunc(v, param, type)) result = false;
+                if (!blacklistFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -8661,7 +8666,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!emailFunc(v, param, type)) result = false;
+                if (!emailFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -8722,7 +8727,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!fullsizeFunc(v, param, type)) result = false;
+                if (!fullsizeFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -8788,7 +8793,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!halfsizeFunc(v, param, type)) result = false;
+                if (!halfsizeFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -8917,7 +8922,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!numberFunc(v, param, type)) result = false;
+                if (!numberFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -8980,7 +8985,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!rangeFunc(v, param, type)) result = false;
+                if (!rangeFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {
@@ -9009,6 +9014,54 @@ exports.default = function (Kensho) {
         }
     };
     rule.add('range', rangeFunc);
+};
+
+/***/ }),
+
+/***/ "./rule/regexp.js":
+/*!************************!*\
+  !*** ./rule/regexp.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (Kensho) {
+    var rule = Kensho.rule;
+
+    /**
+     * @arg {(string|string[])} val             -
+     * @arg {Object}            [param]         -
+     * @arg {RegExP}            [param.pattern] -
+     * @arg {boolean}           [type='']       - input type based on Kensho's own sorting rule
+     * @arg {HTMLELement[]}     [elem=false]    - 
+     * 
+     * @return {boolean}
+     */
+    var regexpFunc = function regexpFunc(val) {
+        var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+        var elem = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+        if (Array.isArray(val)) {
+            var result = true;
+            val.forEach(function (v) {
+                if (!regexpFunc(v, param, type, elem)) result = false;
+            });
+            return result;
+        } else {
+            var pattern = param.pattern;
+
+            return pattern.test(val);
+        }
+    };
+    rule.add('regexp', regexpFunc);
 };
 
 /***/ }),
@@ -9055,7 +9108,7 @@ exports.default = function (Kensho) {
             } else {
                 result = true;
                 val.forEach(function (v) {
-                    if (!requiredFunc(v, param, type, type)) result = false;
+                    if (!requiredFunc(v, param, type, type, elem)) result = false;
                 });
             }
             return result;
@@ -9109,7 +9162,7 @@ exports.default = function (Kensho) {
         if (Array.isArray(val)) {
             var result = true;
             val.forEach(function (v) {
-                if (!whitelistFunc(v, param, type)) result = false;
+                if (!whitelistFunc(v, param, type, elem)) result = false;
             });
             return result;
         } else {

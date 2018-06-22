@@ -293,5 +293,6 @@ import _halfsizeRule  from 'rule/halfsize.js';  _halfsizeRule(Kensho);
 import _whitelistRule from 'rule/whitelist.js'; _whitelistRule(Kensho);
 import _blacklistRule from 'rule/blacklist.js'; _blacklistRule(Kensho);
 import _matchRule     from 'rule/match.js';     _matchRule(Kensho);
+import _regexpRule    from 'rule/regexp.js';    _regexpRule(Kensho);
 
 module.exports = Kensho;
