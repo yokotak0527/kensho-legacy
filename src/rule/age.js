@@ -18,7 +18,7 @@ export default (Kensho)=>{
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!ageFunc(v, param, type)) result = false;
+                if(!ageFunc(v, param, type, elem)) result = false;
             });
             return result;
         }else{

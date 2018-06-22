@@ -17,7 +17,7 @@ export default (Kensho)=>{
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!blacklistFunc(v, param, type)) result = false;
+                if(!blacklistFunc(v, param, type, elem)) result = false;
             });
             return result;
         }else{

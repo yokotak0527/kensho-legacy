@@ -17,7 +17,7 @@ export default (Kensho)=>{
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!rangeFunc(v, param, type)) result = false;
+                if(!rangeFunc(v, param, type, elem)) result = false;
             });
             return result;
         }else{

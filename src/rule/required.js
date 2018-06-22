@@ -21,7 +21,7 @@ export default (Kensho)=>{
             }else{
                 result = true;
                 val.forEach( v =>{
-                    if(!requiredFunc(v, param, type, type)) result = false;
+                    if(!requiredFunc(v, param, type, type, elem)) result = false;
                 });
             }
             return result;

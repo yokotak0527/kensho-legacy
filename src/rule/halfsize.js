@@ -17,7 +17,7 @@ export default (Kensho)=>{
         if(Array.isArray(val)){
             let result = true;
             val.forEach( v => {
-                if(!halfsizeFunc(v, param, type)) result = false;
+                if(!halfsizeFunc(v, param, type, elem)) result = false;
             });
             return result;
         }else{

@@ -19,7 +19,7 @@
         'input[name="name"]',
         'p.err-msg',
         {
-            'required' : '必須'
+            'regexp' : ['不正な値がある', {pattern : /^[a-z]*$/}]
         },
         'keyup|blur'
     );
