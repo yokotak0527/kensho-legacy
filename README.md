@@ -129,7 +129,12 @@ Kensho.validate('email', 'a@a.com'); // return boolean
 
 ## Change log
 
-### v1.1
+### v1.2.0
+
+- added regexp rule.
+- fixed elem argument of all rules when val argument is a array.
+
+### v1.1.0
 
 - added HTMLElement array arugment in rule callback functions.
 - changed to support array in rule argument of kensho.add function.

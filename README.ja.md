@@ -127,6 +127,9 @@ Kensho.validate('email', 'a@a.com'); // return boolean
 
 ## チェンジログ
 
+- regexpルールを追加
+- 全てのルールで引数valが配列だった場合に再帰的に自身を実行するが、引数elemを渡していなかったので修正
+
 ### v1.1
 
 - ルールのコールバック関数にHTMLElement配列を追加
