@@ -126,6 +126,7 @@ Kensho.validate('email', 'a@a.com'); // return boolean
 07. blacklist
 08. halfsize
 09. fullsize
+10. regexp
 
 ## Change log
 
