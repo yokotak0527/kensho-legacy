@@ -1,6 +1,6 @@
 {
     "name": "@yokotak0527/kensho",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "form validation library.",
     "main": "dist/kensho.min.js",
     "scripts": {

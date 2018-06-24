@@ -171,8 +171,8 @@ describe('whitelist', function(){
 describe('regexp', function(){
     it('valid value', function(){
         expect( Kensho.validate('regexp', 'abc' , { pattern : /^[a-z]*$/ })).toBeTruthy();
-    }).toBeTruthy();
+    });
     it('invalid value', function(){
         expect( Kensho.validate('regexp', 'Abc' , { pattern : /^[a-z]*$/ })).toBeFalsy();
-    }).toBeFalsy();
+    });
 });
