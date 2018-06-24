@@ -1,6 +1,6 @@
 {
     "name": "@yokotak0527/kensho",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "form validation library.",
     "main": "dist/kensho.min.js",
     "scripts": {
@@ -45,7 +45,7 @@
         "karma-mocha-reporter": "^2.2.5",
         "karma-phantomjs-launcher": "^1.0.4",
         "minami": "^1.2.3",
-        "webpack": "^4.12.0",
+        "webpack": "^4.12.1",
         "webpack-cli": "^3.0.8"
     }
 }
