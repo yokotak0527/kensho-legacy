@@ -1,20 +1,17 @@
 {
     "name": "@yokotak0527/kensho",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "form validation library.",
     "main": "dist/kensho.min.js",
     "scripts": {
         "webpack": "webpack",
-        "fractal": "fractal",
         "karma": "karma",
         "test": "karma start",
         "build:doc": "jsdoc dist/kensho.js -c jsdoc.json -d doc",
-        "build:guide": "NODE_ENV=production fractal build",
         "build:js": "webpack --mode production",
         "watch:js": "webpack --mode development",
-        "watch:guide": "NODE_ENV=development fractal start --sync",
-        "development": "npm run watch:js & npm run watch:guide",
-        "production": "npm run build:js && npm run build:guide && npm run build:doc"
+        "development": "npm run watch:js",
+        "production": "npm run build:js && npm run build:doc"
     },
     "engines": {
         "node": ">=8.9.3",
@@ -34,18 +31,20 @@
     "author": "yokota kenji",
     "license": "MIT",
     "devDependencies": {
-        "@frctl/fractal": "^1.1.7",
-        "babel-core": "^6.26.3",
-        "babel-loader": "^7.1.4",
-        "babel-preset-env": "^1.7.0",
-        "jasmine-core": "^3.1.0",
-        "jsdoc": "^3.5.5",
-        "karma": "^2.0.3",
-        "karma-jasmine": "^1.1.2",
+        "@babel/core": "^7.5.5",
+        "@babel/preset-env": "^7.5.5",
+        "ajv": "^6.10.2",
+        "babel-loader": "^8.0.6",
+        "core-js": "^3.2.1",
+        "jasmine-core": "^3.4.0",
+        "jsdoc": "^3.6.3",
+        "karma": "^4.2.0",
+        "karma-jasmine": "^2.0.1",
         "karma-mocha-reporter": "^2.2.5",
         "karma-phantomjs-launcher": "^1.0.4",
+        "lodash": "^4.17.15",
         "minami": "^1.2.3",
-        "webpack": "^4.12.1",
-        "webpack-cli": "^3.0.8"
+        "webpack": "^4.39.2",
+        "webpack-cli": "^3.3.7"
     }
 }

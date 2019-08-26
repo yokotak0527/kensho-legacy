@@ -30,10 +30,11 @@ module.exports = (env, argv) => {
                 babelrc : false,
                 comments : true,
                 presets : [
-                    ['env', {
-                        'module' : false,
-                        'targets' : ['last 3 versions', 'not ie <= 10'],
-                        "useBuiltIns" : true
+                    ['@babel/preset-env', {
+                        'modules' : false,
+                        'targets' : ['> 2%', 'ie 11'],
+                        'useBuiltIns' : 'usage',
+                        'corejs'      : 3
                     }]
                 ]
             }
