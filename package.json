@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c --environment BUILD:development --watch",
-    "lint": "eslint --ext .js,.ts -c ./.eslintrc.js",
+    "lint": "eslint '**/*.[t|j]s'",
     "start": "",
     "test": ""
   },
