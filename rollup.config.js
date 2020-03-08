@@ -1,62 +1,68 @@
 const path       = require('path')
 const merge      = require('lodash/merge')
-const typescript = require('@rollup/plugin-typescript')
+const typescript = require('rollup-plugin-typescript2')
 
-/**
- * base options of configFactory()
- */
-const baseOption = {
-  srcDir : path.join(__dirname, 'src'),
-  outDir : path.join(__dirname, 'dist')
-}
+const srcDir = path.join(__dirname, 'src')
+const outDir = path.join(__dirname, 'dist')
 /**
  * base parameters of rollup
 */
 const baseParam = {
+  // cache : false,
   watch : {
-    exclude : 'node_modules/**',
-    include : path.join(baseOption.srcDir, '**')
+    include : path.join(srcDir, '**/*')
   },
-  plugins: [
-    typescript()
+  plugins : [
+    typescript({
+      typescript: require('typescript'),
+      tsconfig : "tsconfig.json",
+      useTsconfigDeclarationDir : true
+    })
   ]
 }
 
 /**
  * output rollup configulation
- * @param {Array[Object]|Object} params 
- * @param {Object}               optionss
+ * 
+ * @param {Object}     param          -
+ * @param {string}     param.format   - 
+ * @param {Array<any>} param.plugins  - 
+ * @param {Object}     options        - 
+ * @param {string}     options.srcDir - 
+ * @param {string}     options.outDir - 
+ * @return {Object}
  */
-const configFactory = ( params, { srcDir, outDir } ) => {
+const configFactory = ( param ) => {
 
-  if (!Array.isArray(params)) params = [params]
+  const config = merge({}, baseParam, {
+    input : path.join(srcDir, 'Kensho.ts'),
+    output : {
+      file   : path.join(outDir, `bundle.${param.format}.js`),
+      format : param.format
+    },
+    plugins : param.plugins || []
+  })
 
-  return params.map(param => {
-    return {
-      input  : path.join(srcDir, 'main.ts'),
-      output : {
-        file   : path.join(outDir, `bundle.${param.format}.js`),
-        format : param.format
-      }
-    }
-  });
+  if ( param.format === 'umd' || param.format === 'iife' ) {
+    config.output.name = 'Kensho'
+  }
+  return config
 }
 
 // =============================================================================
 // EXPORT A DEVELOPMENT CONFIGULATION
 // =============================================================================
 if ( process.env.BUILD === 'development' ) {
-  // output esm only.
-  module.exports = configFactory(
-    merge({}, baseParam, {
-      format : 'esm'
-    }),
-    baseOption
-  );
+  // output cjs only.
+  module.exports = configFactory( { format : 'cjs' } )
 }
 // =============================================================================
 // EXPORT A PRODUCTION CONFIGULATIONS
 // =============================================================================
 if ( process.env.BUILD === 'production' ) {
-
+  module.exports = [
+    module.exports = configFactory( { format : 'cjs' } ),
+    module.exports = configFactory( { format : 'esm' } ),
+    module.exports = configFactory( { format : 'iife' } )
+  ]
 }

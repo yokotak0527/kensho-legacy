@@ -2,13 +2,17 @@
   "name": "@yokotak0527/kensho",
   "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.esm.js",
+  "browser": "dist/bundle.umd.js",
+  "types": "types/Kensho.d.ts",
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c --environment BUILD:development --watch",
-    "lint": "eslint '**/*.[t|j]s'",
+    "watch_old": "tsc --project ./tsconfig.json",
+    "lint": "eslint '**/*.[jt]s'",
     "start": "",
-    "test": ""
+    "test": "jest"
   },
   "engines": {
     "node": "^12.16.0"
@@ -31,7 +35,6 @@
   "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-typescript": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "^2.22.0",
     "@typescript-eslint/parser": "^2.22.0",
     "eslint": "^6.8.0",
@@ -40,8 +43,10 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
+    "jest": "^25.1.0",
     "lodash": "^4.17.15",
     "rollup": "^1.32.1",
+    "rollup-plugin-typescript2": "^0.26.0",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   }

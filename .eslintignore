@@ -1,3 +1,4 @@
-*.[t|j]s
+*.[jt]s
 !src/**/*
+!test/**/*
 !.eslintrc.js

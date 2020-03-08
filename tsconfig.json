@@ -1,9 +1,11 @@
 {
   "compilerOptions" : {
-    "target"    : "ES2018",
-    "strict"    : true,
-    "sourceMap" : true,
-    "outDir"    : "dist"
+    "target"         : "ES2018",
+    "strict"         : true,
+    "outDir"         : "./dist",
+    "declaration"    : true, // 宣言ファイル出力
+    "declarationDir" : "./types",
+    "removeComments" : true
   },
-  "include" : ["src/**/*.ts"]
+  "include" : ["src/**/*.ts"],
 }
