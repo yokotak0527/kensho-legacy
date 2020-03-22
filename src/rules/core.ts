@@ -1,8 +1,7 @@
-// import { ruleFunction } from '../rule.js'
+import { ruleFunction as rule } from '@src/rule'
 
-// export const regexp: ruleFunction = () => {
-//   return true
-// }
+export const regexp: rule = <T=string>(value, { regexp }) => {
+}
 
 // export function test (): boolean {
 //   return true

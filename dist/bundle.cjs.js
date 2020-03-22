@@ -35,5 +35,7 @@ class Kensho {
     }
 }
 Kensho.rule = ruleController;
+const func = (value, callback) => callback(value);
+func('hello', str => str === 'hello');
 
 exports.Kensho = Kensho;

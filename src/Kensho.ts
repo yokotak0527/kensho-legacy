@@ -1,6 +1,6 @@
 
-import { ruleController } from './rule'
-import { FormController } from './Form'
+import { ruleController } from '@src/rule'
+import { FormController } from '@src/Form'
 // import * as coreRules from './rules/core'
 
 // import { rule } from './rule'
@@ -32,6 +32,17 @@ export class Kensho {
     return true
   }
 }
+
+const func = (value: string, callback: (arg: string) => boolean): boolean => callback(value)
+
+func('hello', str => str === 'hello')
+
+// type f = (arg: string) => string
+
+// const f1: f = str => {
+//   return `${str}!`
+// }
+// f1('hello')
 
 // Kensho.rule.add('test', <T=string>(value: T, option = {}) => {
 //   return true

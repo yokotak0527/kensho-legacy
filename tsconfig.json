@@ -1,11 +1,19 @@
 {
-  "compilerOptions" : {
-    "target"         : "ES2018",
-    "strict"         : true,
-    "outDir"         : "./dist",
-    "declaration"    : true, // 宣言ファイル出力
-    "declarationDir" : "./types",
-    "removeComments" : true
+  "compilerOptions": {
+    "target": "ES2018",
+    "strict": true,
+    "baseUrl": "./",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "types",
+    "removeComments": true,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@types/*": ["types/*"]
+    }
   },
-  "include" : ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ]
 }

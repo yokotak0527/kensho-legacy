@@ -11,7 +11,6 @@
     "watch": "rollup -c --environment BUILD:development --watch",
     "watch_old": "tsc --project ./tsconfig.json",
     "lint": "eslint '**/*.[jt]s'",
-    "start": "",
     "test": "jest"
   },
   "engines": {
@@ -35,6 +34,7 @@
   "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
+    "@types/jest": "^25.1.4",
     "@typescript-eslint/eslint-plugin": "^2.22.0",
     "@typescript-eslint/parser": "^2.22.0",
     "eslint": "^6.8.0",
@@ -47,6 +47,7 @@
     "lodash": "^4.17.15",
     "rollup": "^1.32.1",
     "rollup-plugin-typescript2": "^0.26.0",
+    "ts-jest": "^25.2.1",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   }
