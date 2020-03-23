@@ -1,22 +1,24 @@
-export type RuleFunctionType = (value: any, option: any) => boolean
+import { Kensho } from '@src/Kensho'
 
-export const ruleBook: Map<string, RuleFunctionType> = new Map()
+export type FunctionType<T, U extends {[x: string]: any}> = (value: T, option: U, Kensho: Kensho) => boolean
+
+export const ruleBook: Map<string, Function> = new Map()
+
 export const ruleController = {
   /**
-   * add the validation rule
+   * add rule
    */
-  add (name: string, callback: RuleFunctionType): void {
+  add<T, U> (name: string, callback: FunctionType<T, U>): void {
     ruleBook.set(name, callback)
   },
   /**
    * get callback function
    */
   get (name: string): Function|undefined {
-    const callback = ruleBook.get(name)
-    return callback
+    return ruleBook.get(name)
   },
   /**
-   * delete the validation rule
+   * delete rule
    */
   delete (name: string): void {
     ruleBook.delete(name)

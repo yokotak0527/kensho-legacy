@@ -25,4 +25,10 @@ describe('core rules', () => {
     expect(Kensho.validate('regexp', 'hoge', { regexp : /^hoge$/ })).toBeTruthy()
     expect(Kensho.validate('regexp', 'hoge', { regexp : /fuga/ })).toBeFalsy()
   })
+  test('email', () => {
+    expect(Kensho.validate('email', 'a@a.com')).toBeTruthy()
+    expect(Kensho.validate('email', 'a@')).toBeFalsy()
+    expect(Kensho.validate('email', 'a.com')).toBeFalsy()
+    expect(Kensho.validate('email', 'a@a@a.com')).toBeFalsy()
+  })
 })
