@@ -1,11 +1,11 @@
-export type ruleFunction = <T>(value: T, option: {}) => boolean
+export type RuleFunctionType = (value: any, option: any) => boolean
 
-export const ruleBook: Map<string, ruleFunction> = new Map()
+export const ruleBook: Map<string, RuleFunctionType> = new Map()
 export const ruleController = {
   /**
    * add the validation rule
    */
-  add (name: string, callback: ruleFunction): void {
+  add (name: string, callback: RuleFunctionType): void {
     ruleBook.set(name, callback)
   },
   /**

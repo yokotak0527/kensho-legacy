@@ -2,7 +2,7 @@ import { FormController } from '@src/Form';
 export declare class Kensho {
     form: FormController;
     static rule: {
-        add(name: string, callback: import("./rule").ruleFunction): void;
+        add(name: string, callback: import("./rule").RuleFunctionType): void;
         get(name: string): Function | undefined;
         delete(name: string): void;
     };

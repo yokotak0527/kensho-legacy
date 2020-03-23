@@ -19,3 +19,10 @@ describe('rule control', () => {
     expect(callback).toBe(undefined)
   })
 })
+
+describe('core rules', () => {
+  test('regexp', () => {
+    expect(Kensho.validate('regexp', 'hoge', { regexp : /^hoge$/ })).toBeTruthy()
+    expect(Kensho.validate('regexp', 'hoge', { regexp : /fuga/ })).toBeFalsy()
+  })
+})

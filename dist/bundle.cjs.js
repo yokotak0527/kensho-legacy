@@ -22,6 +22,15 @@ class FormController {
     }
 }
 
+const regexp = (value, option) => {
+    return option.regexp.test(value);
+};
+
+var coreRules = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  regexp: regexp
+});
+
 class Kensho {
     constructor() {
         this.form = new FormController();
@@ -31,11 +40,14 @@ class Kensho {
         return Kensho.validate(...args);
     }
     static validate(ruleName, value, option = {}) {
-        return true;
+        const rule = this.rule.get(ruleName);
+        if (!rule)
+            throw new Error(`${ruleName} rule is not defined.`);
+        return rule(value, option);
     }
 }
 Kensho.rule = ruleController;
-const func = (value, callback) => callback(value);
-func('hello', str => str === 'hello');
+for (const [ruleName, callback] of Object.entries(coreRules))
+    Kensho.rule.add(ruleName, callback);
 
 exports.Kensho = Kensho;

@@ -1,8 +1,8 @@
-import { ruleFunction as rule } from '@src/rule'
+import { RuleFunctionType } from '@src/rule'
 
-export const regexp: rule = <T=string>(value, { regexp }) => {
+/**
+ *
+ */
+export const regexp: RuleFunctionType = (value: string, option: {regexp: RegExp}) => {
+  return option.regexp.test(value)
 }
-
-// export function test (): boolean {
-//   return true
-// }

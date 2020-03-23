@@ -1,9 +1,7 @@
 
 import { ruleController } from '@src/rule'
 import { FormController } from '@src/Form'
-// import * as coreRules from './rules/core'
-
-// import { rule } from './rule'
+import * as coreRules from './rules/core'
 
 export class Kensho {
   form: FormController
@@ -29,24 +27,12 @@ export class Kensho {
    * @param {Object} option={}
    */
   static validate<T> (ruleName: string, value: T, option = {}): boolean {
-    return true
+    const rule = this.rule.get(ruleName)
+    if (!rule) throw new Error(`${ruleName} rule is not defined.`)
+
+    return rule(value, option)
   }
 }
 
-const func = (value: string, callback: (arg: string) => boolean): boolean => callback(value)
-
-func('hello', str => str === 'hello')
-
-// type f = (arg: string) => string
-
-// const f1: f = str => {
-//   return `${str}!`
-// }
-// f1('hello')
-
-// Kensho.rule.add('test', <T=string>(value: T, option = {}) => {
-//   return true
-// })
-
 // add core rules
-// for (const [ruleName, callback] of Object.entries(coreRules)) Kensho.rule.add(ruleName, callback)
+for (const [ruleName, callback] of Object.entries(coreRules)) Kensho.rule.add(ruleName, callback)
