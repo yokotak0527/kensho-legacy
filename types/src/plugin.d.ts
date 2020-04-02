@@ -1,6 +1,6 @@
-export declare const pluginBox: Map<string, Function>;
-export declare const pluginController: {
+export declare const plugin: {
     add(name: string, method: Function): void;
-    get(name: string): Function | undefined;
+    get(name: string): Function;
     delete(name: string): void;
+    [x: string]: any;
 };

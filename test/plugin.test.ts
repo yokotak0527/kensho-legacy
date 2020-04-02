@@ -2,14 +2,14 @@ import { Kensho } from '@src/Kensho'
 import { ruleBook } from '@src/rule'
 
 // Kensho.plugins
-// describe('rule control', () => {
-//   test('Kensho.rule.add()', () => {
-//     Kensho.rule.add('sampleRule', <T=string>(value: T) => {
-//       return true
-//     })
-//     const callback = ruleBook.get('sampleRule')
-//     expect(typeof callback).toBe('function')
-//   })
+describe('plugin control', () => {
+  test('Kensho.plugin.add()', () => {
+    // Kensho.rule.add('sampleRule', <T=string>(value: T) => {
+    //   return true
+    // })
+    // const callback = ruleBook.get('sampleRule')
+    // expect(typeof callback).toBe('function')
+  })
 //   test('Kensho.rule.get()', () => {
 //     const callback = Kensho.rule.get('sampleRule')
 //     expect(typeof callback).toBe('function')
@@ -19,7 +19,7 @@ import { ruleBook } from '@src/rule'
 //     const callback = Kensho.rule.get('sampleRule')
 //     expect(callback).toBe(undefined)
 //   })
-// })
+})
 
 describe('preinstall plugins', () => {
   test('half2full', () => {

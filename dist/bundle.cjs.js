@@ -3,12 +3,15 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 const ruleBook = new Map();
-const ruleController = {
+const rule = {
     add(name, callback) {
         ruleBook.set(name, callback);
     },
     get(name) {
-        return ruleBook.get(name);
+        const callback = ruleBook.get(name);
+        if (callback === undefined)
+            throw new Error(`Rule "${name}" is not found.`);
+        return callback;
     },
     delete(name) {
         ruleBook.delete(name);
@@ -16,12 +19,15 @@ const ruleController = {
 };
 
 const pluginBox = new Map();
-const pluginController = {
+const plugin = {
     add(name, method) {
         pluginBox.set(name, method);
     },
     get(name) {
-        return pluginBox.get(name);
+        const method = pluginBox.get(name);
+        if (method === undefined)
+            throw new Error(`Plugin "${name}" is not found.`);
+        return method;
     },
     delete(name) {
         pluginBox.delete(name);
@@ -34,24 +40,36 @@ class FormController {
     }
 }
 
-const half2full = (str) => {
-    return str.split('').map(char => {
-        return String.fromCharCode(char.charCodeAt(0) - 0xfee0);
-    }).join();
+const regexp = (value, { regexp }) => {
+    return regexp.test(value);
 };
-const full2half = (str) => {
-    return str;
+const email = (value, option, Kensho) => {
+    return Kensho.validate('regexp', value, { regexp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ });
+};
+const list = (value, { list }, Kensho) => {
+    let hit = false;
+    for (let i = 0, l = list.length; i < l; i++) {
+        if (value instanceof RegExp) {
+            hit = Kensho.validate('regexp', list[i], { regexp: value });
+            if (hit)
+                break;
+        }
+        else if (value === list[i]) {
+            hit = true;
+            break;
+        }
+    }
+    return hit;
 };
 
-var charWidthConv = /*#__PURE__*/Object.freeze({
+var _rules = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  half2full: half2full,
-  full2half: full2half
+  regexp: regexp,
+  email: email,
+  list: list
 });
 
-const list = {};
-Object.assign(list, charWidthConv);
-
+const defaultRules = _rules;
 class Kensho {
     constructor() {
         this.form = new FormController();
@@ -59,26 +77,13 @@ class Kensho {
     }
     static validate(ruleName, value, option = {}) {
         const rule = this.rule.get(ruleName);
-        if (rule === undefined)
-            throw new Error(`${ruleName} rule is not found.`);
         return rule(value, option, this);
     }
-    static usePlugin(pluginName, ...args) {
-        const plugin = this.plugin.get(pluginName);
-        if (plugin === undefined)
-            throw new Error(`${pluginName} plugin is not found.`);
-        return plugin(...args);
-    }
-    validate(...args) {
-        return Kensho.validate(...args);
-    }
-    hasError() {
-        return true;
-    }
 }
-Kensho.rule = ruleController;
-Kensho.plugin = pluginController;
-for (const [ruleName, method] of Object.entries(list))
-    Kensho.plugin.add(ruleName, method);
+Kensho.rule = rule;
+Kensho.plugin = plugin;
+for (const [ruleName, callback] of Object.entries(defaultRules)) {
+    Kensho.rule.add(ruleName, callback);
+}
 
 exports.Kensho = Kensho;
