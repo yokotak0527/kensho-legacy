@@ -1,15 +1,17 @@
-import { Kensho } from '@src/Kensho'
-import { ruleBook } from '@src/rule'
+import { Kensho } from '@type/Kensho.d'
+// import { Kensho } from '@src/Kensho'
+// import { ruleBook } from '@src/rule'
 
+Kensho
 // Kensho.plugins
 describe('plugin control', () => {
-  test('Kensho.plugin.add()', () => {
-    // Kensho.rule.add('sampleRule', <T=string>(value: T) => {
-    //   return true
-    // })
-    // const callback = ruleBook.get('sampleRule')
-    // expect(typeof callback).toBe('function')
-  })
+  // test('Kensho.plugin.add()', () => {
+  //   // Kensho.rule.add('sampleRule', <T=string>(value: T) => {
+  //   //   return true
+  //   // })
+  //   // const callback = ruleBook.get('sampleRule')
+  //   // expect(typeof callback).toBe('function')
+  // })
 //   test('Kensho.rule.get()', () => {
 //     const callback = Kensho.rule.get('sampleRule')
 //     expect(typeof callback).toBe('function')
@@ -22,9 +24,9 @@ describe('plugin control', () => {
 })
 
 describe('preinstall plugins', () => {
-  test('half2full', () => {
-    // Kensho.plugin.
-  })
+  // test('half2full', () => {
+  //   // Kensho.plugin.
+  // })
 //   test('regexp', () => {
 //     expect(Kensho.validate('regexp', 'hoge', { regexp : /^hoge$/ })).toBeTruthy()
 //     expect(Kensho.validate('regexp', 'hoge', { regexp : /fuga/ })).toBeFalsy()

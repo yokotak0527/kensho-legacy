@@ -1,4 +1,4 @@
-import { RuleTypeStore } from '@src/rule.d'
+import { RuleTypeStore } from '@src/rule'
 
 /**
  *
