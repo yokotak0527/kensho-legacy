@@ -43,7 +43,30 @@ const config = {
 };
 
 const required = (value) => {
-    return value.trim() !== '';
+    if (typeof value === 'string')
+        return value.trim() !== '';
+    if (typeof value === 'number')
+        return true;
+    if (Array.isArray(value))
+        return value.length !== 0;
+    if (typeof value === 'object' && value !== null)
+        return Object.keys(value).length !== 0;
+    if (value === undefined)
+        return false;
+    if (value === null)
+        return false;
+    return true;
+};
+const empty = (value) => {
+    if (typeof value === 'string')
+        return value === '';
+    if (Array.isArray(value))
+        return value.length === 0;
+    if (typeof value === 'object' && value !== null)
+        return Object.keys(value).length === 0;
+    if (value === undefined)
+        return true;
+    return false;
 };
 const regexp = (value, { regexp }) => {
     return regexp.test(value);
@@ -70,6 +93,7 @@ const list = (value, { list }, Kensho) => {
 var _rules = /*#__PURE__*/Object.freeze({
   __proto__: null,
   required: required,
+  empty: empty,
   regexp: regexp,
   email: email,
   list: list
