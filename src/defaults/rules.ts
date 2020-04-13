@@ -3,6 +3,13 @@ import { RuleTypeStore } from '@src/rule'
 /**
  *
  */
+export const required: RuleTypeStore['required'] = (value) => {
+  return value.trim() !== ''
+}
+
+/**
+ *
+ */
 export const regexp: RuleTypeStore['regexp'] = (value, { regexp }) => {
   return regexp.test(value)
 }

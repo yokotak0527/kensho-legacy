@@ -2,9 +2,10 @@
 export type RuleType<V, O extends Object> = (value: V, option: O, Kensho: any) => boolean
 
 export interface RuleTypeStore {
-  'regexp': RuleType<string, { regexp: RegExp }>
-  'email' : RuleType<string, {}>
-  'list'  : RuleType<string | RegExp, { list: string[] }>
+  'required' : RuleType<string, {}>
+  'regexp'   : RuleType<string, { regexp: RegExp }>
+  'email'    : RuleType<string, {}>
+  'list'     : RuleType<string | RegExp, { list: string[] }>
 }
 
 // -----------------------------------------------------------------------------
@@ -13,7 +14,7 @@ export const ruleBook: Map<string, any> = new Map()
 
 export const rule: {
   add<V, O>(name: string, callback: RuleType<V, O>): void
-  get<N extends string>(name: N): N extends keyof RuleTypeStore ? RuleTypeStore[N] : RuleType<any, any>
+  get<N extends string, T extends RuleTypeStore = RuleTypeStore>(name: N): N extends keyof T ? T[N] : RuleType<any, any>
   delete(name: string): void
 } = {
   /**

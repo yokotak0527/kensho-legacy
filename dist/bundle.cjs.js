@@ -42,6 +42,9 @@ const config = {
     HTML5novalidate: true
 };
 
+const required = (value) => {
+    return value.trim() !== '';
+};
 const regexp = (value, { regexp }) => {
     return regexp.test(value);
 };
@@ -66,6 +69,7 @@ const list = (value, { list }, Kensho) => {
 
 var _rules = /*#__PURE__*/Object.freeze({
   __proto__: null,
+  required: required,
   regexp: regexp,
   email: email,
   list: list
@@ -102,6 +106,20 @@ var _plugins = /*#__PURE__*/Object.freeze({
 });
 
 const defaultRules = _rules;
+const __unitNameSeed = (() => {
+    const list = [];
+    const makeSeed = () => {
+        let seed = `k_${Math.floor(Math.random() * 1000).toString().padStart(4, '0')}`;
+        if (typeof list.find(elm => elm === seed) === 'string')
+            seed = makeSeed();
+        return seed;
+    };
+    return () => {
+        const seed = makeSeed();
+        list.push(seed);
+        return seed;
+    };
+})();
 class Kensho {
     constructor(formSelector) {
         if (typeof formSelector === 'string') {
@@ -121,7 +139,8 @@ class Kensho {
         const rule = this.rule.get(ruleName);
         return rule(value, option, this);
     }
-    add(inputElement, errorElement, rule, event = [''], unitName = '') {
+    add(inputElement, errorElement, rule, errorMessage, event = [''], unitName = '') {
+        var _a;
         if (typeof inputElement === 'string') {
             const _elmSelector = inputElement;
             inputElement = this.form.querySelectorAll(_elmSelector);
@@ -145,8 +164,22 @@ class Kensho {
                 throw new Error(`errorElement "${_elmSelector}" is not found in the form.`);
             errorElement = _elm;
         }
-        if (typeof event === 'string')
+        if (!Array.isArray(errorMessage) && typeof errorMessage === 'object') {
+            errorMessage = [errorMessage];
+        }
+        if (typeof event === 'string') {
             event = [event];
+        }
+        const inputRuleUnit = {
+            name: (_a = unitName !== null && unitName !== void 0 ? unitName : inputElement[0].getAttribute('name')) !== null && _a !== void 0 ? _a : __unitNameSeed(),
+            tagName: inputElement[0].tagName.toLowerCase(),
+            inputElement,
+            event,
+            errorElement,
+            errorMessage
+        };
+        this.inputsRules.set(inputRuleUnit.name, inputRuleUnit);
+        return inputRuleUnit;
     }
 }
 Kensho.config = config;

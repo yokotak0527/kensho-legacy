@@ -8,11 +8,31 @@ const defaultRules = _rules as RuleTypeStore
 
 export interface InputRuleUnitType {
   name         : string
+  tagName      : string
   inputElement : HTMLElement[]
-  errorElement : HTMLElement
-  errorMessage : {[x:string]: string}
+  errorElement : HTMLElement | undefined
+  event        : string[]
+  errorMessage : Array<{[x:string]: string}> | undefined
 }
 
+const __unitNameSeed = (() => {
+  const list:string[] = []
+  const makeSeed = ():string => {
+    let seed = `k_${Math.floor(Math.random() * 1000).toString().padStart(4, '0')}`
+    if (typeof list.find(elm => elm === seed) === 'string') seed = makeSeed()
+    return seed
+  }
+  return ():string => {
+    const seed = makeSeed()
+    list.push(seed)
+    return seed
+  }
+})()
+// =============================================================================
+//
+// Kensho Class
+//
+// =============================================================================
 export class Kensho {
   public form: HTMLElement
   private readonly inputsRules:Map<string, InputRuleUnitType>
@@ -51,12 +71,13 @@ export class Kensho {
    * @todo
    */
   add<T> (
-    inputElement: string | HTMLElement | NodeListOf<HTMLElement> | HTMLElement[],
-    errorElement: string | HTMLElement | undefined,
-    rule        : {name:keyof RuleTypeStore, option?:object} | Array<{name:keyof RuleTypeStore, option?:object}>,
-    event       : string | string[] = [''],
+    inputElement : string | HTMLElement | NodeListOf<HTMLElement> | HTMLElement[],
+    errorElement : string | HTMLElement | undefined,
+    rule         : {name:string, option?:object} | Array<{name:string, option?:object}>,
+    errorMessage : {name:string, message:string} | Array<{name:string, message:string}> | undefined,
+    event        : string | string[] = [''],
     unitName = ''
-  ): void {
+  ): InputRuleUnitType {
     if (typeof inputElement === 'string') { // string -> NodeList<HTMLElement>
       const _elmSelector = inputElement
       inputElement = this.form.querySelectorAll(_elmSelector)
@@ -70,7 +91,7 @@ export class Kensho {
       inputElement.forEach(elm => { _arr.push(elm) })
       inputElement = _arr
     }
-    // definitely, the inputElement type is HTMLElement[] and it is not zero length.
+    // definitely, the nputElement is HTMLElement[] and it is not zero length.
 
     if (typeof errorElement === 'string') {
       const _elmSelector = errorElement
@@ -79,45 +100,28 @@ export class Kensho {
       errorElement = _elm
     }
 
-    if (!Array.isArray(rule)) rule = [rule]
-    // this structure is {name:string, option?:object}[]
+    if (!Array.isArray(rule)) {
+      rule = [rule]
+    }
 
-    if (typeof event === 'string') event = [event]
+    if (!Array.isArray(errorMessage) && typeof errorMessage === 'object') {
+      errorMessage = [errorMessage]
+    }
 
-    // const name    = unitName ?? inputElement[0].getAttribute('name') ?? ''
-    // const tagName = inputElement[0].tagName.toLowerCase()
+    if (typeof event === 'string') {
+      event = [event]
+    }
 
-    // let type = '' // this
-    // if (tagName === 'input') {
-    //   type = inputElement[0].getAttribute('type') ?? ''
-    // } else {
-    //   type = tagName
-    // }
-
-    // the following types are handled as text type
-    // if (
-    //   type === 'password' || type === 'search' || type === 'tel'    ||
-    //   type === 'email'    || type === 'url'    || type === 'number' ||
-    //   type === 'datetime' || type === 'date'   || type === 'month'  ||
-    //   type === 'week'     || type === 'time'   || type === 'datetime-local'
-    // ) type = 'text'
-
-    // errorElement = typeof errorElement === 'string' ? this.form.querySelector(errorElement)    : errorElement
-    // errorElement = typeof errorElement === 'string' ? this.formElement.querySelector(errorElement)    : errorElement;
-    // event        = typeof event        === 'string' ? event.split('|') : !event ? [''] : event;
-    // inputElement = this.formElement.querySelectorAll(inputElement);
-    // inputElement = Array.prototype.map.call(inputElement, v => v );
-    // }else if( Array.isArray(inputElement) ){
-    // let arr = [];
-    // inputElement.forEach( val => {
-    // val = typeof val === 'string' ? this.formElement.querySelectorAll(val) : val;
-    // val = Array.prototype.map.call(val, v => v );
-    // val.forEach( v => { arr.push(v) });
-    // });
-    // inputElement = arr;
-    // }else{
-    // inputElement = Array.prototype.map.call(inputElement, v => v );
-    // }
+    const inputRuleUnit: InputRuleUnitType = {
+      name    : unitName ?? inputElement[0].getAttribute('name') ?? __unitNameSeed(),
+      tagName : inputElement[0].tagName.toLowerCase(),
+      inputElement,
+      event,
+      errorElement,
+      errorMessage
+    }
+    this.inputsRules.set(inputRuleUnit.name, inputRuleUnit)
+    return inputRuleUnit
   }
 
   /**
@@ -159,50 +163,19 @@ for (const [pluginName, method] of Object.entries(_plugins)) {
   Kensho.plugin.add(pluginName, method)
 }
 
-// declare interface 'RuleTypeStore' {
-
-// export interface CustomType {
-
-//   customField: string;
-
-//   customMethod(arg1: number, arg2: boolean): boolean;
-// }
-
-// namespace customNamespace {
-
-//   export interface AnotherCustomType {
-//     customField1: string;
-//     customField2: boolean;
-//   }
-// }
-
-// // NOTE: extending existing interface
-// export interface KnockoutStatic {
-//   customMethod(): void;
-// }
-// }
-declare interface RuleTypeStore {
-  'regexp' : string
-  // 't':string
-
+export interface MyRuleTypeStore extends RuleTypeStore {
+  'myRule':RuleType<string, {}>
 }
-type T = keyof RuleTypeStore
-// interface RuleTypeStore {
-//   't2':string
-// }
-// interface I2 {
-//   'str1' : string
-// }
-// interface I2 {
-//   'str2' : string
-// }
-type T = keyof RuleTypeStore
-// interface
-// type RuleTypeStore = RuleTypeStore
 
-// type T = keyof RuleTypeStore
-// // interface RuleTypeStore {
-// //
-// // }
-// const k = new Kensho('form')
-// k.add('input', 'errorInput', { name:'test' })
+// export const myRule: MyRuleTypeStore['myRule'] = (value, opt) => {
+//   return true
+// }
+// Kensho.rule.add('myRule', myRule)
+
+// Kensho.rule.add('test', () => {
+//   return true
+// })
+// const t = Kensho.rule.get<string, >('test')
+
+// const kensho = new Kensho('form')
+// kensho.add('.input', '.error', [{name:required}])
