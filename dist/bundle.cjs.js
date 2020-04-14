@@ -42,94 +42,6 @@ const config = {
     HTML5novalidate: true
 };
 
-const required = (value) => {
-    if (typeof value === 'string')
-        return value.trim() !== '';
-    if (typeof value === 'number')
-        return true;
-    if (Array.isArray(value))
-        return value.length !== 0;
-    if (typeof value === 'object' && value !== null)
-        return Object.keys(value).length !== 0;
-    if (value === undefined)
-        return false;
-    if (value === null)
-        return false;
-    return true;
-};
-const empty = (value) => {
-    if (typeof value === 'string')
-        return value === '';
-    if (Array.isArray(value))
-        return value.length === 0;
-    if (typeof value === 'object' && value !== null)
-        return Object.keys(value).length === 0;
-    if (value === undefined)
-        return true;
-    return false;
-};
-const regexp = (value, { regexp }) => {
-    return regexp.test(value);
-};
-const email = (value, option, Kensho) => {
-    return Kensho.validate('regexp', value, { regexp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ });
-};
-const list = (value, { list }, Kensho) => {
-    let hit = false;
-    for (let i = 0, l = list.length; i < l; i++) {
-        if (value instanceof RegExp) {
-            hit = Kensho.validate('regexp', list[i], { regexp: value });
-            if (hit)
-                break;
-        }
-        else if (value === list[i]) {
-            hit = true;
-            break;
-        }
-    }
-    return hit;
-};
-
-var _rules = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  required: required,
-  empty: empty,
-  regexp: regexp,
-  email: email,
-  list: list
-});
-
-const half2full = (str) => {
-    return str.split('').map(char => {
-        return String.fromCharCode(char.charCodeAt(0) - 0xfee0);
-    }).join();
-};
-const full2half = (str) => {
-    return str.split('').map(char => {
-        return String.fromCharCode(char.charCodeAt(0) - 0xfee0);
-    }).join();
-};
-const _isNbyte = (half, char) => {
-    const code = char.charCodeAt(0);
-    const f = (code >= 0x0 && code < 0x81) || (code === 0xf8f0) || (code >= 0xff61 && code < 0xffa0) || (code >= 0xf8f1 && code < 0xf8f4);
-    return half ? f : !f;
-};
-const is1byte = (char) => {
-    return _isNbyte(true, char);
-};
-const is2byte = (char) => {
-    return _isNbyte(false, char);
-};
-
-var _plugins = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  half2full: half2full,
-  full2half: full2half,
-  is1byte: is1byte,
-  is2byte: is2byte
-});
-
-const defaultRules = _rules;
 const __unitNameSeed = (() => {
     const list = [];
     const makeSeed = () => {
@@ -209,11 +121,5 @@ class Kensho {
 Kensho.config = config;
 Kensho.rule = rule;
 Kensho.plugin = plugin;
-for (const [ruleName, callback] of Object.entries(defaultRules)) {
-    Kensho.rule.add(ruleName, callback);
-}
-for (const [pluginName, method] of Object.entries(_plugins)) {
-    Kensho.plugin.add(pluginName, method);
-}
 
 exports.Kensho = Kensho;

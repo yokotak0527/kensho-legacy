@@ -1,4 +1,4 @@
-import { RuleTypeStore, RuleType } from '@src/rule';
+import { RuleStore } from '@src/rule';
 export interface InputRuleUnitType {
     name: string;
     tagName: string;
@@ -20,8 +20,8 @@ export declare class Kensho {
         HTML5novalidate: boolean;
     };
     static rule: {
-        add<V, O>(name: string, callback: RuleType<V, O>): void;
-        get<N extends string, T extends RuleTypeStore = RuleTypeStore>(name: N): N extends keyof T ? T[N] : RuleType<any, any>;
+        add<V, O>(name: string, callback: O extends Object ? (value: V, option: O) => boolean : (value: V) => boolean): void;
+        get<N extends string, T extends RuleStore = RuleStore>(name: N): N extends keyof T ? T[N] : (value: any, option: Object, Kensho: typeof Kensho) => boolean;
         delete(name: string): void;
     };
     static plugin: {
@@ -45,7 +45,4 @@ export declare class Kensho {
         name: string;
         message: string;
     }> | undefined, event?: string | string[], unitName?: string): InputRuleUnitType;
-}
-export interface MyRuleTypeStore extends RuleTypeStore {
-    'myRule': RuleType<string, {}>;
 }

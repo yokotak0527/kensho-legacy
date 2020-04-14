@@ -1,10 +1,10 @@
-import { rule, RuleTypeStore, RuleType } from '@src/rule'
+import { rule, RuleStore, RuleType } from '@src/rule'
 import { plugin }         from '@src/plugin'
 import config             from '@src/config'
 import * as _rules        from '@src/defaults/rules'
 import * as _plugins      from '@src/defaults/plugins'
 
-const defaultRules = _rules as RuleTypeStore
+const defaultRules = _rules as RuleStore
 
 export interface InputRuleUnitType {
   name         : string
@@ -153,29 +153,39 @@ export class Kensho {
   // }
 }
 
-// add default rules
-for (const [ruleName, callback] of Object.entries(defaultRules)) {
-  Kensho.rule.add(ruleName, callback)
-}
+// const t = Kensho.rule.get('required')
+// Kensho.rule.add('test', (value:string) => {
+//   return true
+// })
+// const f = Kensho.rule.get('regexp')
+// f()
+// f('hoge', { regexp: /hoge/ })
+// // add default rules
+// for (const [ruleName, callback] of Object.entries(defaultRules)) {
+//   Kensho.rule.add(ruleName, callback)
+// }
 
-// add default plugins
-for (const [pluginName, method] of Object.entries(_plugins)) {
-  Kensho.plugin.add(pluginName, method)
-}
+// // add default plugins
+// for (const [pluginName, method] of Object.entries(_plugins)) {
+//   Kensho.plugin.add(pluginName, method)
+// }
 
-export interface MyRuleTypeStore extends RuleTypeStore {
-  'myRule':RuleType<string, {}>
-}
+// export interface MyRuleTypeStore extends RuleTypeStore {
+//   'myRule':RuleType<string, {}>
+// }
 
+// // const f = Kensho.rule.get('integer')
+// // const int = Kensho.rule.get('integer')
+// // int()
 // export const myRule: MyRuleTypeStore['myRule'] = (value, opt) => {
 //   return true
 // }
 // Kensho.rule.add('myRule', myRule)
 
-// Kensho.rule.add('test', () => {
-//   return true
-// })
-// const t = Kensho.rule.get<string, >('test')
+// // Kensho.rule.add('test', () => {
+// //   return true
+// // })
+// // const t = Kensho.rule.get<string, >('test')
 
-// const kensho = new Kensho('form')
-// kensho.add('.input', '.error', [{name:required}])
+// // const kensho = new Kensho('form')
+// // kensho.add('.input', '.error', [{name:required}])

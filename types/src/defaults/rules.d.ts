@@ -1,6 +1,8 @@
-import { RuleTypeStore } from '@src/rule';
-export declare const required: RuleTypeStore['required'];
-export declare const empty: RuleTypeStore['empty'];
-export declare const regexp: RuleTypeStore['regexp'];
-export declare const email: RuleTypeStore['email'];
-export declare const list: RuleTypeStore['list'];
+import { RuleStore } from '@src/rule';
+export declare const required: RuleStore['required'];
+export declare const empty: RuleStore['empty'];
+export declare const regexp: RuleStore['regexp'];
+export declare const email: RuleStore['email'];
+export declare const list: RuleStore['list'];
+export declare const number: RuleStore['number'];
+export declare const integer: RuleStore['integer'];
