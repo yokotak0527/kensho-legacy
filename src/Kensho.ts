@@ -1,8 +1,9 @@
-import { rule, RuleStore, RuleType } from '@src/rule'
-import { plugin }         from '@src/plugin'
-import config             from '@src/config'
-import * as _rules        from '@src/defaults/rules'
-import * as _plugins      from '@src/defaults/plugins'
+// import { rule, RuleStore, RuleType, GetRuleType } from './rule'
+import { rule, RuleStore } from './rule'
+import { plugin }          from './plugin'
+import config              from './config'
+import * as _rules         from './defaults/rules'
+import * as _plugins       from './defaults/plugins'
 
 const defaultRules = _rules as RuleStore
 
@@ -28,6 +29,7 @@ const __unitNameSeed = (() => {
     return seed
   }
 })()
+
 // =============================================================================
 //
 // Kensho Class
@@ -35,7 +37,7 @@ const __unitNameSeed = (() => {
 // =============================================================================
 export class Kensho {
   public form: HTMLElement
-  private readonly inputsRules:Map<string, InputRuleUnitType>
+  private readonly inputsRules: Map<string, InputRuleUnitType>
   static config = config
   static rule   = rule
   static plugin = plugin
@@ -43,9 +45,15 @@ export class Kensho {
   /**
    *
    */
-  static validate<T> (ruleName: string, value: T, option = {}): boolean {
-    const rule = this.rule.get(ruleName)
-    return rule(value, option, this)
+  static validate<N extends string, S extends RuleStore = RuleStore, A extends any[] = N extends keyof RuleStore ? Parameters<S[N]> : [any, Object?]>(rulename:N, value : A[0], option:A[1]) :boolean
+  static validate<N extends string, S extends RuleStore = RuleStore, A extends any[] = N extends keyof RuleStore ? Parameters<S[N]> : [any, Object?]>(rulename:N, value : A[0]) :boolean
+  static validate (ruleName:string, ...args:any[]): boolean {
+    const rule = Kensho.rule.get(ruleName)
+    if (args[1] === undefined) {
+      return rule(args[0], {}, Kensho)
+    } else {
+      return rule(args[0], args[1], Kensho)
+    }
   }
 
   /**
@@ -66,6 +74,12 @@ export class Kensho {
     this.form.classList.add('kensho-form')
     return this
   }
+
+  // GetRuleType
+
+  // add2 () {
+  //   // this.add2({'regexp'})
+  // }
 
   /**
    * @todo
@@ -153,39 +167,12 @@ export class Kensho {
   // }
 }
 
-// const t = Kensho.rule.get('required')
-// Kensho.rule.add('test', (value:string) => {
-//   return true
-// })
-// const f = Kensho.rule.get('regexp')
-// f()
-// f('hoge', { regexp: /hoge/ })
-// // add default rules
-// for (const [ruleName, callback] of Object.entries(defaultRules)) {
-//   Kensho.rule.add(ruleName, callback)
-// }
+// add default rules
+for (const [ruleName, callback] of Object.entries(defaultRules)) {
+  Kensho.rule.add(ruleName, callback)
+}
 
-// // add default plugins
-// for (const [pluginName, method] of Object.entries(_plugins)) {
-//   Kensho.plugin.add(pluginName, method)
-// }
-
-// export interface MyRuleTypeStore extends RuleTypeStore {
-//   'myRule':RuleType<string, {}>
-// }
-
-// // const f = Kensho.rule.get('integer')
-// // const int = Kensho.rule.get('integer')
-// // int()
-// export const myRule: MyRuleTypeStore['myRule'] = (value, opt) => {
-//   return true
-// }
-// Kensho.rule.add('myRule', myRule)
-
-// // Kensho.rule.add('test', () => {
-// //   return true
-// // })
-// // const t = Kensho.rule.get<string, >('test')
-
-// // const kensho = new Kensho('form')
-// // kensho.add('.input', '.error', [{name:required}])
+// add default plugins
+for (const [pluginName, method] of Object.entries(_plugins)) {
+  Kensho.plugin.add(pluginName, method)
+}

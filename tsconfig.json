@@ -3,12 +3,16 @@
     "target": "ES2018",
     "module":"ES6",
     "moduleResolution": "node",
-    "strict": true,
+    "strict": false,
     "baseUrl": "./",
     "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "types",
     "removeComments": true,
+    "noImplicitThis": true,
     "paths": {
-      "@src/*": ["src/*"]
+      "@src/*": ["src/*"],
+      "@types/*": ["types/*"]
     },
     "plugins" : [
       { "transform" : "typescript-transform-paths" },

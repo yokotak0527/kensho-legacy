@@ -1,6 +1,7 @@
-import { Kensho } from '@src/Kensho';
+import { Kensho } from './Kensho';
 declare type KenshoType = typeof Kensho;
-export declare type RuleType<V, O extends Object | undefined = undefined, K extends KenshoType | undefined = undefined> = K extends KenshoType ? (value: V, option: O, Kensho: K) => boolean : O extends Object ? (value: V, option: O) => boolean : (value: V) => boolean;
+declare type SimpleRuleType = (value: any, option?: Object, Kensho?: KenshoType) => boolean;
+declare type RuleType<V, O extends Object = undefined, K extends KenshoType = undefined> = K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : (value: V, option: O, Kensho: K) => boolean;
 export interface RuleStore {
     'required': RuleType<any>;
     'empty': RuleType<any>;
@@ -13,11 +14,21 @@ export interface RuleStore {
     }, KenshoType>;
     'number': RuleType<string | number>;
     'integer': RuleType<string | number, {}, KenshoType>;
+    'naturalNumber': RuleType<string | number, {
+        zero: boolean;
+    }, KenshoType>;
+    'positiveNumber': RuleType<string | number, {}, KenshoType>;
+    'negativeNumber': RuleType<string | number, {}, KenshoType>;
+    'zero': RuleType<string | number, {}, KenshoType>;
+    'age': RuleType<string | number, {
+        max: number;
+    }, KenshoType>;
 }
+export declare type GetRuleType<N extends string, S extends RuleStore = RuleStore> = N extends keyof S ? S[N] : RuleType<any, Object, KenshoType>;
 export declare const ruleBook: Map<string, any>;
 export declare const rule: {
-    add<V, O>(name: string, callback: RuleType<V, O>): void;
-    get<N extends string, T extends RuleStore = RuleStore>(name: N): N extends keyof T ? T[N] : RuleType<any, Object, KenshoType>;
+    add<V, O extends Object | undefined = undefined, K extends KenshoType | undefined = undefined>(name: string, callback: K extends undefined ? RuleType<V, O> : RuleType<V, O, K>): void;
+    get<N extends string, S extends RuleStore = RuleStore>(name: N): N extends keyof S ? S[N] : SimpleRuleType;
     delete(name: string): void;
 };
 export {};

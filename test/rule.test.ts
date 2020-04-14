@@ -1,35 +1,43 @@
-import '@src/rules'
-// import { Kensho } from '@src/Kensho'
-// import { ruleBook, RuleFunctionType } from '@src/rule'
+import { Kensho } from '@src/Kensho'
+import { RuleStore, RuleType, GetRuleType, ruleBook } from '@src/rule'
+type KenshoType = typeof Kensho
 
-// describe('rule control', () => {
-//   test('Kensho.rule.add()', () => {
-//     type RuleSampleType = RuleFunctionType<string, {}>
-//     const sampleFunc: RuleSampleType = (value, option) => {
-//       return true
-//     }
-//     Kensho.rule.add('sampleRule', sampleFunc)
+describe('rule control', () => {
+  interface MyRuleStore extends RuleStore {
+    'sampleRule' : RuleType<string, {}>
+  }
 
-//     const callback = ruleBook.get('sampleRule')
-//     expect(typeof callback).toBe('function')
-//   })
+  test('Kensho.rule.add()', () => {
+    const sampleFunc: MyRuleStore['sampleRule'] = (value, option) => {
+      return true
+    }
+    Kensho.rule.add('sampleRule', sampleFunc)
 
-//   test('Kensho.rule.get()', () => {
-//     const callback = Kensho.rule.get('sampleRule')
-//     expect(typeof callback).toBe('function')
-//   })
+    const callback = ruleBook.get('sampleRule')
+    expect(typeof callback).toBe('function')
+  })
 
-//   test('Kensho.rule.delete()', () => {
-//     Kensho.rule.delete('sampleRule')
+  test('Kensho.rule.get()', () => {
+    const callback = Kensho.rule.get<'sampleRule', MyRuleStore>('sampleRule')
 
-//     expect(() => {
-//       Kensho.rule.get('sampleRule')
-//     }).toThrow()
+    type T = RuleStore['regexp']
+    // type T = GetRuleType<'sampleRule', MyRuleStore>
+    // const c =
+    // callback('hoge', {})
+    expect(typeof callback).toBe('function')
+  })
 
-//     const callback = ruleBook.get('sampleRule')
-//     expect(callback).toBe(undefined)
-//   })
-// })
+  test('Kensho.rule.delete()', () => {
+    Kensho.rule.delete('sampleRule')
+
+    expect(() => {
+      Kensho.rule.get('sampleRule')
+    }).toThrow()
+
+    const callback = ruleBook.get('sampleRule')
+    expect(callback).toBe(undefined)
+  })
+})
 
 // describe('core rules', () => {
 //   test('regexp', () => {

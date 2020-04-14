@@ -1,7 +1,6 @@
 const path       = require('path')
 const merge      = require('lodash/merge')
 const typescript = require('rollup-plugin-typescript2')
-const dts        = require('rollup-plugin-dts').default
 
 const srcDir  = path.join(__dirname, 'src')
 const outDir  = path.join(__dirname, 'dist')
@@ -19,7 +18,6 @@ const typeDir = path.join(__dirname, 'types')
  * @return {Object}
  */
 const configFactory = ( param ) => {
-
   let tsConfig = {
     typescript : require('typescript'),
     tsconfig   : 'tsconfig.json'
@@ -30,8 +28,16 @@ const configFactory = ( param ) => {
     plugins : []
   }
 
-  // in development
+  // ===========================================================================
+  //
+  // Environment specific settings
+  //
+  // ===========================================================================
   if ( process.env.BUILD === 'development' ) {
+    // -------------------------------------------------------------------------
+    // in development
+    // -------------------------------------------------------------------------
+
     // merge rollup config
     merge( rollupConfig, {
       watch : {
@@ -41,16 +47,23 @@ const configFactory = ( param ) => {
     // merge rollup-plugin-typescript2 config
     merge( tsConfig, {
       useTsconfigDeclarationDir : true, // output no bundle d.ts
-      tsconfigDefaults : {
-        compilerOptions : {
-          declaration    : true,
-          declarationDir : "types",
-        }
-      }
+      clean : true
     })
+  } else if( process.env.BUILD === 'production' ) {
+    // -------------------------------------------------------------------------
+    // in production
+    // -------------------------------------------------------------------------
   }
 
+  // ===========================================================================
+  //
+  // Output type specific settings
+  //
+  // ===========================================================================
   if ( param.format === 'umd' || param.format === 'iife' ) {
+    // -------------------------------------------------------------------------
+    // UMD and IIFE
+    // -------------------------------------------------------------------------
     merge(rollupConfig, {
       output : {
         name : 'yokotak0527'
@@ -73,21 +86,23 @@ if ( process.env.BUILD === 'development' ) {
     configFactory({ format : 'iife' } )
   ]
 }
+
 // =============================================================================
 // EXPORT A PRODUCTION CONFIGULATIONS
 // =============================================================================
 if ( process.env.BUILD === 'production' ) {
   module.exports = [
-    // configFactory( { format : 'cjs' } ),
-    // configFactory( { format : 'esm' } ),
-    // configFactory( { format : 'iife' } ),
-    {
-      input  : path.join(typeDir, 'src/Kensho.d.ts'),
-      output : [{
-        file   : path.join(outDir, 'bundle.d.ts'),
-        format : 'es'
-      }],
-      plugins : [dts()]
-    }
+    // configFactory( { format : 'dts' } )
   ]
+//     // configFactory( { format : 'cjs' } ),
+//     // configFactory( { format : 'esm' } ),
+//     // configFactory( { format : 'iife' } ),
+//     {
+//       input  : path.join(typeDir, 'src/Kensho.d.ts'),
+//       output : [{
+//         file   : path.join(outDir, 'bundle.d.ts'),
+//         format : 'es'
+//       }],
+//       plugins : [dts()]
+//     }
 }

@@ -1,4 +1,4 @@
-import { RuleStore } from '@src/rule'
+import { RuleStore } from '../rule'
 // import { Kensho } from '@src/Kensho'
 
 /**
@@ -75,4 +75,65 @@ export const integer: RuleStore['integer'] = (value, option, Kensho) => {
     value = parseInt(value, 10)
   }
   return value % 1 === 0
+}
+
+/**
+ *
+ */
+export const naturalNumber: RuleStore['naturalNumber'] = (value, { zero = false }, Kensho) => {
+  if (!Kensho.validate('integer', value)) return false
+
+  if (typeof value === 'string') {
+    value = parseInt(value, 10)
+  }
+  if (zero && value === 0) return true
+  return value > 0
+}
+
+/**
+ *
+ */
+export const positiveNumber: RuleStore['positiveNumber'] = (value, option, Kensho) => {
+  if (!Kensho.validate('number', value)) return false
+
+  if (typeof value === 'string') {
+    value = parseInt(value, 10)
+  }
+  return value > 0
+}
+
+/**
+ *
+ */
+export const negativeNumber: RuleStore['negativeNumber'] = (value, option, Kensho) => {
+  if (!Kensho.validate('integer', value)) return false
+
+  if (typeof value === 'string') {
+    value = parseInt(value, 10)
+  }
+  return value < 0
+}
+
+/**
+ *
+ */
+export const zero: RuleStore['zero'] = (value, option, Kensho) => {
+  if (!Kensho.validate('number', value)) return false
+
+  if (typeof value === 'string') {
+    value = parseInt(value, 10)
+  }
+  return value === 0
+}
+
+/**
+ *
+ */
+export const age: RuleStore['age'] = (value, { max = 125 }, Kensho) => {
+  if (!Kensho.validate('naturalNumber', value, { zero : true })) return false
+
+  if (typeof value === 'string') {
+    value = parseInt(value, 10)
+  }
+  return value < max
 }

@@ -1,4 +1,4 @@
-import { PluginTypeStore } from '@src/plugin'
+import { PluginTypeStore } from '../plugin'
 
 /**
  * half width char convert full width

@@ -1,4 +1,4 @@
-import { RuleStore } from '@src/rule';
+import { RuleStore } from './rule';
 export interface InputRuleUnitType {
     name: string;
     tagName: string;
@@ -20,8 +20,8 @@ export declare class Kensho {
         HTML5novalidate: boolean;
     };
     static rule: {
-        add<V, O>(name: string, callback: O extends Object ? (value: V, option: O) => boolean : (value: V) => boolean): void;
-        get<N extends string, T extends RuleStore = RuleStore>(name: N): N extends keyof T ? T[N] : (value: any, option: Object, Kensho: typeof Kensho) => boolean;
+        add<V, O extends Object = undefined, K extends typeof Kensho = undefined>(name: string, callback: K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : (value: V, option: O, Kensho: K) => boolean): void;
+        get<N extends string, S extends RuleStore = RuleStore>(name: N): N extends keyof S ? S[N] : (value: any, option?: Object, Kensho?: typeof Kensho) => boolean;
         delete(name: string): void;
     };
     static plugin: {
@@ -30,7 +30,8 @@ export declare class Kensho {
         get<N extends string>(name: N): N extends "half2full" | "full2half" | "is1byte" | "is2byte" ? import("./plugin").PluginTypeStore[N] : Function;
         delete(name: string): void;
     };
-    static validate<T>(ruleName: string, value: T, option?: {}): boolean;
+    static validate<N extends string, S extends RuleStore = RuleStore, A extends any[] = N extends keyof RuleStore ? Parameters<S[N]> : [any, Object?]>(rulename: N, value: A[0], option: A[1]): boolean;
+    static validate<N extends string, S extends RuleStore = RuleStore, A extends any[] = N extends keyof RuleStore ? Parameters<S[N]> : [any, Object?]>(rulename: N, value: A[0]): boolean;
     constructor(formSelector: string | HTMLElement);
     add<T>(inputElement: string | HTMLElement | NodeListOf<HTMLElement> | HTMLElement[], errorElement: string | HTMLElement | undefined, rule: {
         name: string;

@@ -1,1 +1,1 @@
-import '@src/rules';
+export {};
