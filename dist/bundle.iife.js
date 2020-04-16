@@ -59,6 +59,8 @@ var yokotak0527 = (function (exports) {
   const empty = (value) => {
       if (typeof value === 'string')
           return value === '';
+      if (typeof value === 'number')
+          return false;
       if (Array.isArray(value))
           return value.length === 0;
       if (typeof value === 'object' && value !== null)
@@ -91,7 +93,9 @@ var yokotak0527 = (function (exports) {
   const number = value => {
       if (typeof value === 'number')
           return true;
-      return Number.isNaN(value * 1);
+      if (value.trim() === '')
+          return false;
+      return !Number.isNaN(value * 1);
   };
   const integer = (value, option, Kensho) => {
       if (!Kensho.validate('number', value))
@@ -120,7 +124,7 @@ var yokotak0527 = (function (exports) {
       return value > 0;
   };
   const negativeNumber = (value, option, Kensho) => {
-      if (!Kensho.validate('integer', value))
+      if (!Kensho.validate('number', value))
           return false;
       if (typeof value === 'string') {
           value = parseInt(value, 10);
@@ -141,7 +145,7 @@ var yokotak0527 = (function (exports) {
       if (typeof value === 'string') {
           value = parseInt(value, 10);
       }
-      return value < max;
+      return value <= max;
   };
 
   var _rules = /*#__PURE__*/Object.freeze({

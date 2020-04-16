@@ -19,6 +19,7 @@ export const required: RuleStore['required'] = value => {
  */
 export const empty:RuleStore['empty'] = (value) => {
   if (typeof value === 'string') return value === ''
+  if (typeof value === 'number') return false
   if (Array.isArray(value)) return value.length === 0
   if (typeof value === 'object' && value !== null) return Object.keys(value).length === 0
   if (value === undefined) return true
@@ -62,7 +63,8 @@ export const list: RuleStore['list'] = (value, { list }, Kensho) => {
  */
 export const number: RuleStore['number'] = value => {
   if (typeof value === 'number') return true
-  return Number.isNaN(value as any * 1)
+  if (value.trim() === '') return false
+  return !Number.isNaN(value as any * 1)
 }
 
 /**
@@ -106,7 +108,7 @@ export const positiveNumber: RuleStore['positiveNumber'] = (value, option, Kensh
  *
  */
 export const negativeNumber: RuleStore['negativeNumber'] = (value, option, Kensho) => {
-  if (!Kensho.validate('integer', value)) return false
+  if (!Kensho.validate('number', value)) return false
 
   if (typeof value === 'string') {
     value = parseInt(value, 10)
@@ -135,5 +137,5 @@ export const age: RuleStore['age'] = (value, { max = 125 }, Kensho) => {
   if (typeof value === 'string') {
     value = parseInt(value, 10)
   }
-  return value < max
+  return value <= max
 }

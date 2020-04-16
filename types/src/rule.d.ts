@@ -1,7 +1,7 @@
 import { Kensho } from './Kensho';
 declare type KenshoType = typeof Kensho;
 declare type SimpleRuleType = (value: any, option?: Object, Kensho?: KenshoType) => boolean;
-declare type RuleType<V, O extends Object = undefined, K extends KenshoType = undefined> = K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : (value: V, option: O, Kensho: K) => boolean;
+export declare type RuleType<V, O extends Object = undefined, K extends KenshoType = undefined> = K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : (value: V, option: O, Kensho: K) => boolean;
 export interface RuleStore {
     'required': RuleType<any>;
     'empty': RuleType<any>;

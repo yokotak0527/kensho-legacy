@@ -20,7 +20,7 @@ export declare class Kensho {
         HTML5novalidate: boolean;
     };
     static rule: {
-        add<V, O extends Object = undefined, K extends typeof Kensho = undefined>(name: string, callback: K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : (value: V, option: O, Kensho: K) => boolean): void;
+        add<V, O extends Object = undefined, K extends typeof Kensho = undefined>(name: string, callback: K extends undefined ? O extends undefined ? (value: V) => boolean : (value: V, option: O) => boolean : import("./rule").RuleType<V, O, K>): void;
         get<N extends string, S extends RuleStore = RuleStore>(name: N): N extends keyof S ? S[N] : (value: any, option?: Object, Kensho?: typeof Kensho) => boolean;
         delete(name: string): void;
     };

@@ -3,7 +3,7 @@ type KenshoType = typeof Kensho
 
 type SimpleRuleType = (value:any, option?:Object, Kensho?:KenshoType) => boolean
 
-type RuleType<V, O extends Object = undefined, K extends KenshoType = undefined> =
+export type RuleType<V, O extends Object = undefined, K extends KenshoType = undefined> =
   K extends undefined ?
     O extends undefined ?
       (value:V) => boolean :
