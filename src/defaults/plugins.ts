@@ -1,12 +1,56 @@
 import { PluginStore } from '../plugin'
+import { Kensho } from '@src/Kensho'
 
+const charWidthMap:{[x:string]:string} = {}
+/* eslint-disable object-property-newline,quote-props */
+Object.assign(charWidthMap, {
+  '０' : '0', '１' : '1', '２' : '2', '３' : '3', '４' : '4',
+  '５' : '5', '６' : '6', '７' : '7', '８' : '8', '９' : '9'
+})
+Object.assign(charWidthMap, {
+  'ａ' : 'a', 'ｂ' : 'b', 'ｃ' : 'c', 'ｄ' : 'd', 'ｅ' : 'e',
+  'ｆ' : 'f', 'ｇ' : 'g', 'ｈ' : 'h', 'ｉ' : 'i', 'ｊ' : 'j',
+  'ｋ' : 'k', 'ｌ' : 'l', 'ｍ' : 'm', 'ｎ' : 'n', 'ｏ' : 'o',
+  'ｐ' : 'p', 'ｑ' : 'q', 'ｒ' : 'r', 'ｓ' : 's', 'ｔ' : 't',
+  'ｕ' : 'u', 'ｖ' : 'v', 'ｗ' : 'w', 'ｘ' : 'x', 'ｙ' : 'y',
+  'ｚ' : 'z'
+})
+Object.assign(charWidthMap, {
+  'Ａ' : 'A', 'Ｂ' : 'B', 'Ｃ' : 'C', 'Ｄ' : 'D', 'Ｅ' : 'E',
+  'Ｆ' : 'F', 'Ｇ' : 'G', 'Ｈ' : 'H', 'Ｉ' : 'I', 'Ｊ' : 'J',
+  'Ｋ' : 'K', 'Ｌ' : 'L', 'Ｍ' : 'M', 'Ｎ' : 'N', 'Ｏ' : 'O',
+  'Ｐ' : 'P', 'Ｑ' : 'Q', 'Ｒ' : 'R', 'Ｓ' : 'S', 'Ｔ' : 'T',
+  'Ｕ' : 'U', 'Ｖ' : 'V', 'Ｗ' : 'W', 'Ｘ' : 'X', 'Ｙ' : 'Y',
+  'Ｚ' : 'Z'
+})
+Object.assign(charWidthMap, {
+  '－' : '-', '（' : '(', '）' : ')', '＿' : '_', '／' : '/',
+  '＋' : '+', '：' : ':', '；' : ';', '］' : ']', '［' : '[',
+  '＠' : '@', '！' : '!', '＜' : '<', '＞' : '>', '？' : '?',
+  '｛' : '{', '｝' : '}', '＊' : '*', '”' : '"', '’' : "'",
+  '〜' : '~', '＾' : '^', '￥' : '¥', '｜' : '|', '＆' : '&',
+  '％' : '%', '＃' : '#', '＄' : '$', '　' : ' ', '＝' : '='
+})
+/* eslint-enable object-property-newline,quote-props */
+
+export const charWidthMapAssign: PluginStore['charWidthMapAssign'] = (map) => {
+  Object.assign(charWidthMap, map)
+}
 /**
  * half width char convert full width
  */
 export const half2full: PluginStore['half2full'] = (str) => {
   return str.split('').map(char => {
-    return String.fromCharCode(char.charCodeAt(0) - 0xfee0)
-  }).join()
+    let returnVal = char
+    if (Kensho.use('is2byte', char)) return returnVal
+    for (const [key, value] of Object.entries(charWidthMap)) {
+      if (value === char) {
+        returnVal = key
+        break
+      }
+    }
+    return returnVal
+  }).join('')
 }
 
 /**
@@ -14,8 +58,16 @@ export const half2full: PluginStore['half2full'] = (str) => {
  */
 export const full2half: PluginStore['full2half'] = (str) => {
   return str.split('').map(char => {
-    return String.fromCharCode(char.charCodeAt(0) - 0xfee0)
-  }).join()
+    let returnVal = char
+    if (Kensho.use('is1byte', char)) return returnVal
+    for (const [key, value] of Object.entries(charWidthMap)) {
+      if (key === char) {
+        returnVal = value
+        break
+      }
+    }
+    return returnVal
+  }).join('')
 }
 
 const _isNbyte = (half: boolean, char: string): boolean => {
@@ -35,4 +87,12 @@ export const is1byte: PluginStore['is1byte'] = (char) => {
  */
 export const is2byte: PluginStore['is2byte'] = (char) => {
   return _isNbyte(false, char)
+}
+
+/**
+ *
+ */
+export const squash: PluginStore['squash'] = (str, linebreak = false) => {
+  const regexp = linebreak ? /([^\S]|[\t\n])+/gm : /([^\S]|\t)+/gm
+  return str.trim().replace(regexp, '')
 }

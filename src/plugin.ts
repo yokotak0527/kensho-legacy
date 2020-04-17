@@ -1,20 +1,24 @@
-interface PluginMap extends Map<string, any> {
-  // clear(): void;
-  // delete(key: K): boolean;
-  // forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void;
-  get(key: string): any | never
-  // has(key: K): boolean;
-  // set(key: K, value: V): this;
-  // readonly size: number;
-}
+// interface PluginMap extends Map<string, any> {
+//   // clear(): void;
+//   // delete(key: K): boolean;
+//   // forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void;
+//   get(key: string): any | never
+//   // has(key: K): boolean;
+//   // set(key: K, value: V): this;
+//   // readonly size: number;
+// }
+import { Kensho } from './Kensho'
+type KenshoType = typeof Kensho
 
-export const pluginBox: PluginMap = new Map()
+export const pluginBox: Map<string, any> = new Map()
 
 export interface PluginStore {
-  'half2full' : (str: string) => string
-  'full2half' : (str: string) => string
-  'is1byte'   : (char: string) => boolean
-  'is2byte'   : (char: string) => boolean
+  'charWidthMapAssign' : (map: {[x:string]:string}) => void
+  'half2full'          : (str: string) => string
+  'full2half'          : (str: string) => string
+  'is1byte'            : (char: string) => boolean
+  'is2byte'            : (char: string) => boolean
+  'squash'             : (str: string, linebreak?: boolean) => string
 }
 
 // Kensho.use()

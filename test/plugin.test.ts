@@ -27,21 +27,40 @@ describe('plugin control', () => {
 
 describe('preinstall plugins', () => {
   test('half2full', () => {
+    expect(Kensho.use('half2full', 'a')).toBe('ａ')
+    expect(Kensho.use('half2full', 'A')).toBe('Ａ')
+    expect(Kensho.use('half2full', '1')).toBe('１')
+    expect(Kensho.use('half2full', '@')).toBe('＠')
+    expect(Kensho.use('half2full', '!')).toBe('！')
+    expect(Kensho.use('half2full', 'aA1@!')).toBe('ａＡ１＠！')
+    expect(Kensho.use('half2full', '＠')).toBe('＠')
+    expect(Kensho.use('half2full', 'あ')).toBe('あ')
     // Kensho.plugin
   })
+  test('full2half', () => {
+    expect(Kensho.use('full2half', 'ａ')).toBe('a')
+    expect(Kensho.use('full2half', 'Ａ')).toBe('A')
+    expect(Kensho.use('full2half', '１')).toBe('1')
+    expect(Kensho.use('full2half', '＠')).toBe('@')
+    expect(Kensho.use('full2half', '！')).toBe('!')
+    expect(Kensho.use('full2half', 'ａＡ１＠！')).toBe('aA1@!')
+    expect(Kensho.use('full2half', '@')).toBe('@')
+  })
+  test('is1byte', () => {
+    expect(Kensho.use('is1byte', 'a')).toBeTruthy()
+    expect(Kensho.use('is1byte', 'ａ')).toBeFalsy()
+  })
+  test('is2byte', () => {
+    expect(Kensho.use('is2byte', 'ａ')).toBeTruthy()
+    expect(Kensho.use('is2byte', 'a')).toBeFalsy()
+  })
+  test('squash', () => {
+    expect(Kensho.use('squash', ' a ')).toBe('a')
+    expect(Kensho.use('squash', 'a a a')).toBe('aaa')
+    expect(Kensho.use('squash', 'a a')).toBe('aa')
+    expect(Kensho.use('squash', '  a  a  ')).toBe('aa')
+    expect(Kensho.use('squash', 'a　a')).toBe('aa')
+    expect(Kensho.use('squash', 'a\na', true)).toBe('aa')
+    expect(Kensho.use('squash', 'a\n\na', true)).toBe('aa')
+  })
 })
-// describe('preinstall plugins', () => {
-//   // test('half2full', () => {
-//   //   // Kensho.plugin.
-//   // })
-// //   test('regexp', () => {
-// //     expect(Kensho.validate('regexp', 'hoge', { regexp : /^hoge$/ })).toBeTruthy()
-// //     expect(Kensho.validate('regexp', 'hoge', { regexp : /fuga/ })).toBeFalsy()
-// //   })
-// //   test('email', () => {
-// //     expect(Kensho.validate('email', 'a@a.com')).toBeTruthy()
-// //     expect(Kensho.validate('email', 'a@')).toBeFalsy()
-// //     expect(Kensho.validate('email', 'a.com')).toBeFalsy()
-// //     expect(Kensho.validate('email', 'a@a@a.com')).toBeFalsy()
-// //   })
-// })

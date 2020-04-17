@@ -1,12 +1,13 @@
-interface PluginMap extends Map<string, any> {
-    get(key: string): any | never;
-}
-export declare const pluginBox: PluginMap;
+export declare const pluginBox: Map<string, any>;
 export interface PluginStore {
+    'charWidthMapAssign': (map: {
+        [x: string]: string;
+    }) => void;
     'half2full': (str: string) => string;
     'full2half': (str: string) => string;
     'is1byte': (char: string) => boolean;
     'is2byte': (char: string) => boolean;
+    'squash': (str: string, linebreak?: boolean) => string;
 }
 export declare const plugin: {
     add<F extends Function>(name: string, method: F): void;
@@ -14,4 +15,3 @@ export declare const plugin: {
     delete(name: string): void;
     [x: string]: any;
 };
-export {};
