@@ -1,5 +1,5 @@
-import { PluginTypeStore } from '../plugin';
-export declare const half2full: PluginTypeStore['half2full'];
-export declare const full2half: PluginTypeStore['full2half'];
-export declare const is1byte: PluginTypeStore['is1byte'];
-export declare const is2byte: PluginTypeStore['is2byte'];
+import { PluginStore } from '../plugin';
+export declare const half2full: PluginStore['half2full'];
+export declare const full2half: PluginStore['full2half'];
+export declare const is1byte: PluginStore['is1byte'];
+export declare const is2byte: PluginStore['is2byte'];

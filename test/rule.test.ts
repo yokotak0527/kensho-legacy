@@ -36,6 +36,7 @@ describe('rule control', () => {
 
 describe('default rules', () => {
   test('required', () => {
+    // Kensho.validate<'sample1', MyRuleStore>('sample1', )
     expect(Kensho.validate('required', 'a')).toBeTruthy()
     expect(Kensho.validate('required', ' ')).toBeFalsy()
     expect(Kensho.validate('required', '')).toBeFalsy()

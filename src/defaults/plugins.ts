@@ -1,9 +1,9 @@
-import { PluginTypeStore } from '../plugin'
+import { PluginStore } from '../plugin'
 
 /**
  * half width char convert full width
  */
-export const half2full: PluginTypeStore['half2full'] = (str) => {
+export const half2full: PluginStore['half2full'] = (str) => {
   return str.split('').map(char => {
     return String.fromCharCode(char.charCodeAt(0) - 0xfee0)
   }).join()
@@ -12,7 +12,7 @@ export const half2full: PluginTypeStore['half2full'] = (str) => {
 /**
  * full width convert half width
  */
-export const full2half: PluginTypeStore['full2half'] = (str) => {
+export const full2half: PluginStore['full2half'] = (str) => {
   return str.split('').map(char => {
     return String.fromCharCode(char.charCodeAt(0) - 0xfee0)
   }).join()
@@ -27,12 +27,12 @@ const _isNbyte = (half: boolean, char: string): boolean => {
 /**
  *
  */
-export const is1byte: PluginTypeStore['is1byte'] = (char) => {
+export const is1byte: PluginStore['is1byte'] = (char) => {
   return _isNbyte(true, char)
 }
 /**
  *
  */
-export const is2byte: PluginTypeStore['is2byte'] = (char) => {
+export const is2byte: PluginStore['is2byte'] = (char) => {
   return _isNbyte(false, char)
 }

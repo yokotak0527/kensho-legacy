@@ -1,28 +1,35 @@
-// import { Kensho } from '@type/Kensho.d'
-// import { Kensho } from '@src/Kensho'
-// import { ruleBook } from '@src/rule'
+import { Kensho } from '@src/Kensho'
+import { PluginStore, pluginBox } from '@src/plugin'
+type KenshoType = typeof Kensho
 
-// Kensho
-// Kensho.plugins
-// describe('plugin control', () => {
-// test('Kensho.plugin.add()', () => {
-//   // Kensho.rule.add('sampleRule', <T=string>(value: T) => {
-//   //   return true
-//   // })
-//   // const callback = ruleBook.get('sampleRule')
-//   // expect(typeof callback).toBe('function')
-// })
-//   test('Kensho.rule.get()', () => {
-//     const callback = Kensho.rule.get('sampleRule')
-//     expect(typeof callback).toBe('function')
-//   })
-//   test('Kensho.rule.delete()', () => {
-//     Kensho.rule.delete('sampleRule')
-//     const callback = Kensho.rule.get('sampleRule')
-//     expect(callback).toBe(undefined)
-//   })
-// })
+interface MyPluginStore extends PluginStore {
+  samplePlugin1():void
+}
 
+describe('plugin control', () => {
+  test('Kensho.plugin.add()', () => {
+    Kensho.plugin.add('samplePlugin1', () => {})
+    const plugin = pluginBox.get('samplePlugin1')
+    expect(typeof plugin).toBe('function')
+  })
+  test('Kensho.plugin.get()', () => {
+    const plugin = Kensho.plugin.get<'samplePlugin1', MyPluginStore>('samplePlugin1')
+    expect(typeof plugin).toBe('function')
+  })
+  test('Kensho.plugin.delete()', () => {
+    Kensho.plugin.delete('samplePlugin1')
+
+    expect(() => {
+      Kensho.plugin.get('samplePlugin1')
+    }).toThrow()
+  })
+})
+
+describe('preinstall plugins', () => {
+  test('half2full', () => {
+    // Kensho.plugin
+  })
+})
 // describe('preinstall plugins', () => {
 //   // test('half2full', () => {
 //   //   // Kensho.plugin.

@@ -234,6 +234,12 @@ class Kensho {
             return rule(args[0], args[1], Kensho);
         }
     }
+    static test() {
+    }
+    static use(pluginName, ...args) {
+        const plugin = Kensho.plugin.get(pluginName);
+        return plugin(...args);
+    }
     add(inputElement, errorElement, rule, errorMessage, event = [''], unitName = '') {
         var _a;
         if (typeof inputElement === 'string') {

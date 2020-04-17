@@ -1,9 +1,11 @@
 // import { rule, RuleStore, RuleType, GetRuleType } from './rule'
-import { rule, RuleStore } from './rule'
-import { plugin }          from './plugin'
-import config              from './config'
-import * as _rules         from './defaults/rules'
-import * as _plugins       from './defaults/plugins'
+import { rule, RuleStore, RuleType }     from './rule'
+import { plugin, PluginStore } from './plugin'
+import config                  from './config'
+import * as _rules             from './defaults/rules'
+import * as _plugins           from './defaults/plugins'
+
+type _F = (...args:any) => any
 
 const defaultRules = _rules as RuleStore
 
@@ -43,17 +45,35 @@ export class Kensho {
   static plugin = plugin
 
   /**
-   *
+   * validate the value
    */
-  static validate<N extends string, S extends RuleStore = RuleStore, A extends any[] = N extends keyof RuleStore ? Parameters<S[N]> : [any, Object?]>(rulename:N, value : A[0], option:A[1]) :boolean
-  static validate<N extends string, S extends RuleStore = RuleStore, A extends any[] = N extends keyof RuleStore ? Parameters<S[N]> : [any, Object?]>(rulename:N, value : A[0]) :boolean
+  static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never> (rulename:N, value:A[0], option:A[1]) :boolean
+  static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never> (rulename:N, value:A[0]) :boolean
   static validate (ruleName:string, ...args:any[]): boolean {
+    interface MyRuleStore extends RuleStore {
+      'test' : RuleType<string, {prop1:number}>
+    }
+
     const rule = Kensho.rule.get(ruleName)
     if (args[1] === undefined) {
       return rule(args[0], {}, Kensho)
     } else {
       return rule(args[0], args[1], Kensho)
     }
+  }
+
+  static test<
+    T
+  >():void{
+
+  }
+
+  /**
+   *
+   */
+  static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : _F> (pluginName:N, ...args: F extends _F ? Parameters<F> : never):F extends _F ? ReturnType<F> : never {
+    const plugin = Kensho.plugin.get(pluginName)
+    return plugin(...args)
   }
 
   /**
@@ -176,3 +196,6 @@ for (const [ruleName, callback] of Object.entries(defaultRules)) {
 for (const [pluginName, method] of Object.entries(_plugins)) {
   Kensho.plugin.add(pluginName, method)
 }
+
+// const f = Kensho.plugin.get('half2full')
+// f()
