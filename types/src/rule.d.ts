@@ -23,6 +23,9 @@ export interface RuleStore {
     'age': RuleType<string | number, {
         max: number;
     }, KenshoType>;
+    'equal': RuleType<string, {
+        others: string | string[];
+    }>;
 }
 export declare type GetRuleType<N extends string, S extends RuleStore = RuleStore> = N extends keyof S ? S[N] : RuleType<any, Object, KenshoType>;
 export declare const ruleBook: Map<string, any>;

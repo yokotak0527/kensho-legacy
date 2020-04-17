@@ -10,7 +10,7 @@ export interface PluginStore {
     'squash': (str: string, linebreak?: boolean) => string;
 }
 export declare const plugin: {
-    add<F extends Function>(name: string, method: F): void;
+    add<F extends Function>(name: string | 'value', method: F): void;
     get<N extends string, S extends PluginStore = PluginStore>(name: N): N extends keyof S ? S[N] : Function;
     delete(name: string): void;
     [x: string]: any;

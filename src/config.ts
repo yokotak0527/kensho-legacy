@@ -1,6 +1,7 @@
 const config = {
+  customAttrPrefix    : 'k-',
   errorMessageWrapper : 'span',
-  verbose             : false,
+  verbose             : true,
   errorClassName      : 'kensho-has-error',
   autocomplete        : false,
   HTML5novalidate     : true

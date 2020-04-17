@@ -2,6 +2,8 @@
 
 The JavaScript validation library.
 
+![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
+
 ## what it that do
 
 - It can validates values simply.

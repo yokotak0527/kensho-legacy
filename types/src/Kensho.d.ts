@@ -1,20 +1,34 @@
 import { RuleStore, RuleType } from './rule';
 import { PluginStore } from './plugin';
+interface CustomAttrSearchResult {
+    [name: string]: {
+        input: HTMLInputElement;
+        error?: HTMLElement;
+    };
+}
 declare type _F = (...args: any) => any;
 export interface InputRuleUnitType {
+    inputElement: HTMLInputElement[];
+    rule: Array<[string, {
+        [x: string]: any;
+    }]>;
+    errorMessage: {
+        [ruleName: string]: string;
+    } | undefined;
+    errorElement: HTMLElement | undefined;
+    error: string[];
+    displayError: boolean;
+    event: string[];
     name: string;
     tagName: string;
-    inputElement: HTMLElement[];
-    errorElement: HTMLElement | undefined;
-    event: string[];
-    errorMessage: Array<{
-        [x: string]: string;
-    }> | undefined;
+    type: string;
+    valueFilter: Function | undefined;
 }
 export declare class Kensho {
     form: HTMLElement;
     private readonly inputsRules;
     static config: {
+        customAttrPrefix: string;
         errorMessageWrapper: string;
         verbose: boolean;
         errorClassName: string;
@@ -34,21 +48,26 @@ export declare class Kensho {
     };
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0], option: A[1]): boolean;
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0]): boolean;
-    static test<T>(): void;
     static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : _F>(pluginName: N, ...args: F extends _F ? Parameters<F> : never): F extends _F ? ReturnType<F> : never;
     constructor(formSelector: string | HTMLElement);
-    add<T>(inputElement: string | HTMLElement | NodeListOf<HTMLElement> | HTMLElement[], errorElement: string | HTMLElement | undefined, rule: {
-        name: string;
-        option?: object;
-    } | Array<{
-        name: string;
-        option?: object;
-    }>, errorMessage: {
-        name: string;
-        message: string;
-    } | Array<{
-        name: string;
-        message: string;
-    }> | undefined, event?: string | string[], unitName?: string): InputRuleUnitType;
+    search(): CustomAttrSearchResult;
+    add(param: {
+        inputElement: string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[];
+        rule: string | Array<string | [string, {
+            [x: string]: any;
+        }]>;
+        errorMessage?: string | {
+            [ruleName: string]: string;
+        };
+        errorElement?: string | HTMLElement;
+        event?: string | string[];
+        name?: string;
+        valueFilter?: Function | undefined;
+    }): InputRuleUnitType;
+    getRuleUnit(ruleUnitName: string): InputRuleUnitType;
+    getInputValue(unit: InputRuleUnitType): string;
+    clear(unit: InputRuleUnitType): void;
+    validate(ruleUnitName: string): boolean;
+    displayError(unit: InputRuleUnitType): void;
 }
 export {};

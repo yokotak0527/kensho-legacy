@@ -1,4 +1,5 @@
 declare const config: {
+    customAttrPrefix: string;
     errorMessageWrapper: string;
     verbose: boolean;
     errorClassName: string;

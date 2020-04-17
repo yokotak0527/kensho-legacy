@@ -138,4 +138,10 @@ describe('default rules', () => {
     expect(Kensho.validate('age', 0.1)).toBeFalsy()
     expect(Kensho.validate('age', 25, { max:20 })).toBeFalsy()
   })
+  test('equal', () => {
+    expect(Kensho.validate('equal', 'hoge', { others:'hoge' })).toBeTruthy()
+    expect(Kensho.validate('equal', 'hoge', { others:['hoge', 'hoge'] })).toBeTruthy()
+    expect(Kensho.validate('equal', 'hoge', { others:'fuga' })).toBeFalsy()
+    expect(Kensho.validate('equal', 'hoge', { others:['hoge', 'fuga'] })).toBeFalsy()
+  })
 })

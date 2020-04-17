@@ -1,21 +1,28 @@
 // import { rule, RuleStore, RuleType, GetRuleType } from './rule'
-import { rule, RuleStore, RuleType }     from './rule'
-import { plugin, PluginStore } from './plugin'
-import config                  from './config'
-import * as _rules             from './defaults/rules'
-import * as _plugins           from './defaults/plugins'
+import { rule, RuleStore, RuleType } from './rule'
+import { plugin, PluginStore }       from './plugin'
+// import { Hook, HookNames }           from './Hook'
+import config                        from './config'
+import * as _rules                   from './defaults/rules'
+import * as _plugins                 from './defaults/plugins'
 
+interface CustomAttrSearchResult { [name:string] : { input : HTMLInputElement, error? : HTMLElement } }
 type _F = (...args:any) => any
 
 const defaultRules = _rules as RuleStore
 
 export interface InputRuleUnitType {
-  name         : string
-  tagName      : string
-  inputElement : HTMLElement[]
-  errorElement : HTMLElement | undefined
-  event        : string[]
-  errorMessage : Array<{[x:string]: string}> | undefined
+  inputElement  : HTMLInputElement[]
+  rule          : Array<[ string, { [ x : string ] : any } ]>
+  errorMessage  : {[ruleName:string]:string} | undefined
+  errorElement  : HTMLElement | undefined
+  error         : string[]
+  displayError  : boolean
+  event         : string[]
+  name          : string
+  tagName       : string
+  type          : string
+  valueFilter   : Function | undefined
 }
 
 const __unitNameSeed = (() => {
@@ -40,6 +47,7 @@ const __unitNameSeed = (() => {
 export class Kensho {
   public form: HTMLElement
   private readonly inputsRules: Map<string, InputRuleUnitType>
+  // private readonly hook : Hook
   static config = config
   static rule   = rule
   static plugin = plugin
@@ -60,12 +68,6 @@ export class Kensho {
     } else {
       return rule(args[0], args[1], Kensho)
     }
-  }
-
-  static test<
-    T
-  >():void{
-
   }
 
   /**
@@ -90,72 +92,155 @@ export class Kensho {
     //
     if (!Kensho.config.autocomplete) this.form.setAttribute('autocomplete', 'off')
 
+    //
+    // this.hook = new Hook(this)
+
     this.inputsRules = new Map()
     this.form.classList.add('kensho-form')
+
+    this.search()
+
     return this
   }
 
-  // GetRuleType
+  /**
+   *
+   */
+  search ():CustomAttrSearchResult {
+    const prefix = Kensho.config.customAttrPrefix
+    const match = this.form.querySelectorAll(`*[${prefix}name]`)
 
-  // add2 () {
-  //   // this.add2({'regexp'})
-  // }
+    const list:{ [x:string] : { input? : HTMLInputElement, error? : HTMLElement } } = {}
+    for (const item of match) {
+      let name = item.getAttribute(`${prefix}name`)
+      const type = /\.error$/.test(name) ? 'error' : 'input'
+      if (type === 'error') {
+        name = name.replace('.error', '')
+      }
+      if (this.inputsRules.get(name) !== undefined) throw new Error(`The "${name}" rule unit is already exsisted.`)
+
+      if (list[name] === undefined) {
+        list[name] = {}
+      }
+      if (type === 'input') {
+        if (list[name].input !== undefined) throw new Error(`There are two or more \`k-name\` attributes of the same value. "${name}"`)
+        list[name].input = item as HTMLInputElement
+      } else if (type === 'error') {
+        if (list[name].error !== undefined) throw new Error(`There are two or more \`k-name\` attributes of the same value. "${name}.error"`)
+        list[name].error = item as HTMLElement
+      }
+    }
+    /** @todo ~.errorがあって ~がないものを削除 */
+    // for (const [name, obj] of Object.entries(list)) {
+
+    // }
+    //
+    { return list as CustomAttrSearchResult }
+  }
 
   /**
-   * @todo
+   *
    */
-  add<T> (
-    inputElement : string | HTMLElement | NodeListOf<HTMLElement> | HTMLElement[],
-    errorElement : string | HTMLElement | undefined,
-    rule         : {name:string, option?:object} | Array<{name:string, option?:object}>,
-    errorMessage : {name:string, message:string} | Array<{name:string, message:string}> | undefined,
-    event        : string | string[] = [''],
-    unitName = ''
-  ): InputRuleUnitType {
-    if (typeof inputElement === 'string') { // string -> NodeList<HTMLElement>
-      const _elmSelector = inputElement
-      inputElement = this.form.querySelectorAll(_elmSelector)
-      if (inputElement.length === 0) throw new Error(`inputElement "${_elmSelector}" is not found in the form.`)
+  add (param:{
+    inputElement  : string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[]
+    rule          : string | Array< string | [ string, { [ x : string ] : any } ] >
+    errorMessage? : string | { [ ruleName : string ] : string}
+    errorElement? : string | HTMLElement
+    event?        : string | string[]
+    name?         : string
+    valueFilter?  : Function | undefined
+  }): InputRuleUnitType {
+    // setup param.inputElement ------------------------------------------------
+    if (typeof param.inputElement === 'string') { // string -> NodeList<HTMLElement>
+      const _elmSelector = param.inputElement
+      param.inputElement = this.form.querySelectorAll(_elmSelector)
+      if (param.inputElement.length === 0) throw new Error(`inputElement parameter "${_elmSelector}" is not found in the form.`)
     }
-    if (inputElement instanceof HTMLElement) { // HTMLElement -> HTMLElement[]
-      inputElement = [inputElement]
-    } else if (inputElement instanceof NodeList) { // NodeList<HTMLElement> -> HTMLElement[]
-      if (inputElement.length === 0) throw new Error('inputElement length is 0')
-      const _arr:HTMLElement[] = []
-      inputElement.forEach(elm => { _arr.push(elm) })
-      inputElement = _arr
+    if (param.inputElement instanceof HTMLInputElement) { // HTMLElement -> HTMLElement[]
+      param.inputElement = [param.inputElement]
+    } else if (param.inputElement instanceof NodeList) { // NodeList<HTMLElement> -> HTMLElement[]
+      if (param.inputElement.length === 0) throw new Error('inputElement parameter length is 0')
+      const _arr:HTMLInputElement[] = []
+      param.inputElement.forEach(elm => { _arr.push(elm) })
+      param.inputElement = _arr
     }
-    // definitely, the nputElement is HTMLElement[] and it is not zero length.
+    // 🤔 definitely, the param.inputElement is HTMLElement[] and it is not zero length.
 
-    if (typeof errorElement === 'string') {
-      const _elmSelector = errorElement
-      const _elm = this.form.querySelector<HTMLElement>(errorElement)
-      if (_elm === null) throw new Error(`errorElement "${_elmSelector}" is not found in the form.`)
-      errorElement = _elm
+    // setup param.rule --------------------------------------------------------
+    // convert to..
+    // [
+    //   [ ruleName, option ],
+    //   [ ruleName, option ]
+    // ]
+    if (typeof param.rule === 'string') {
+      param.rule = [[param.rule, {}]]
+    }
+    param.rule = param.rule.map(rule => {
+      return typeof rule === 'string' ? [rule, {}] : rule
+    })
+
+    // setup errorMessage ------------------------------------------------------
+    if (param.errorMessage === undefined) {
+      param.errorMessage = {}
+    } else if (typeof param.errorMessage === 'string') {
+      param.errorMessage = { default : param.errorMessage }
+    }
+    param.errorMessage = Object.assign({ default : 'The value has error.' }, param.errorMessage)
+    // setup errorElement ------------------------------------------------------
+    if (param.errorElement === undefined) {
+      param.errorMessage = undefined
+    } else if (typeof param.errorElement === 'string') {
+      const _elmSelector = param.errorElement
+      const _elm = this.form.querySelector<HTMLElement>(param.errorElement)
+      if (_elm === null) throw new Error(`errorElement parameter "${_elmSelector}" is not found in the form.`)
+      param.errorElement = _elm
     }
 
-    if (!Array.isArray(rule)) {
-      rule = [rule]
+    // setup event -------------------------------------------------------------
+    if (param.event === undefined) {
+      param.event = []
+    } else if (typeof param.event === 'string') {
+      param.event = [param.event]
     }
 
-    if (!Array.isArray(errorMessage) && typeof errorMessage === 'object') {
-      errorMessage = [errorMessage]
-    }
+    // setup name --------------------------------------------------------------
+    if (param.name === undefined) param.name = __unitNameSeed()
 
-    if (typeof event === 'string') {
-      event = [event]
-    }
+    // setup tagName -----------------------------------------------------------
+    const tagName = param.inputElement[0].tagName.toLowerCase()
 
-    const inputRuleUnit: InputRuleUnitType = {
-      name    : unitName ?? inputElement[0].getAttribute('name') ?? __unitNameSeed(),
-      tagName : inputElement[0].tagName.toLowerCase(),
-      inputElement,
-      event,
-      errorElement,
-      errorMessage
+    // setup type --------------------------------------------------------------
+    let type:string = ''
+    if (tagName === 'input') {
+      type = param.inputElement[0].getAttribute('type')
+    } else {
+      type = tagName
     }
-    this.inputsRules.set(inputRuleUnit.name, inputRuleUnit)
-    return inputRuleUnit
+    if (
+      type === 'password' || type === 'search' || type === 'tel'    ||
+      type === 'email'    || type === 'url'    || type === 'number' ||
+      type === 'datetime' || type === 'date'   || type === 'month'  ||
+      type === 'week'     || type === 'time'   || type === 'datetime-local'
+    ) type = 'text'
+
+    // add events --------------------------------------------------------------
+    param.inputElement.forEach(elem => {
+      const events = param.event as string[]
+      events.forEach(event => {
+        elem.addEventListener(event, () => {
+          this.validate(param.name)
+        })
+      })
+    })
+
+    const unit: InputRuleUnitType = Object.assign({}, param as InputRuleUnitType, {
+      tagName,
+      type,
+      displayError : param.errorElement !== undefined
+    })
+
+    this.inputsRules.set(unit.name, unit)
+    return unit
   }
 
   /**
@@ -173,18 +258,90 @@ export class Kensho {
   // }
 
   /**
-   * @todo
-  */
-  // clear (): void {
+   *
+   */
+  getRuleUnit (ruleUnitName:string):InputRuleUnitType {
+    const unit:InputRuleUnitType = this.inputsRules.get(ruleUnitName)
+    if (unit === undefined) throw new Error(`${ruleUnitName} is not found.`)
+    return unit
+  }
 
-  // }
+  /**
+   * get value from the input
+   */
+  getInputValue (unit:InputRuleUnitType):string {
+    let value = ''
+    if (unit.type === 'text') {
+      value = unit.inputElement[0].value
+    }
+    if (unit.type === 'radio') {
+      for (let i = 0, l = unit.inputElement.length; i < l; i++) {
+        const elem = unit.inputElement[i]
+        if (elem.checked) {
+          value = elem.value
+          break
+        }
+      }
+    }
+    if (unit.type === 'checkbox') {
+      if (unit.inputElement[0].checked) {
+        value = unit.inputElement[0].value
+      }
+    }
+    return value
+  }
+
+  /**
+   * clear errors and  message
+  */
+  clear (unit:InputRuleUnitType): void {
+    unit.error = []
+    unit.errorElement.innerHTML = ''
+    if (unit.errorElement !== undefined) {
+      /** @todo clear methods */
+    }
+  }
 
   /**
    *
   */
-  // validate () {
+  validate (ruleUnitName:string):boolean {
+    const unit = this.getRuleUnit(ruleUnitName)
 
-  // }
+    let value = this.getInputValue(unit)
+    if (unit.valueFilter !== undefined) value = unit.valueFilter.bind(this)(value, Kensho)
+
+    this.clear(unit)
+
+    for (const [ruleName, option] of unit.rule) {
+      if (!Kensho.validate(ruleName, value, option)) {
+        unit.error.push(ruleName)
+      }
+    }
+
+    if (unit.error.length > 0 && unit.displayError) {
+      this.displayError(unit)
+    }
+
+    return unit.error.length === 0
+  }
+
+  /**
+   *
+   */
+  displayError (unit:InputRuleUnitType):void {
+    if (!unit.displayError || unit.error.length === 0) return undefined
+
+    const errors:string[] = []
+    const wrapper = Kensho.config.errorMessageWrapper
+    for (const ruleName of unit.error) {
+      if (ruleName === 'default') continue
+      const msg:string = unit.errorMessage[ruleName] === undefined ? `The value does not meet "${ruleName}" validation rule.` : unit.errorMessage[ruleName]
+      errors.push(`<${wrapper}>${msg}</${wrapper}>`)
+    }
+    const error = Kensho.config.verbose ? errors.join('') : `<${wrapper}>${unit.errorMessage.default}</${wrapper}>`
+    unit.errorElement.innerHTML = error
+  }
 }
 
 // add default rules
@@ -196,6 +353,3 @@ for (const [ruleName, callback] of Object.entries(defaultRules)) {
 for (const [pluginName, method] of Object.entries(_plugins)) {
   Kensho.plugin.add(pluginName, method)
 }
-
-// const f = Kensho.plugin.get('half2full')
-// f()

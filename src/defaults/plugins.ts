@@ -1,5 +1,6 @@
 import { PluginStore } from '../plugin'
-import { Kensho } from '@src/Kensho'
+import { Kensho as _K } from '@src/Kensho'
+declare var Kensho:typeof _K
 
 const charWidthMap:{[x:string]:string} = {}
 /* eslint-disable object-property-newline,quote-props */

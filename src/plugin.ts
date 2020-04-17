@@ -1,15 +1,3 @@
-// interface PluginMap extends Map<string, any> {
-//   // clear(): void;
-//   // delete(key: K): boolean;
-//   // forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void;
-//   get(key: string): any | never
-//   // has(key: K): boolean;
-//   // set(key: K, value: V): this;
-//   // readonly size: number;
-// }
-import { Kensho } from './Kensho'
-type KenshoType = typeof Kensho
-
 export const pluginBox: Map<string, any> = new Map()
 
 export interface PluginStore {
@@ -21,9 +9,8 @@ export interface PluginStore {
   'squash'             : (str: string, linebreak?: boolean) => string
 }
 
-// Kensho.use()
 export const plugin: {
-  add<F extends Function>(name: string, method: F): void
+  add<F extends Function>(name: string | 'value', method: F): void
   get<N extends string, S extends PluginStore = PluginStore>(name: N): N extends keyof S ? S[N] : Function
   delete(name: string): void
   [x: string]: any

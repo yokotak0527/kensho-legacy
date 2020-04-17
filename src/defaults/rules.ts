@@ -139,3 +139,18 @@ export const age: RuleStore['age'] = (value, { max = 125 }, Kensho) => {
   }
   return value <= max
 }
+
+/**
+ *
+ */
+export const equal:RuleStore['equal'] = (value, { others }) => {
+  let result = true
+  if (typeof others === 'string') others = [others]
+  for (const other of others) {
+    if (value !== other) {
+      result = false
+      break
+    }
+  }
+  return result
+}
