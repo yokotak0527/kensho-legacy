@@ -1,13 +1,14 @@
 import { RuleStore, RuleType } from './rule';
 import { PluginStore } from './plugin';
+declare type InputElementTypes = HTMLInputElement | HTMLSelectElement;
 interface CustomAttrSearchResult {
     [name: string]: {
-        input: HTMLInputElement;
+        input: InputElementTypes;
         error?: HTMLElement;
     };
 }
 interface AddFunctionParamArg {
-    inputElement: string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[];
+    inputElement: string | InputElementTypes | NodeListOf<HTMLInputElement> | InputElementTypes[];
     rule: string | Array<string | [string, {
         [x: string]: any;
     }]>;
@@ -21,7 +22,7 @@ interface AddFunctionParamArg {
 }
 declare type _F = (...args: any) => any;
 export interface InputRuleUnitType {
-    inputElement: HTMLInputElement[];
+    inputElement: InputElementTypes[];
     rule: Array<[string, {
         [x: string]: any;
     }]>;
@@ -62,15 +63,22 @@ export declare class Kensho {
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0], option: A[1]): boolean;
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0]): boolean;
     static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : _F>(pluginName: N, ...args: F extends _F ? Parameters<F> : never): F extends _F ? ReturnType<F> : never;
-    constructor(formSelector: string | HTMLElement);
-    private parseAttrStr2Arr;
+    constructor(formSelector: string | HTMLElement, option?: {
+        search?: boolean;
+    });
     addFromCustomAttrs(CustomAttrs: CustomAttrSearchResult): void;
     search(): CustomAttrSearchResult;
     add(param: AddFunctionParamArg): InputRuleUnitType;
+    delete(): void;
+    hasError(): boolean;
     getRuleUnit(ruleUnitName: string): InputRuleUnitType;
     getInputValue(unit: InputRuleUnitType): string;
     clear(unit: InputRuleUnitType): void;
+    allClear(): void;
     validate(ruleUnitName: string): boolean;
+    allValidate(): void;
     displayError(unit: InputRuleUnitType): void;
+    private parseAttrStr2Arr;
+    private parseString2rightType;
 }
 export {};

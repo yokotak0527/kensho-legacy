@@ -281,7 +281,10 @@ const __unitNameSeed = (() => {
     };
 })();
 class Kensho {
-    constructor(formSelector) {
+    constructor(formSelector, option = {}) {
+        option = Object.assign({
+            search: true
+        }, option);
         if (typeof formSelector === 'string') {
             const _form = document.querySelector(formSelector);
             if (_form === null)
@@ -293,7 +296,9 @@ class Kensho {
             this.form.setAttribute('autocomplete', 'off');
         this.inputsRules = new Map();
         this.form.classList.add('kensho-form');
-        this.addFromCustomAttrs(this.search());
+        if (option.search) {
+            this.addFromCustomAttrs(this.search());
+        }
         return this;
     }
     static validate(ruleName, ...args) {
@@ -308,14 +313,6 @@ class Kensho {
     static use(pluginName, ...args) {
         const plugin = Kensho.plugin.get(pluginName).bind(Kensho);
         return plugin(...args);
-    }
-    parseAttrStr2Arr(value) {
-        value = value.trim()
-            .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',')
-            .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'');
-        value = `[${value}]`
-            .replace(/'/g, '"');
-        return JSON.parse(value);
     }
     addFromCustomAttrs(CustomAttrs) {
         const attrPrefix = Kensho.config.customAttrPrefix;
@@ -425,6 +422,9 @@ class Kensho {
         if (param.inputElement instanceof HTMLInputElement) {
             param.inputElement = [param.inputElement];
         }
+        else if (param.inputElement instanceof HTMLSelectElement) {
+            param.inputElement = [param.inputElement];
+        }
         else if (param.inputElement instanceof NodeList) {
             if (param.inputElement.length === 0)
                 throw new Error('inputElement parameter length is 0');
@@ -487,10 +487,21 @@ class Kensho {
         const unit = Object.assign({}, param, {
             tagName,
             type,
+            error: [],
             displayError: param.errorElement !== undefined
         });
         this.inputsRules.set(unit.name, unit);
         return unit;
+    }
+    delete() {
+    }
+    hasError() {
+        let hasError = false;
+        this.inputsRules.forEach((val, key) => {
+            if (val.error.length > 0)
+                hasError = true;
+        });
+        return hasError;
     }
     getRuleUnit(ruleUnitName) {
         const unit = this.inputsRules.get(ruleUnitName);
@@ -513,16 +524,23 @@ class Kensho {
             }
         }
         if (unit.type === 'checkbox') {
-            if (unit.inputElement[0].checked) {
-                value = unit.inputElement[0].value;
+            const elem = unit.inputElement[0];
+            if (elem.checked) {
+                value = elem.value;
             }
+        }
+        if (unit.type === 'select') {
+            const elem = unit.inputElement[0];
+            value = elem.options[elem.options.selectedIndex].value;
         }
         return value;
     }
     clear(unit) {
         unit.error = [];
         unit.errorElement.innerHTML = '';
-        if (unit.errorElement !== undefined) ;
+    }
+    allClear() {
+        this.inputsRules.forEach((val, key) => this.clear(this.getRuleUnit(key)));
     }
     validate(ruleUnitName) {
         const unit = this.getRuleUnit(ruleUnitName);
@@ -540,6 +558,9 @@ class Kensho {
         }
         return unit.error.length === 0;
     }
+    allValidate() {
+        this.inputsRules.forEach((val, key) => this.validate(key));
+    }
     displayError(unit) {
         if (!unit.displayError || unit.error.length === 0)
             return undefined;
@@ -553,6 +574,20 @@ class Kensho {
         }
         const error = Kensho.config.verbose ? errors.join('') : `<${wrapper}>${unit.errorMessage.default}</${wrapper}>`;
         unit.errorElement.innerHTML = error;
+    }
+    parseAttrStr2Arr(value) {
+        value = value.trim()
+            .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',')
+            .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'')
+            .replace(/\/(.+)\//, '"/$1/"');
+        value = `[${value}]`
+            .replace(/'/g, '"');
+        const returnVal = JSON.parse(value).map(elem => this.parseString2rightType(elem));
+        console.log(returnVal);
+        return returnVal;
+    }
+    parseString2rightType(val) {
+        return val;
     }
 }
 Kensho.config = config;

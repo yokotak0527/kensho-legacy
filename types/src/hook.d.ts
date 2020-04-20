@@ -1,9 +1,8 @@
 import { Kensho } from './Kensho';
-export declare type HookNames = 'filter::getInputValue::after';
+export declare type HookNames = 'filter::validate::before' | 'filter::validate::after';
 export declare class Hook {
-    filterMap: Map<string, any>;
-    actionMap: Map<string, any>;
     constructor(kensho: Kensho);
     add(): void;
     remove(): void;
+    trigger(): void;
 }

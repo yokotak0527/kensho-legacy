@@ -1,14 +1,14 @@
 // import { rule, RuleStore, RuleType, GetRuleType } from './rule'
 import { rule, RuleStore, RuleType } from './rule'
 import { plugin, PluginStore }       from './plugin'
-// import { Hook, HookNames }           from './Hook'
 import config                        from './config'
 import * as _rules                   from './defaults/rules'
 import * as _plugins                 from './defaults/plugins'
 
-interface CustomAttrSearchResult { [name:string] : { input : HTMLInputElement, error? : HTMLElement } }
+type InputElementTypes = HTMLInputElement | HTMLSelectElement
+interface CustomAttrSearchResult { [name:string] : { input : InputElementTypes, error? : HTMLElement } }
 interface AddFunctionParamArg {
-  inputElement  : string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[]
+  inputElement  : string | InputElementTypes | NodeListOf<HTMLInputElement> | InputElementTypes[]
   rule          : string | Array< string | [ string, { [ x : string ] : any } ] >
   errorMessage? : string | { [ ruleName : string ] : string}
   errorElement? : string | HTMLElement
@@ -21,7 +21,7 @@ type _F = (...args:any) => any
 const defaultRules = _rules as RuleStore
 
 export interface InputRuleUnitType {
-  inputElement  : HTMLInputElement[]
+  inputElement  : InputElementTypes[]
   rule          : Array<[ string, { [ x : string ] : any } ]>
   errorMessage  : {[ruleName:string]:string} | undefined
   errorElement  : HTMLElement | undefined
@@ -90,7 +90,11 @@ export class Kensho {
   /**
    *
    */
-  constructor (formSelector: string|HTMLElement) {
+  constructor (formSelector: string|HTMLElement, option:{search?:boolean} = {}) {
+    option = Object.assign({
+      search : true
+    }, option)
+
     if (typeof formSelector === 'string') {
       const _form = document.querySelector<HTMLElement>(formSelector)
       if (_form === null) throw new Error(`form "${formSelector}" is not found.`)
@@ -101,27 +105,12 @@ export class Kensho {
     //
     if (!Kensho.config.autocomplete) this.form.setAttribute('autocomplete', 'off')
 
-    //
-    // this.hook = new Hook(this)
-
     this.inputsRules = new Map()
     this.form.classList.add('kensho-form')
 
-    this.addFromCustomAttrs(this.search())
+    if (option.search) { this.addFromCustomAttrs(this.search()) }
 
     return this
-  }
-
-  /**
-   *
-  */
-  private parseAttrStr2Arr<N> (value:string):N {
-    value = value.trim()
-      .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',') // "hoge, ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], piyo"
-      .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'') // "'hoge', ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], 'piyo'"
-    value = `[${value}]`
-      .replace(/'/g, '"')
-    return JSON.parse(value)
   }
 
   /**
@@ -143,7 +132,7 @@ export class Kensho {
       const rule = this.parseAttrStr2Arr<Exclude<AddFunctionParamArg['rule'], string>>(rawRule)
 
       // parse inputElement ----------------------------------------------------
-      let inputElement:HTMLInputElement | NodeListOf<HTMLInputElement> = data.input
+      let inputElement:InputElementTypes | NodeListOf<HTMLInputElement> = data.input
       const typeAttr = data.input.getAttribute('type')
       if (typeAttr === 'radio') {
         inputElement = this.form.querySelectorAll<HTMLInputElement>(`input[name="${data.input.getAttribute('name')}"]`)
@@ -209,14 +198,14 @@ export class Kensho {
     const prefix = Kensho.config.customAttrPrefix
     const match = this.form.querySelectorAll(`*[${prefix}name]`)
 
-    const _list:{ [x:string] : { input? : HTMLInputElement, error? : HTMLElement } } = {}
+    const _list:{ [x:string] : { input? : InputElementTypes, error? : HTMLElement } } = {}
+
     for (const item of match) {
       let name = item.getAttribute(`${prefix}name`)
       const type = /\.error$/.test(name) ? 'error' : 'input'
       if (type === 'error') {
         name = name.replace('.error', '')
       }
-
       if (_list[name] === undefined) {
         _list[name] = {}
       }
@@ -224,7 +213,7 @@ export class Kensho {
         if (_list[name].input !== undefined) {
           console.error(`There are two or more \`k-name\` attributes of the same value. "${name}"`)
         }
-        _list[name].input = item as HTMLInputElement
+        _list[name].input = item as InputElementTypes
       } else if (type === 'error') {
         if (_list[name].error !== undefined) {
           console.error(`There are two or more \`k-name\` attributes of the same value. "${name}.error"`)
@@ -236,7 +225,7 @@ export class Kensho {
     const list:CustomAttrSearchResult = {}
     for (const [name, obj] of Object.entries(_list)) {
       if (obj.input !== undefined) {
-        list[name] = obj as { input : HTMLInputElement, error : HTMLElement }
+        list[name] = obj as { input : InputElementTypes, error : HTMLElement }
       } else {
         console.error(`No \`k-name="${name}"\` attribute in HTML input form against \`k-name="${name}.error"\``)
       }
@@ -255,15 +244,19 @@ export class Kensho {
       param.inputElement = this.form.querySelectorAll(_elmSelector)
       if (param.inputElement.length === 0) throw new Error(`inputElement parameter "${_elmSelector}" is not found in the form.`)
     }
-    if (param.inputElement instanceof HTMLInputElement) { // HTMLElement -> HTMLElement[]
+
+    if (param.inputElement instanceof HTMLInputElement) { // HTMLInputElement -> HTMLInputElement[]
       param.inputElement = [param.inputElement]
-    } else if (param.inputElement instanceof NodeList) { // NodeList<HTMLElement> -> HTMLElement[]
+    } else if (param.inputElement instanceof HTMLSelectElement) { // HTMLSelectElement -> HTMLSelectElement[]
+      param.inputElement = [param.inputElement]
+    } else if (param.inputElement instanceof NodeList) { // NodeList<HTMLInputElement> -> HTMLInputElement[]
       if (param.inputElement.length === 0) throw new Error('inputElement parameter length is 0')
       const _arr:HTMLInputElement[] = []
       param.inputElement.forEach(elm => { _arr.push(elm) })
       param.inputElement = _arr
     }
-    // 🤔 definitely, the param.inputElement is HTMLElement[] and it is not zero length.
+    // console.log(param.inputElement)
+    // 🤔 definitely, the param.inputElement is Array<HTMLElement|HTMLSelectElement> and it is not zero length.
 
     // setup param.rule --------------------------------------------------------
     // convert to..
@@ -335,6 +328,7 @@ export class Kensho {
     const unit: InputRuleUnitType = Object.assign({}, param as InputRuleUnitType, {
       tagName,
       type,
+      error : [],
       displayError : param.errorElement !== undefined
     })
 
@@ -343,18 +337,21 @@ export class Kensho {
   }
 
   /**
-   * @todo
+   *
    */
-  // delete (): void {
+  delete (): void {
 
-  // }
+  }
 
   /**
-   * @todo
   */
-  // hasError (): boolean {
-
-  // }
+  hasError (): boolean {
+    let hasError = false
+    this.inputsRules.forEach((val, key) => {
+      if (val.error.length > 0) hasError = true
+    })
+    return hasError
+  }
 
   /**
    *
@@ -375,7 +372,7 @@ export class Kensho {
     }
     if (unit.type === 'radio') {
       for (let i = 0, l = unit.inputElement.length; i < l; i++) {
-        const elem = unit.inputElement[i]
+        const elem = unit.inputElement[i] as HTMLInputElement
         if (elem.checked) {
           value = elem.value
           break
@@ -383,9 +380,14 @@ export class Kensho {
       }
     }
     if (unit.type === 'checkbox') {
-      if (unit.inputElement[0].checked) {
-        value = unit.inputElement[0].value
+      const elem = unit.inputElement[0] as HTMLInputElement
+      if (elem.checked) {
+        value = elem.value
       }
+    }
+    if (unit.type === 'select') {
+      const elem = unit.inputElement[0] as HTMLSelectElement
+      value = elem.options[elem.options.selectedIndex].value
     }
     return value
   }
@@ -396,9 +398,13 @@ export class Kensho {
   clear (unit:InputRuleUnitType): void {
     unit.error = []
     unit.errorElement.innerHTML = ''
-    if (unit.errorElement !== undefined) {
-      /** @todo clear methods */
-    }
+  }
+
+  /**
+   *
+   */
+  allClear ():void {
+    this.inputsRules.forEach((val, key) => this.clear(this.getRuleUnit(key)))
   }
 
   /**
@@ -428,6 +434,13 @@ export class Kensho {
   /**
    *
    */
+  allValidate ():void {
+    this.inputsRules.forEach((val, key) => this.validate(key))
+  }
+
+  /**
+   *
+   */
   displayError (unit:InputRuleUnitType):void {
     if (!unit.displayError || unit.error.length === 0) return undefined
 
@@ -440,6 +453,31 @@ export class Kensho {
     }
     const error = Kensho.config.verbose ? errors.join('') : `<${wrapper}>${unit.errorMessage.default}</${wrapper}>`
     unit.errorElement.innerHTML = error
+  }
+
+  /**
+   *
+  */
+  private parseAttrStr2Arr<N> (value:string):N {
+    value = value.trim()
+      .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',') // "hoge, ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], piyo"
+      .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'') // "'hoge', ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], 'piyo'"
+      .replace(/\/(.+)\//, '"/$1/"') // escape regexp
+    value = `[${value}]`
+      .replace(/'/g, '"')
+
+    const returnVal:N = JSON.parse(value).map(elem => this.parseString2rightType(elem))
+    console.log(returnVal)
+    return returnVal
+  }
+
+  /**
+   *
+   */
+  private parseString2rightType<T> (val:T):T {
+    /** @todo */
+    // if (Array.isArray)
+    return val
   }
 }
 
