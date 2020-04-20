@@ -1,6 +1,7 @@
 import { PluginStore } from '../plugin'
-import { Kensho as _K } from '@src/Kensho'
-declare var Kensho:typeof _K
+import { Kensho } from '@src/Kensho'
+type KenshoType = typeof Kensho
+// declare var Kensho:typeof _K
 
 const charWidthMap:{[x:string]:string} = {}
 /* eslint-disable object-property-newline,quote-props */
@@ -34,16 +35,16 @@ Object.assign(charWidthMap, {
 })
 /* eslint-enable object-property-newline,quote-props */
 
-export const charWidthMapAssign: PluginStore['charWidthMapAssign'] = (map) => {
+export const charWidthMapAssign: PluginStore['charWidthMapAssign'] = function (map) {
   Object.assign(charWidthMap, map)
 }
 /**
  * half width char convert full width
  */
-export const half2full: PluginStore['half2full'] = (str) => {
+export const half2full: PluginStore['half2full'] = function (this:KenshoType, str) {
   return str.split('').map(char => {
     let returnVal = char
-    if (Kensho.use('is2byte', char)) return returnVal
+    if (this.use('is2byte', char)) return returnVal
     for (const [key, value] of Object.entries(charWidthMap)) {
       if (value === char) {
         returnVal = key
@@ -57,10 +58,10 @@ export const half2full: PluginStore['half2full'] = (str) => {
 /**
  * full width convert half width
  */
-export const full2half: PluginStore['full2half'] = (str) => {
+export const full2half: PluginStore['full2half'] = function (this:KenshoType, str) {
   return str.split('').map(char => {
     let returnVal = char
-    if (Kensho.use('is1byte', char)) return returnVal
+    if (this.use('is1byte', char)) return returnVal
     for (const [key, value] of Object.entries(charWidthMap)) {
       if (key === char) {
         returnVal = value
@@ -86,14 +87,14 @@ export const is1byte: PluginStore['is1byte'] = (char) => {
 /**
  *
  */
-export const is2byte: PluginStore['is2byte'] = (char) => {
+export const is2byte: PluginStore['is2byte'] = function (char) {
   return _isNbyte(false, char)
 }
 
 /**
  *
  */
-export const squash: PluginStore['squash'] = (str, linebreak = false) => {
+export const squash: PluginStore['squash'] = function (str, linebreak = false) {
   const regexp = linebreak ? /([^\S]|[\t\n])+/gm : /([^\S]|\t)+/gm
   return str.trim().replace(regexp, '')
 }

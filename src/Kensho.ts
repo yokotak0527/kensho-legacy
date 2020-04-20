@@ -7,6 +7,15 @@ import * as _rules                   from './defaults/rules'
 import * as _plugins                 from './defaults/plugins'
 
 interface CustomAttrSearchResult { [name:string] : { input : HTMLInputElement, error? : HTMLElement } }
+interface AddFunctionParamArg {
+  inputElement  : string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[]
+  rule          : string | Array< string | [ string, { [ x : string ] : any } ] >
+  errorMessage? : string | { [ ruleName : string ] : string}
+  errorElement? : string | HTMLElement
+  event?        : string | string[]
+  name?         : string
+  valueFilter?  : Function | undefined
+}
 type _F = (...args:any) => any
 
 const defaultRules = _rules as RuleStore
@@ -74,7 +83,7 @@ export class Kensho {
    *
    */
   static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : _F> (pluginName:N, ...args: F extends _F ? Parameters<F> : never):F extends _F ? ReturnType<F> : never {
-    const plugin = Kensho.plugin.get(pluginName)
+    const plugin = Kensho.plugin.get(pluginName).bind(Kensho)
     return plugin(...args)
   }
 
@@ -98,9 +107,99 @@ export class Kensho {
     this.inputsRules = new Map()
     this.form.classList.add('kensho-form')
 
-    this.search()
+    this.addFromCustomAttrs(this.search())
 
     return this
+  }
+
+  /**
+   *
+  */
+  private parseAttrStr2Arr<N> (value:string):N {
+    value = value.trim()
+      .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',') // "hoge, ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], piyo"
+      .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'') // "'hoge', ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], 'piyo'"
+    value = `[${value}]`
+      .replace(/'/g, '"')
+    return JSON.parse(value)
+  }
+
+  /**
+   *
+   */
+  addFromCustomAttrs (CustomAttrs:CustomAttrSearchResult):void {
+    const attrPrefix = Kensho.config.customAttrPrefix
+    for (const [unitName, data] of Object.entries(CustomAttrs)) {
+      if (this.inputsRules.get(unitName) !== undefined) throw new Error(`The "${unitName}" rule unit is already exsisted.`)
+
+      const _inputElm = data.input
+
+      const name = unitName
+      const errorElement = data.error
+
+      // parse rule ------------------------------------------------------------
+      const rawRule:AddFunctionParamArg['rule'] | null = _inputElm.getAttribute(`${attrPrefix}rule`)
+      if (rawRule === null) throw new Error(`The \`k-rule\` attribute is not found in the element where \`k-name="${unitName}"\` is specified.`)
+      const rule = this.parseAttrStr2Arr<Exclude<AddFunctionParamArg['rule'], string>>(rawRule)
+
+      // parse inputElement ----------------------------------------------------
+      let inputElement:HTMLInputElement | NodeListOf<HTMLInputElement> = data.input
+      const typeAttr = data.input.getAttribute('type')
+      if (typeAttr === 'radio') {
+        inputElement = this.form.querySelectorAll<HTMLInputElement>(`input[name="${data.input.getAttribute('name')}"]`)
+      }
+
+      // parse event -----------------------------------------------------------
+      let rawEvent:AddFunctionParamArg['event'] | undefined = _inputElm.getAttribute(`${attrPrefix}event`) !== null ? _inputElm.getAttribute(`${attrPrefix}event`) : undefined
+      if (typeof rawEvent === 'string') {
+        rawEvent = this.parseAttrStr2Arr<Exclude<AddFunctionParamArg['event'], string>>(rawEvent)
+      }
+      const event = rawEvent
+
+      // parse eventMessage ----------------------------------------------------
+      let rawErrorMessage:AddFunctionParamArg['errorMessage'] | undefined = _inputElm.getAttribute(`${attrPrefix}message`) !== null ? _inputElm.getAttribute(`${attrPrefix}message`) : undefined
+      if (typeof rawErrorMessage === 'string') {
+        rawErrorMessage = rawErrorMessage
+          .trim()
+          .replace(/\n/gm, '')
+          .replace(/'/g, '"')
+        if (/^{.+}$/.test(rawErrorMessage)) {
+          rawErrorMessage = JSON.parse(rawErrorMessage) as Exclude<AddFunctionParamArg['errorMessage'], string>
+        }
+      }
+      const errorMessage = rawErrorMessage
+
+      // parse filter ----------------------------------------------------------
+      type RawFilter = string | undefined | Array<string | [ string, any[] ]>
+      let rawFilter:RawFilter = _inputElm.getAttribute(`${attrPrefix}filter`) !== null ? _inputElm.getAttribute(`${attrPrefix}filter`) : undefined
+      let valueFilter:AddFunctionParamArg['valueFilter']
+      if (typeof rawFilter === 'string') {
+        rawFilter = this.parseAttrStr2Arr<Exclude<RawFilter, string | undefined>>(rawFilter)
+        // console.log(rawFilter)
+        valueFilter = function (value, Kensho) {
+          for (const filter of rawFilter) {
+            if (typeof filter === 'string') {
+              value = Kensho.use(filter, value)
+            } else {
+              value = Kensho.use(filter[0], value, ...filter[1])
+            }
+          }
+          return value
+        }
+      }
+
+      const addParam:AddFunctionParamArg = {
+        inputElement,
+        errorElement,
+        errorMessage,
+        rule,
+        event,
+        valueFilter,
+        name
+      }
+
+      this.add(addParam)
+    }
   }
 
   /**
@@ -110,46 +209,46 @@ export class Kensho {
     const prefix = Kensho.config.customAttrPrefix
     const match = this.form.querySelectorAll(`*[${prefix}name]`)
 
-    const list:{ [x:string] : { input? : HTMLInputElement, error? : HTMLElement } } = {}
+    const _list:{ [x:string] : { input? : HTMLInputElement, error? : HTMLElement } } = {}
     for (const item of match) {
       let name = item.getAttribute(`${prefix}name`)
       const type = /\.error$/.test(name) ? 'error' : 'input'
       if (type === 'error') {
         name = name.replace('.error', '')
       }
-      if (this.inputsRules.get(name) !== undefined) throw new Error(`The "${name}" rule unit is already exsisted.`)
 
-      if (list[name] === undefined) {
-        list[name] = {}
+      if (_list[name] === undefined) {
+        _list[name] = {}
       }
       if (type === 'input') {
-        if (list[name].input !== undefined) throw new Error(`There are two or more \`k-name\` attributes of the same value. "${name}"`)
-        list[name].input = item as HTMLInputElement
+        if (_list[name].input !== undefined) {
+          console.error(`There are two or more \`k-name\` attributes of the same value. "${name}"`)
+        }
+        _list[name].input = item as HTMLInputElement
       } else if (type === 'error') {
-        if (list[name].error !== undefined) throw new Error(`There are two or more \`k-name\` attributes of the same value. "${name}.error"`)
-        list[name].error = item as HTMLElement
+        if (_list[name].error !== undefined) {
+          console.error(`There are two or more \`k-name\` attributes of the same value. "${name}.error"`)
+        }
+        _list[name].error = item as HTMLElement
       }
     }
-    /** @todo ~.errorがあって ~がないものを削除 */
-    // for (const [name, obj] of Object.entries(list)) {
 
-    // }
+    const list:CustomAttrSearchResult = {}
+    for (const [name, obj] of Object.entries(_list)) {
+      if (obj.input !== undefined) {
+        list[name] = obj as { input : HTMLInputElement, error : HTMLElement }
+      } else {
+        console.error(`No \`k-name="${name}"\` attribute in HTML input form against \`k-name="${name}.error"\``)
+      }
+    }
     //
-    { return list as CustomAttrSearchResult }
+    return list
   }
 
   /**
    *
    */
-  add (param:{
-    inputElement  : string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[]
-    rule          : string | Array< string | [ string, { [ x : string ] : any } ] >
-    errorMessage? : string | { [ ruleName : string ] : string}
-    errorElement? : string | HTMLElement
-    event?        : string | string[]
-    name?         : string
-    valueFilter?  : Function | undefined
-  }): InputRuleUnitType {
+  add (param:AddFunctionParamArg): InputRuleUnitType {
     // setup param.inputElement ------------------------------------------------
     if (typeof param.inputElement === 'string') { // string -> NodeList<HTMLElement>
       const _elmSelector = param.inputElement

@@ -9,7 +9,7 @@
 <body>
   <form action="">
     <ul>
-      <li>A <input type="radio" name="my-radio" value="1"></li>
+      <li>A <input type="radio" k-rule="['required']" k-event="['keyup']" name="my-radio" value="1"></li>
       <li>B <input type="radio" name="my-radio" value="2"></li>
       <li>C <input type="radio" name="my-radio" value="3"></li>
     </ul>
@@ -17,7 +17,8 @@
       <li>A <input type="checkbox" name="my-checkbox" value="check!!!"></li>
     </ul>
 
-    <input type="text" name="name" k-name="test" k-rule="['required', ['regexp', {regexp:/aaaa/}]]" k-plugin="" k-event="[]">
+    <input type="text" name="name" k-name="test" k-rule="number" k-message="fail" k-filter="full2half" k-event="keyup">
+    <!-- <input type="text" name="name" k-name="test" k-rule="number" k-message="fail" k-filter="'full2half', ['test', ['dddsd', true]]" k-event="keyup"> -->
     <input type="submit">
     <p class="error" k-name="test.error"></p>
   </form>
@@ -25,19 +26,19 @@
     window.onload = ()=>{
       yokotak0527.Kensho.config.verbose = false
       const kensho = new yokotak0527.Kensho('form')
-      kensho.add({
-        inputElement : 'input[name="name"]',
-        errorElement : '.error',
-        errorMessage : {
-          default : "失敗"
-        },
-        rule         : ['required'],
-        event        : ['keyup'],
-        name         : 'test',
-        valueFilter  : (value) => {
-          return value
-        }
-      })
+      // kensho.add({
+      //   inputElement : 'input[name="name"]',
+      //   errorElement : '.error',
+      //   errorMessage : {
+      //     default : "失敗"
+      //   },
+      //   rule         : ['required'],
+      //   event        : ['keyup'],
+      //   name         : 'test',
+      //   valueFilter  : (value) => {
+      //     return value
+      //   }
+      // })
       // kensho.validate('test')
       // console.log(Kensho)
     }

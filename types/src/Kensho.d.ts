@@ -6,6 +6,19 @@ interface CustomAttrSearchResult {
         error?: HTMLElement;
     };
 }
+interface AddFunctionParamArg {
+    inputElement: string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[];
+    rule: string | Array<string | [string, {
+        [x: string]: any;
+    }]>;
+    errorMessage?: string | {
+        [ruleName: string]: string;
+    };
+    errorElement?: string | HTMLElement;
+    event?: string | string[];
+    name?: string;
+    valueFilter?: Function | undefined;
+}
 declare type _F = (...args: any) => any;
 export interface InputRuleUnitType {
     inputElement: HTMLInputElement[];
@@ -50,20 +63,10 @@ export declare class Kensho {
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0]): boolean;
     static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : _F>(pluginName: N, ...args: F extends _F ? Parameters<F> : never): F extends _F ? ReturnType<F> : never;
     constructor(formSelector: string | HTMLElement);
+    private parseAttrStr2Arr;
+    addFromCustomAttrs(CustomAttrs: CustomAttrSearchResult): void;
     search(): CustomAttrSearchResult;
-    add(param: {
-        inputElement: string | HTMLInputElement | NodeListOf<HTMLInputElement> | HTMLInputElement[];
-        rule: string | Array<string | [string, {
-            [x: string]: any;
-        }]>;
-        errorMessage?: string | {
-            [ruleName: string]: string;
-        };
-        errorElement?: string | HTMLElement;
-        event?: string | string[];
-        name?: string;
-        valueFilter?: Function | undefined;
-    }): InputRuleUnitType;
+    add(param: AddFunctionParamArg): InputRuleUnitType;
     getRuleUnit(ruleUnitName: string): InputRuleUnitType;
     getInputValue(unit: InputRuleUnitType): string;
     clear(unit: InputRuleUnitType): void;

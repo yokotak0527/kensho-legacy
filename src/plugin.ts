@@ -1,3 +1,6 @@
+import { Kensho } from './Kensho'
+type KenshoType = typeof Kensho
+
 export const pluginBox: Map<string, any> = new Map()
 
 export interface PluginStore {

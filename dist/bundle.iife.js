@@ -207,13 +207,13 @@ var yokotak0527 = (function (exports) {
       '〜': '~', '＾': '^', '￥': '¥', '｜': '|', '＆': '&',
       '％': '%', '＃': '#', '＄': '$', '　': ' ', '＝': '='
   });
-  const charWidthMapAssign = (map) => {
+  const charWidthMapAssign = function (map) {
       Object.assign(charWidthMap, map);
   };
-  const half2full = (str) => {
+  const half2full = function (str) {
       return str.split('').map(char => {
           let returnVal = char;
-          if (Kensho.use('is2byte', char))
+          if (this.use('is2byte', char))
               return returnVal;
           for (const [key, value] of Object.entries(charWidthMap)) {
               if (value === char) {
@@ -224,10 +224,10 @@ var yokotak0527 = (function (exports) {
           return returnVal;
       }).join('');
   };
-  const full2half = (str) => {
+  const full2half = function (str) {
       return str.split('').map(char => {
           let returnVal = char;
-          if (Kensho.use('is1byte', char))
+          if (this.use('is1byte', char))
               return returnVal;
           for (const [key, value] of Object.entries(charWidthMap)) {
               if (key === char) {
@@ -246,10 +246,10 @@ var yokotak0527 = (function (exports) {
   const is1byte = (char) => {
       return _isNbyte(true, char);
   };
-  const is2byte = (char) => {
+  const is2byte = function (char) {
       return _isNbyte(false, char);
   };
-  const squash = (str, linebreak = false) => {
+  const squash = function (str, linebreak = false) {
       const regexp = linebreak ? /([^\S]|[\t\n])+/gm : /([^\S]|\t)+/gm;
       return str.trim().replace(regexp, '');
   };
@@ -279,7 +279,7 @@ var yokotak0527 = (function (exports) {
           return seed;
       };
   })();
-  class Kensho$1 {
+  class Kensho {
       constructor(formSelector) {
           if (typeof formSelector === 'string') {
               const _form = document.querySelector(formSelector);
@@ -288,55 +288,131 @@ var yokotak0527 = (function (exports) {
               formSelector = _form;
           }
           this.form = formSelector;
-          if (!Kensho$1.config.autocomplete)
+          if (!Kensho.config.autocomplete)
               this.form.setAttribute('autocomplete', 'off');
           this.inputsRules = new Map();
           this.form.classList.add('kensho-form');
-          this.search();
+          this.addFromCustomAttrs(this.search());
           return this;
       }
       static validate(ruleName, ...args) {
-          const rule = Kensho$1.rule.get(ruleName);
+          const rule = Kensho.rule.get(ruleName);
           if (args[1] === undefined) {
-              return rule(args[0], {}, Kensho$1);
+              return rule(args[0], {}, Kensho);
           }
           else {
-              return rule(args[0], args[1], Kensho$1);
+              return rule(args[0], args[1], Kensho);
           }
       }
       static use(pluginName, ...args) {
-          const plugin = Kensho$1.plugin.get(pluginName);
+          const plugin = Kensho.plugin.get(pluginName).bind(Kensho);
           return plugin(...args);
       }
+      parseAttrStr2Arr(value) {
+          value = value.trim()
+              .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',')
+              .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'');
+          value = `[${value}]`
+              .replace(/'/g, '"');
+          return JSON.parse(value);
+      }
+      addFromCustomAttrs(CustomAttrs) {
+          const attrPrefix = Kensho.config.customAttrPrefix;
+          for (const [unitName, data] of Object.entries(CustomAttrs)) {
+              if (this.inputsRules.get(unitName) !== undefined)
+                  throw new Error(`The "${unitName}" rule unit is already exsisted.`);
+              const _inputElm = data.input;
+              const name = unitName;
+              const errorElement = data.error;
+              const rawRule = _inputElm.getAttribute(`${attrPrefix}rule`);
+              if (rawRule === null)
+                  throw new Error(`The \`k-rule\` attribute is not found in the element where \`k-name="${unitName}"\` is specified.`);
+              const rule = this.parseAttrStr2Arr(rawRule);
+              let inputElement = data.input;
+              const typeAttr = data.input.getAttribute('type');
+              if (typeAttr === 'radio') {
+                  inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
+              }
+              let rawEvent = _inputElm.getAttribute(`${attrPrefix}event`) !== null ? _inputElm.getAttribute(`${attrPrefix}event`) : undefined;
+              if (typeof rawEvent === 'string') {
+                  rawEvent = this.parseAttrStr2Arr(rawEvent);
+              }
+              const event = rawEvent;
+              let rawErrorMessage = _inputElm.getAttribute(`${attrPrefix}message`) !== null ? _inputElm.getAttribute(`${attrPrefix}message`) : undefined;
+              if (typeof rawErrorMessage === 'string') {
+                  rawErrorMessage = rawErrorMessage
+                      .trim()
+                      .replace(/\n/gm, '')
+                      .replace(/'/g, '"');
+                  if (/^{.+}$/.test(rawErrorMessage)) {
+                      rawErrorMessage = JSON.parse(rawErrorMessage);
+                  }
+              }
+              const errorMessage = rawErrorMessage;
+              let rawFilter = _inputElm.getAttribute(`${attrPrefix}filter`) !== null ? _inputElm.getAttribute(`${attrPrefix}filter`) : undefined;
+              let valueFilter;
+              if (typeof rawFilter === 'string') {
+                  rawFilter = this.parseAttrStr2Arr(rawFilter);
+                  valueFilter = function (value, Kensho) {
+                      for (const filter of rawFilter) {
+                          if (typeof filter === 'string') {
+                              value = Kensho.use(filter, value);
+                          }
+                          else {
+                              value = Kensho.use(filter[0], value, ...filter[1]);
+                          }
+                      }
+                      return value;
+                  };
+              }
+              const addParam = {
+                  inputElement,
+                  errorElement,
+                  errorMessage,
+                  rule,
+                  event,
+                  valueFilter,
+                  name
+              };
+              this.add(addParam);
+          }
+      }
       search() {
-          const prefix = Kensho$1.config.customAttrPrefix;
+          const prefix = Kensho.config.customAttrPrefix;
           const match = this.form.querySelectorAll(`*[${prefix}name]`);
-          const list = {};
+          const _list = {};
           for (const item of match) {
               let name = item.getAttribute(`${prefix}name`);
               const type = /\.error$/.test(name) ? 'error' : 'input';
               if (type === 'error') {
                   name = name.replace('.error', '');
               }
-              if (this.inputsRules.get(name) !== undefined)
-                  throw new Error(`The "${name}" rule unit is already exsisted.`);
-              if (list[name] === undefined) {
-                  list[name] = {};
+              if (_list[name] === undefined) {
+                  _list[name] = {};
               }
               if (type === 'input') {
-                  if (list[name].input !== undefined)
-                      throw new Error(`There are two or more \`k-name\` attributes of the same value. "${name}"`);
-                  list[name].input = item;
+                  if (_list[name].input !== undefined) {
+                      console.error(`There are two or more \`k-name\` attributes of the same value. "${name}"`);
+                  }
+                  _list[name].input = item;
               }
               else if (type === 'error') {
-                  if (list[name].error !== undefined)
-                      throw new Error(`There are two or more \`k-name\` attributes of the same value. "${name}.error"`);
-                  list[name].error = item;
+                  if (_list[name].error !== undefined) {
+                      console.error(`There are two or more \`k-name\` attributes of the same value. "${name}.error"`);
+                  }
+                  _list[name].error = item;
               }
           }
-          {
-              return list;
+          const list = {};
+          for (const [name, obj] of Object.entries(_list)) {
+              if (obj.input !== undefined) {
+                  list[name] = obj;
+              }
+              else {
+                  console.error(`No \`k-name="${name}"\` attribute in HTML input form against \`k-name="${name}.error"\``);
+              }
           }
+          return list;
       }
       add(param) {
           if (typeof param.inputElement === 'string') {
@@ -451,10 +527,10 @@ var yokotak0527 = (function (exports) {
           const unit = this.getRuleUnit(ruleUnitName);
           let value = this.getInputValue(unit);
           if (unit.valueFilter !== undefined)
-              value = unit.valueFilter.bind(this)(value, Kensho$1);
+              value = unit.valueFilter.bind(this)(value, Kensho);
           this.clear(unit);
           for (const [ruleName, option] of unit.rule) {
-              if (!Kensho$1.validate(ruleName, value, option)) {
+              if (!Kensho.validate(ruleName, value, option)) {
                   unit.error.push(ruleName);
               }
           }
@@ -467,28 +543,28 @@ var yokotak0527 = (function (exports) {
           if (!unit.displayError || unit.error.length === 0)
               return undefined;
           const errors = [];
-          const wrapper = Kensho$1.config.errorMessageWrapper;
+          const wrapper = Kensho.config.errorMessageWrapper;
           for (const ruleName of unit.error) {
               if (ruleName === 'default')
                   continue;
               const msg = unit.errorMessage[ruleName] === undefined ? `The value does not meet "${ruleName}" validation rule.` : unit.errorMessage[ruleName];
               errors.push(`<${wrapper}>${msg}</${wrapper}>`);
           }
-          const error = Kensho$1.config.verbose ? errors.join('') : `<${wrapper}>${unit.errorMessage.default}</${wrapper}>`;
+          const error = Kensho.config.verbose ? errors.join('') : `<${wrapper}>${unit.errorMessage.default}</${wrapper}>`;
           unit.errorElement.innerHTML = error;
       }
   }
-  Kensho$1.config = config;
-  Kensho$1.rule = rule;
-  Kensho$1.plugin = plugin;
+  Kensho.config = config;
+  Kensho.rule = rule;
+  Kensho.plugin = plugin;
   for (const [ruleName, callback] of Object.entries(defaultRules)) {
-      Kensho$1.rule.add(ruleName, callback);
+      Kensho.rule.add(ruleName, callback);
   }
   for (const [pluginName, method] of Object.entries(_plugins)) {
-      Kensho$1.plugin.add(pluginName, method);
+      Kensho.plugin.add(pluginName, method);
   }
 
-  exports.Kensho = Kensho$1;
+  exports.Kensho = Kensho;
 
   return exports;
 
