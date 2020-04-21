@@ -339,12 +339,6 @@ export class Kensho {
   /**
    *
    */
-  delete (): void {
-
-  }
-
-  /**
-  */
   hasError (): boolean {
     let hasError = false
     this.inputsRules.forEach((val, key) => {
@@ -393,7 +387,7 @@ export class Kensho {
   }
 
   /**
-   * clear errors and  message
+   * clear errors and message
   */
   clear (unit:InputRuleUnitType): void {
     unit.error = []
@@ -462,21 +456,31 @@ export class Kensho {
     value = value.trim()
       .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',') // "hoge, ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], piyo"
       .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'') // "'hoge', ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], 'piyo'"
-      .replace(/\/(.+)\//, '"/$1/"') // escape regexp
+      .replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"') // escape regexp
     value = `[${value}]`
       .replace(/'/g, '"')
 
     const returnVal:N = JSON.parse(value).map(elem => this.parseString2rightType(elem))
-    console.log(returnVal)
     return returnVal
   }
 
   /**
    *
    */
-  private parseString2rightType<T> (val:T):T {
-    /** @todo */
-    // if (Array.isArray)
+  private parseString2rightType (val:any):any {
+    if (Array.isArray(val)) {
+      val = val.map(v => this.parseString2rightType(v))
+    } else if (typeof val === 'object') {
+      for (const key in val) {
+        val[key] = this.parseString2rightType(val[key])
+      }
+    } else if (typeof val === 'string') {
+      const match = (val.match(/(\/.+\/)([gimsuy]*)/))
+      if (match !== null) {
+        match[1] = match[1].replace(/^\//, '').replace(/\/$/, '')
+        val = match[2] === '' ? new RegExp(match[1]) : new RegExp(match[1], match[2])
+      }
+    }
     return val
   }
 }

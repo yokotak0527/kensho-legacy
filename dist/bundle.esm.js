@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 const ruleBook = new Map();
 const rule = {
     add(name, callback) {
@@ -612,4 +608,4 @@ for (const [pluginName, method] of Object.entries(_plugins)) {
     Kensho.plugin.add(pluginName, method);
 }
 
-exports.Kensho = Kensho;
+export { Kensho };

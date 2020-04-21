@@ -6,8 +6,6 @@
     "strict": false,
     "baseUrl": "./",
     "outDir": "dist",
-    "declaration": true,
-    "declarationDir": "types",
     "removeComments": true,
     "noImplicitThis": true,
     "paths": {

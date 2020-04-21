@@ -1,31 +1,63 @@
 const path       = require('path')
 const merge      = require('lodash/merge')
 const typescript = require('rollup-plugin-typescript2')
+const { terser } = require('rollup-plugin-terser')
+const polyfill   = require('rollup-plugin-polyfill')
 
 const srcDir  = path.join(__dirname, 'src')
 const outDir  = path.join(__dirname, 'dist')
-const typeDir = path.join(__dirname, 'types')
 
 /**
  * output rollup configulation
  * 
- * @param {Object}     param          -
- * @param {string}     param.format   - 
- * @param {Array<any>} param.plugins  - 
- * @param {Object}     options        - 
- * @param {string}     options.srcDir - 
- * @param {string}     options.outDir - 
+ * @param {Object}     param               -
+ * @param {string}     param.format        - 
+ * @param {string}     [param.minify=fale] - 
+ * @param {Array<any>} param.plugins       - 
+ * @param {Object}     options             - 
+ * @param {string}     options.srcDir      - 
+ * @param {string}     options.outDir      - 
  * @return {Object}
  */
-const configFactory = ( param ) => {
+const configFactory = ( param = {} ) => {
+  param = Object.assign({
+    minify : false
+  }, param)
+
+
+  // ---------------------------------------------------------------------------
+  // TypeScript config
+  // ---------------------------------------------------------------------------
   let tsConfig = {
-    typescript : require('typescript'),
-    tsconfig   : 'tsconfig.json'
+    typescript                : require('typescript'),
+    useTsconfigDeclarationDir : true, // output no bundle d.ts
+    clean                     : true,
+    tsconfig                  : 'tsconfig.json'
   }
+
+  // ---------------------------------------------------------------------------
+  // rollup config
+  // ---------------------------------------------------------------------------
   let rollupConfig = {
-    input   : path.join(srcDir, 'Kensho.ts'),
-    output  : { file : path.join(outDir, `bundle.${param.format}.js`), format : param.format },
-    plugins : []
+    input  : path.join(srcDir, 'Kensho.ts'),
+    output : {
+      file   : path.join(outDir, param.minify ? `bundle.${param.format}.min.js` : `bundle.${param.format}.js`),
+      format : param.format
+    },
+    plugins : (()=>{
+      const arr = []
+      if(param.minify) arr.push(terser())
+      return arr
+    })()
+  }
+
+  if ( param.format === 'umd' || param.format === 'iife' ) {
+    merge(rollupConfig, {
+      output : { name : 'yokotak0527' },
+      plugins : [
+        polyfill([])
+      ]
+    })
   }
 
   // ===========================================================================
@@ -46,30 +78,16 @@ const configFactory = ( param ) => {
     })
     // merge rollup-plugin-typescript2 config
     merge( tsConfig, {
-      useTsconfigDeclarationDir : true, // output no bundle d.ts
-      clean : true
-    })
-  } else if( process.env.BUILD === 'production' ) {
-    // -------------------------------------------------------------------------
-    // in production
-    // -------------------------------------------------------------------------
-  }
-
-  // ===========================================================================
-  //
-  // Output type specific settings
-  //
-  // ===========================================================================
-  if ( param.format === 'umd' || param.format === 'iife' ) {
-    // -------------------------------------------------------------------------
-    // UMD and IIFE
-    // -------------------------------------------------------------------------
-    merge(rollupConfig, {
-      output : {
-        name : 'yokotak0527'
+      tsconfigDefaults : {
+        compilerOptions : {
+          declaration    : true,
+          declarationDir : 'types'
+        }
       }
     })
   }
+
+  // ===========================================================================
 
   // add rollup-plugin-typescript2
   rollupConfig.plugins.push(typescript(tsConfig))
@@ -83,7 +101,7 @@ if ( process.env.BUILD === 'development' ) {
   // output cjs only.
   module.exports = [
     configFactory({ format : 'cjs' } ),
-    configFactory({ format : 'iife' } )
+    configFactory({ format : 'umd' } )
   ]
 }
 
@@ -92,17 +110,9 @@ if ( process.env.BUILD === 'development' ) {
 // =============================================================================
 if ( process.env.BUILD === 'production' ) {
   module.exports = [
-    // configFactory( { format : 'dts' } )
+    configFactory( { format : 'cjs' } ),
+    configFactory( { format : 'umd' } ),
+    configFactory( { format : 'umd', minify : true } ),
+    configFactory( { format : 'esm' } )
   ]
-//     // configFactory( { format : 'cjs' } ),
-//     // configFactory( { format : 'esm' } ),
-//     // configFactory( { format : 'iife' } ),
-//     {
-//       input  : path.join(typeDir, 'src/Kensho.d.ts'),
-//       output : [{
-//         file   : path.join(outDir, 'bundle.d.ts'),
-//         format : 'es'
-//       }],
-//       plugins : [dts()]
-//     }
 }

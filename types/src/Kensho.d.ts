@@ -69,7 +69,6 @@ export declare class Kensho {
     addFromCustomAttrs(CustomAttrs: CustomAttrSearchResult): void;
     search(): CustomAttrSearchResult;
     add(param: AddFunctionParamArg): InputRuleUnitType;
-    delete(): void;
     hasError(): boolean;
     getRuleUnit(ruleUnitName: string): InputRuleUnitType;
     getInputValue(unit: InputRuleUnitType): string;
