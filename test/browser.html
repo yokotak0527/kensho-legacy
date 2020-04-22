@@ -7,15 +7,12 @@
   <script src="../dist/bundle.umd.js" defer></script>
 </head>
 <body>
-  hello
   <form action="">
-    <input type="text" class="dummy">
-    <input type="text" k-name="test" k-rule="['equal', { 'others' : ['.dummy']}]", k-event="keyup">
-    <p k-name="test.error"></p>
+    <input type="email" k-name="sample" k-rule="email" k-event="keyup">
+    <p k-name="sample.error"></p>
   </form>
   <script>
     window.onload = function(){
-      yokotak0527.Kensho.config.verbose = false
       const kensho = new yokotak0527.Kensho('form')
     }
   </script>

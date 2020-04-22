@@ -4230,7 +4230,10 @@
 	    key: "clear",
 	    value: function clear(unit) {
 	      unit.error = [];
-	      unit.errorElement.innerHTML = '';
+
+	      if (unit.displayError) {
+	        unit.errorElement.innerHTML = '';
+	      }
 	    }
 	  }, {
 	    key: "allClear",
@@ -4297,7 +4300,7 @@
 	        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
 	          var ruleName = _step4.value;
 	          if (ruleName === 'default') continue;
-	          var msg = unit.errorMessage[ruleName] === undefined ? "The value does not meet \"".concat(ruleName, "\" validation rule.") : unit.errorMessage[ruleName];
+	          var msg = unit.errorMessage[ruleName] === undefined ? "The value failed \"".concat(ruleName, "\" validation rule.") : unit.errorMessage[ruleName];
 	          errors.push("<".concat(wrapper, ">").concat(msg, "</").concat(wrapper, ">"));
 	        }
 	      } catch (err) {

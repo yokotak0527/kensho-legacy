@@ -391,7 +391,9 @@ export class Kensho {
   */
   clear (unit:InputRuleUnitType): void {
     unit.error = []
-    unit.errorElement.innerHTML = ''
+    if (unit.displayError) {
+      unit.errorElement.innerHTML = ''
+    }
   }
 
   /**
@@ -442,7 +444,7 @@ export class Kensho {
     const wrapper = Kensho.config.errorMessageWrapper
     for (const ruleName of unit.error) {
       if (ruleName === 'default') continue
-      const msg:string = unit.errorMessage[ruleName] === undefined ? `The value does not meet "${ruleName}" validation rule.` : unit.errorMessage[ruleName]
+      const msg:string = unit.errorMessage[ruleName] === undefined ? `The value failed "${ruleName}" validation rule.` : unit.errorMessage[ruleName]
       errors.push(`<${wrapper}>${msg}</${wrapper}>`)
     }
     const error = Kensho.config.verbose ? errors.join('') : `<${wrapper}>${unit.errorMessage.default}</${wrapper}>`
