@@ -2,7 +2,10 @@
 
 The JavaScript validation library.
 
-![MIT licence](https://img.shields.io/badge/licence-MIT-brightgreen.svg)
+![NPM Download](https://img.shields.io/npm/dt/@yokotak0527/kensho)
+![TravisCI](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
+![open issue](https://img.shields.io/github/issues/yokotak0527/kensho)
+![MIT licence](https://img.shields.io/github/license/yokotak0527/kensho)
 
 ## What this can do
 
@@ -40,7 +43,7 @@ If the value entered does not conform to the email address specification, "The v
 ## Install
 
 ```bash
-$ npm install yokotak0527/kensho
+$ npm install @yokotak0527/kensho
 ```
 
 | bundle file       |              |
