@@ -3,6 +3,7 @@
 
 module.exports = {
   "preset": "ts-jest",
+  "verbose": true,
   "moduleNameMapper": {
     "^@src/(.*)$": "<rootDir>/src/$1",
     "^@types/(.*)$": "<rootDir>/types/$1"

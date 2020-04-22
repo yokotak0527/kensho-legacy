@@ -3499,7 +3499,9 @@
 	  return value <= max;
 	};
 	var equal = function equal(value, _ref5) {
-	  var others = _ref5.others;
+	  var others = _ref5.others,
+	      _ref5$isInput = _ref5.isInput,
+	      isInput = _ref5$isInput === void 0 ? true : _ref5$isInput;
 	  var result = true;
 	  if (typeof others === 'string') others = [others];
 
@@ -3509,8 +3511,15 @@
 	  try {
 	    for (_iterator.s(); !(_step = _iterator.n()).done;) {
 	      var other = _step.value;
+	      var otherValue = void 0;
 
-	      if (value !== other) {
+	      if (isInput) {
+	        otherValue = document.querySelector(other).value;
+	      } else {
+	        otherValue = other;
+	      }
+
+	      if (value !== otherValue) {
 	        result = false;
 	        break;
 	      }
@@ -3522,6 +3531,22 @@
 	  }
 
 	  return result;
+	};
+	var letters = function letters(value, _ref6) {
+	  var _ref6$range = _ref6.range,
+	      range = _ref6$range === void 0 ? {} : _ref6$range;
+	  range = Object.assign({
+	    min: -1,
+	    max: -1
+	  }, range);
+	  range.min = typeof range.min === 'string' ? parseInt(range.min, 10) : range.min;
+	  range.max = typeof range.max === 'string' ? parseInt(range.max, 10) : range.max;
+	  if (range.min < 0 && range.max < 0) throw new Error('To use the letters rule, you need to specify number that is 0 or more for either `range.min` or `range.max`');
+	  if (range.min < 0 && range.max >= 0) return value.length <= range.max;
+	  if (range.min >= 0 && range.max < 0) return value.length >= range.min;
+	  if (range.min > range.max) throw new Error('You cannot specify a number larger than `range.max` in `range.min`');
+	  if (range.min >= 0 && range.max >= 0) return value.length >= range.min && value.length <= range.max;
+	  return false;
 	};
 
 	var _rules = /*#__PURE__*/Object.freeze({
@@ -3538,7 +3563,8 @@
 		negativeNumber: negativeNumber,
 		zero: zero,
 		age: age,
-		equal: equal
+		equal: equal,
+		letters: letters
 	});
 
 	var SPECIES$5 = wellKnownSymbol('species');

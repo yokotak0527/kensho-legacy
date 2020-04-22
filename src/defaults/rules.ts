@@ -143,14 +143,35 @@ export const age: RuleStore['age'] = (value, { max = 125 }, Kensho) => {
 /**
  *
  */
-export const equal:RuleStore['equal'] = (value, { others }) => {
+export const equal:RuleStore['equal'] = (value, { others, isInput = true }) => {
   let result = true
   if (typeof others === 'string') others = [others]
   for (const other of others) {
-    if (value !== other) {
+    let otherValue:string
+    if (isInput) {
+      otherValue = document.querySelector<HTMLInputElement>(other).value
+    } else {
+      otherValue = other
+    }
+    if (value !== otherValue) {
       result = false
       break
     }
   }
   return result
+}
+
+export const letters:RuleStore['letters'] = (value, { range = {} }) => {
+  range = Object.assign({
+    min : -1,
+    max : -1
+  }, range)
+  range.min = typeof range.min === 'string' ? parseInt(range.min, 10) : range.min
+  range.max = typeof range.max === 'string' ? parseInt(range.max, 10) : range.max
+  if (range.min < 0 && range.max < 0) throw new Error('To use the letters rule, you need to specify number that is 0 or more for either `range.min` or `range.max`')
+  if (range.min < 0 && range.max >= 0) return value.length <= range.max
+  if (range.min >= 0 && range.max < 0) return value.length >= range.min
+  if (range.min > range.max) throw new Error('You cannot specify a number larger than `range.max` in `range.min`')
+  if (range.min >= 0 && range.max >= 0) return value.length >= range.min && value.length <= range.max
+  return false
 }

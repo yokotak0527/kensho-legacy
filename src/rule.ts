@@ -23,7 +23,8 @@ export interface RuleStore {
   'negativeNumber' : RuleType<string | number, {}, KenshoType>
   'zero'           : RuleType<string | number, {}, KenshoType>
   'age'            : RuleType<string | number, {max:number}, KenshoType>
-  'equal'          : RuleType<string, {others:string|string[]}>
+  'equal'          : RuleType<string, {others:string|string[], isInput?:boolean}>
+  'letters'        : RuleType<string, {range: { min?:string|number, max?:string|number}}>
 }
 
 export type GetRuleType<N extends string, S extends RuleStore = RuleStore> = N extends keyof S ? S[N] : RuleType<any, Object, KenshoType>

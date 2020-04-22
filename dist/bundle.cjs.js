@@ -149,17 +149,43 @@ const age = (value, { max = 125 }, Kensho) => {
     }
     return value <= max;
 };
-const equal = (value, { others }) => {
+const equal = (value, { others, isInput = true }) => {
     let result = true;
     if (typeof others === 'string')
         others = [others];
     for (const other of others) {
-        if (value !== other) {
+        let otherValue;
+        if (isInput) {
+            otherValue = document.querySelector(other).value;
+        }
+        else {
+            otherValue = other;
+        }
+        if (value !== otherValue) {
             result = false;
             break;
         }
     }
     return result;
+};
+const letters = (value, { range = {} }) => {
+    range = Object.assign({
+        min: -1,
+        max: -1
+    }, range);
+    range.min = typeof range.min === 'string' ? parseInt(range.min, 10) : range.min;
+    range.max = typeof range.max === 'string' ? parseInt(range.max, 10) : range.max;
+    if (range.min < 0 && range.max < 0)
+        throw new Error('To use the letters rule, you need to specify number that is 0 or more for either `range.min` or `range.max`');
+    if (range.min < 0 && range.max >= 0)
+        return value.length <= range.max;
+    if (range.min >= 0 && range.max < 0)
+        return value.length >= range.min;
+    if (range.min > range.max)
+        throw new Error('You cannot specify a number larger than `range.max` in `range.min`');
+    if (range.min >= 0 && range.max >= 0)
+        return value.length >= range.min && value.length <= range.max;
+    return false;
 };
 
 var _rules = /*#__PURE__*/Object.freeze({
@@ -176,7 +202,8 @@ var _rules = /*#__PURE__*/Object.freeze({
   negativeNumber: negativeNumber,
   zero: zero,
   age: age,
-  equal: equal
+  equal: equal,
+  letters: letters
 });
 
 const charWidthMap = {};
@@ -613,3 +640,4 @@ for (const [pluginName, method] of Object.entries(_plugins)) {
 }
 
 exports.Kensho = Kensho;
+//# sourceMappingURL=bundle.cjs.js.map

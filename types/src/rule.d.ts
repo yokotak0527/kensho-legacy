@@ -25,6 +25,13 @@ export interface RuleStore {
     }, KenshoType>;
     'equal': RuleType<string, {
         others: string | string[];
+        isInput?: boolean;
+    }>;
+    'letters': RuleType<string, {
+        range: {
+            min?: string | number;
+            max?: string | number;
+        };
     }>;
 }
 export declare type GetRuleType<N extends string, S extends RuleStore = RuleStore> = N extends keyof S ? S[N] : RuleType<any, Object, KenshoType>;

@@ -9,37 +9,14 @@
 <body>
   hello
   <form action="">
-    <select name="" k-name="test" k-rule="['regexp', {'regexp' : /1/}]" k-event="change">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-    </select>
+    <input type="text" class="dummy">
+    <input type="text" k-name="test" k-rule="['equal', { 'others' : ['.dummy']}]", k-event="keyup">
     <p k-name="test.error"></p>
-    <!-- <input type="text" name="name" k-name="test" k-rule="required, number" k-filter="full2half" k-message="fail">-->
-    <!-- <input type="text" name="name" k-name="test" k-rule="number" k-message="fail" k-filter="'full2half', ['test', ['dddsd', true]]" k-event="keyup"> -->
-    <!--<input type="submit">-->
-    <!--<p class="error" k-name="test.error"></p>-->
   </form>
   <script>
     window.onload = function(){
       yokotak0527.Kensho.config.verbose = false
       const kensho = new yokotak0527.Kensho('form')
-      // kensho.hasError()
-      // kensho.add({
-      //   inputElement : 'input[name="name"]',
-      //   errorElement : '.error',
-      //   errorMessage : {
-      //     default : "失敗"
-      //   },
-      //   rule         : ['required'],
-      //   event        : ['keyup'],
-      //   name         : 'test',
-      //   valueFilter  : (value) => {
-      //     return value
-      //   }
-      // })
-      // kensho.validate('test')
-      // console.log(Kensho)
     }
   </script>
 </body>

@@ -113,7 +113,8 @@ const configFactory = (format, build, min = false) => {
 // =============================================================================
 if ( process.env.BUILD === 'development' ) {
   module.exports = [
-    configFactory('cjs', process.env.BUILD)
+    configFactory('cjs', process.env.BUILD),
+    configFactory('umd', process.env.BUILD)
   ]
 }
 

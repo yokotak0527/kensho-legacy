@@ -12,3 +12,4 @@ export declare const negativeNumber: RuleStore['negativeNumber'];
 export declare const zero: RuleStore['zero'];
 export declare const age: RuleStore['age'];
 export declare const equal: RuleStore['equal'];
+export declare const letters: RuleStore['letters'];
