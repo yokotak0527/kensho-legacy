@@ -1,5 +1,6 @@
 .DS_Store
-node_modules
+project.code-workspace
+.envrc
 .node-version
-guide/dest
-doc/
+node_modules
+/old

@@ -1,0 +1,4 @@
+*.[jt]s
+!src/**/*
+!test/**/*
+!.eslintrc.js

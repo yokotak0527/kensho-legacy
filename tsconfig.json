@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "module":"ES6",
+    "moduleResolution": "node",
+    "strict": false,
+    "baseUrl": "./",
+    "outDir": "dist",
+    "removeComments": true,
+    "noImplicitThis": true,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@types/*": ["types/*"]
+    },
+    "plugins" : [
+      { "transform" : "typescript-transform-paths" },
+      { "transform" : "typescript-transform-paths", "afterDeclarations": true }
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ]
+}
