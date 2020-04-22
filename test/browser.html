@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <script src="../dist/bundle.iife.js" defer></script>
+  <script src="../dist/bundle.umd.js" defer></script>
 </head>
 <body>
+  hello
   <form action="">
     <select name="" k-name="test" k-rule="['regexp', {'regexp' : /1/}]" k-event="change">
       <option value="1">1</option>
@@ -20,10 +21,9 @@
     <!--<p class="error" k-name="test.error"></p>-->
   </form>
   <script>
-    window.onload = ()=>{
+    window.onload = function(){
       yokotak0527.Kensho.config.verbose = false
       const kensho = new yokotak0527.Kensho('form')
-      kensho.delete('test')
       // kensho.hasError()
       // kensho.add({
       //   inputElement : 'input[name="name"]',

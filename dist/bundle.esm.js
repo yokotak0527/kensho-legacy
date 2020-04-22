@@ -609,3 +609,4 @@ for (const [pluginName, method] of Object.entries(_plugins)) {
 }
 
 export { Kensho };
+//# sourceMappingURL=bundle.esm.js.map

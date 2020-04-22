@@ -2,117 +2,128 @@ const path       = require('path')
 const merge      = require('lodash/merge')
 const typescript = require('rollup-plugin-typescript2')
 const { terser } = require('rollup-plugin-terser')
-const polyfill   = require('rollup-plugin-polyfill')
+const babel      = require('rollup-plugin-babel')
+const resolve    = require('@rollup/plugin-node-resolve')
+const commonjs   = require('@rollup/plugin-commonjs')
 
-const srcDir  = path.join(__dirname, 'src')
-const outDir  = path.join(__dirname, 'dist')
+const srcDir     = path.join(__dirname, 'src')
+const outDir     = path.join(__dirname, 'dist')
+const extensions = ['.js', '.ts']
 
-/**
- * output rollup configulation
- * 
- * @param {Object}     param               -
- * @param {string}     param.format        - 
- * @param {string}     [param.minify=fale] - 
- * @param {Array<any>} param.plugins       - 
- * @param {Object}     options             - 
- * @param {string}     options.srcDir      - 
- * @param {string}     options.outDir      - 
- * @return {Object}
- */
-const configFactory = ( param = {} ) => {
-  param = Object.assign({
-    minify : false
-  }, param)
+const typeScriptBaseConfig = {
+  typescript                : require('typescript'),
+  useTsconfigDeclarationDir : true, // output no bundle d.ts
+  clean                     : true,
+  tsconfig                  : 'tsconfig.json',
+  rollupCommonJSResolveHack : true
+}
+const rollupBaseConfig = {
+  input : path.join(srcDir, 'Kensho.ts')
+}
 
+if ( process.env.BUILD === 'development' ) {
+  merge(typeScriptBaseConfig, {
+    tsconfigDefaults : {
+      compilerOptions : {
+        declaration    : true,
+        declarationDir : 'types'
+      }
+    }
+  })
+  merge(rollupBaseConfig, {
+    watch : {
+      include : path.join(srcDir, '**/*')
+    }
+  })
+}
 
-  // ---------------------------------------------------------------------------
-  // TypeScript config
-  // ---------------------------------------------------------------------------
-  let tsConfig = {
-    typescript                : require('typescript'),
-    useTsconfigDeclarationDir : true, // output no bundle d.ts
-    clean                     : true,
-    tsconfig                  : 'tsconfig.json'
+const configFactory = (format, build, min = false) => {
+  const minText = min ? '.min' : ''
+
+  if (format === 'esm') {
+    const plugins = []
+    plugins.push(resolve({ jsnext : true, extensions }))
+    plugins.push(commonjs())
+    if (min) plugins.push(terser())
+    plugins.push(typescript(typeScriptBaseConfig))
+    
+    return merge({}, rollupBaseConfig, {
+      output : {
+        file      : path.join(outDir, `bundle.${format}${minText}.js`),
+        format    : format,
+        sourcemap : build === 'production' && !min ? true : false
+      },
+      plugins
+    })
   }
-
-  // ---------------------------------------------------------------------------
-  // rollup config
-  // ---------------------------------------------------------------------------
-  let rollupConfig = {
-    input  : path.join(srcDir, 'Kensho.ts'),
-    output : {
-      file   : path.join(outDir, param.minify ? `bundle.${param.format}.min.js` : `bundle.${param.format}.js`),
-      format : param.format
-    },
-    plugins : (()=>{
-      const arr = []
-      if(param.minify) arr.push(terser())
-      return arr
-    })()
+  if (format === 'cjs') {
+    const plugins = []
+    plugins.push(resolve({ jsnext : true, extensions }))
+    plugins.push(commonjs())
+    if (min) plugins.push(terser())
+    plugins.push(typescript(typeScriptBaseConfig))
+    
+    return merge({}, rollupBaseConfig, {
+      output : {
+        file      : path.join(outDir, `bundle.${format}${minText}.js`),
+        format    : format,
+        sourcemap : build === 'production' && !min ? true : false
+      },
+      plugins
+    })
   }
-
-  if ( param.format === 'umd' || param.format === 'iife' ) {
-    merge(rollupConfig, {
-      output : { name : 'yokotak0527' },
-      plugins : [
-        polyfill([])
+  if (format === 'umd') {
+    const plugins = []
+    plugins.push(resolve({ jsnext : true, extensions }))
+    plugins.push(commonjs())
+    if (min) plugins.push(terser())
+    plugins.push(typescript(typeScriptBaseConfig))
+    plugins.push(babel({
+      babelrc : false,
+      exclude: ['node_modules/**', 'test/**'],
+      extensions,
+      runtimeHelpers: true,
+      plugins : ['@babel/plugin-transform-runtime'],
+      presets : [
+        ['@babel/preset-env', {
+          debug : true,
+          targets : {
+            ie : 11
+          },
+          corejs      : 3,
+          useBuiltIns : 'usage'
+        }]
       ]
+    }))
+    
+    return merge({}, rollupBaseConfig, {
+      output : {
+        file      : path.join(outDir, `bundle.${format}${minText}.js`),
+        name      : 'yokotak0527',
+        format    : format,
+        sourcemap : build === 'production' && !min ? true : false
+      },
+      plugins
     })
   }
-
-  // ===========================================================================
-  //
-  // Environment specific settings
-  //
-  // ===========================================================================
-  if ( process.env.BUILD === 'development' ) {
-    // -------------------------------------------------------------------------
-    // in development
-    // -------------------------------------------------------------------------
-
-    // merge rollup config
-    merge( rollupConfig, {
-      watch : {
-        include : path.join(srcDir, '**/*')
-      }
-    })
-    // merge rollup-plugin-typescript2 config
-    merge( tsConfig, {
-      tsconfigDefaults : {
-        compilerOptions : {
-          declaration    : true,
-          declarationDir : 'types'
-        }
-      }
-    })
-  }
-
-  // ===========================================================================
-
-  // add rollup-plugin-typescript2
-  rollupConfig.plugins.push(typescript(tsConfig))
-  return rollupConfig
 }
 
 // =============================================================================
-// EXPORT A DEVELOPMENT CONFIGULATION
+// compile
 // =============================================================================
 if ( process.env.BUILD === 'development' ) {
-  // output cjs only.
   module.exports = [
-    configFactory({ format : 'cjs' } ),
-    configFactory({ format : 'umd' } )
+    configFactory('cjs', process.env.BUILD)
   ]
 }
 
-// =============================================================================
-// EXPORT A PRODUCTION CONFIGULATIONS
-// =============================================================================
 if ( process.env.BUILD === 'production' ) {
   module.exports = [
-    configFactory( { format : 'cjs' } ),
-    configFactory( { format : 'umd' } ),
-    configFactory( { format : 'umd', minify : true } ),
-    configFactory( { format : 'esm' } )
+    configFactory('esm', process.env.BUILD),
+    configFactory('esm', process.env.BUILD, true),
+    configFactory('cjs', process.env.BUILD),
+    configFactory('cjs', process.env.BUILD, true),
+    configFactory('umd', process.env.BUILD),
+    configFactory('umd', process.env.BUILD, true)
   ]
 }
