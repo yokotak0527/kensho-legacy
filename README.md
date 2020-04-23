@@ -35,6 +35,10 @@ Kensho.validate('email', 'private@myhost.com') // -> true
 
 ```js
 // JS
+// Assuming the use of "bundle.umd.js".s
+const form = new yokotak0527.Kensho('.form')
+
+// If you use 'bundle.esm.js' or 'bundle.cjs.js'...
 const form = new Kensho('.form')
 ```
 
@@ -46,14 +50,14 @@ If the value entered does not conform to the email address specification, "The v
 $ npm install @yokotak0527/kensho
 ```
 
-| bundle file       |              |
-|-------------------|--------------|
-| bundle.cjs.js     | for CommonJS |
-| bundle.cjs.min.js | for CommonJS |
-| bundle.ems.js     | for ESModule |
-| bundle.ems.min.js | for ESModule |
-| bundle.umd.js     | for browser  |
-| bundle.umd.min.js | for browser  |
+| bundle file            |              |
+|------------------------|--------------|
+| dist/bundle.cjs.js     | for CommonJS |
+| dist/bundle.cjs.min.js | for CommonJS |
+| dist/bundle.esm.js     | for ESModule |
+| dist/bundle.esm.min.js | for ESModule |
+| dist/bundle.umd.js     | for browser  |
+| dist/bundle.umd.min.js | for browser  |
 
 ## For more details..
 
