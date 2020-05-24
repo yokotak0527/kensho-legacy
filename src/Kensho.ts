@@ -139,7 +139,7 @@ export class Kensho {
       }
 
       // parse event -----------------------------------------------------------
-      let rawEvent:AddFunctionParamArg['event'] | undefined = _inputElm.getAttribute(`${attrPrefix}event`) !== null ? _inputElm.getAttribute(`${attrPrefix}event`) : undefined
+      let rawEvent:string | string[] | undefined = _inputElm.getAttribute(`${attrPrefix}event`) !== null ? _inputElm.getAttribute(`${attrPrefix}event`) : undefined
       if (typeof rawEvent === 'string') {
         rawEvent = this.parseAttrStr2Arr<Exclude<AddFunctionParamArg['event'], string>>(rawEvent)
       }

@@ -3,12 +3,14 @@ const merge      = require('lodash/merge')
 const typescript = require('rollup-plugin-typescript2')
 const { terser } = require('rollup-plugin-terser')
 const babel      = require('rollup-plugin-babel')
-const resolve    = require('@rollup/plugin-node-resolve')
+const resolve    = require('@rollup/plugin-node-resolve').default
 const commonjs   = require('@rollup/plugin-commonjs')
 
 const srcDir     = path.join(__dirname, 'src')
 const outDir     = path.join(__dirname, 'dist')
 const extensions = ['.js', '.ts']
+
+
 
 const typeScriptBaseConfig = {
   typescript                : require('typescript'),

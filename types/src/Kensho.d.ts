@@ -56,9 +56,9 @@ export declare class Kensho {
     };
     static plugin: {
         [x: string]: any;
-        add<F extends Function>(name: string, method: F): void;
-        get<N extends string, S extends PluginStore = PluginStore>(name: N): N extends keyof S ? S[N] : Function;
-        delete(name: string): void;
+        add: <F extends Function>(name: string, method: F) => void;
+        get: <N extends string, S extends PluginStore = PluginStore>(name: N) => N extends keyof S ? S[N] : Function;
+        delete: (name: string) => void;
     };
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0], option: A[1]): boolean;
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : _F, A extends any[] = F extends _F ? Parameters<F> : never>(rulename: N, value: A[0]): boolean;

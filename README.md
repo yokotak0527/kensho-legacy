@@ -27,7 +27,7 @@ Kensho.validate('email', 'private@myhost.com') // -> true
 
 ```html
 <!-- HTML -->
-<form class=".form">
+<form class="form">
   <input type="email" k-name="sample" k-rule="email" k-event="keyup">
   <p k-name="sample.error"></p>
 </form>
