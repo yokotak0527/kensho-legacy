@@ -3,7 +3,7 @@ const merge      = require('lodash/merge')
 const typescript = require('rollup-plugin-typescript2')
 const { terser } = require('rollup-plugin-terser')
 const babel      = require('rollup-plugin-babel')
-const resolve    = require('@rollup/plugin-node-resolve').default
+const resolve    = require('@rollup/plugin-node-resolve')
 const commonjs   = require('@rollup/plugin-commonjs')
 
 const srcDir     = path.join(__dirname, 'src')
