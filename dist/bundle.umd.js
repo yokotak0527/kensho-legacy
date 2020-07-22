@@ -1835,10 +1835,6 @@
 
 	hiddenKeys[METADATA] = true;
 	});
-	var internalMetadata_1 = internalMetadata.REQUIRED;
-	var internalMetadata_2 = internalMetadata.fastKey;
-	var internalMetadata_3 = internalMetadata.getWeakData;
-	var internalMetadata_4 = internalMetadata.onFreeze;
 
 	var iterate_1 = createCommonjsModule(function (module) {
 	var Result = function (stopped, result) {
@@ -3392,7 +3388,7 @@
 	  }
 	});
 
-	function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray$1(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+	function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 	function _unsupportedIterableToArray$1(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$1(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen); }
 
@@ -3885,14 +3881,14 @@
 		squash: squash
 	});
 
-	function _createForOfIteratorHelper$1(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray$2(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+	function _createForOfIteratorHelper$1(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 
 	function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
 
 	function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 	var defaultRules = _rules;
 
-	var __unitNameSeed = function () {
+	var _unitNameSeed_ = function () {
 	  var list = [];
 
 	  var makeSeed = function makeSeed() {
@@ -3910,487 +3906,483 @@
 	  };
 	}();
 
-	var Kensho = function () {
-	  var Kensho = /*#__PURE__*/function () {
-	    function Kensho(formSelector) {
-	      var option = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	var Kensho = /*#__PURE__*/function () {
+	  function Kensho(formSelector) {
+	    var option = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-	      classCallCheck(this, Kensho);
+	    classCallCheck(this, Kensho);
 
-	      option = Object.assign({
-	        search: true
-	      }, option);
+	    option = Object.assign({
+	      search: true
+	    }, option);
 
-	      if (typeof formSelector === 'string') {
-	        var _form = document.querySelector(formSelector);
+	    if (typeof formSelector === 'string') {
+	      var _form = document.querySelector(formSelector);
 
-	        if (_form === null) throw new Error("form \"".concat(formSelector, "\" is not found."));
-	        formSelector = _form;
-	      }
-
-	      this.form = formSelector;
-	      if (!Kensho.config.autocomplete) this.form.setAttribute('autocomplete', 'off');
-	      this.inputsRules = new Map();
-	      this.form.classList.add('kensho-form');
-
-	      if (option.search) {
-	        this.addFromCustomAttrs(this.search());
-	      }
-
-	      return this;
+	      if (_form === null) throw new Error("form \"".concat(formSelector, "\" is not found."));
+	      formSelector = _form;
 	    }
 
-	    createClass(Kensho, [{
-	      key: "addFromCustomAttrs",
-	      value: function addFromCustomAttrs(CustomAttrs) {
-	        var _this = this;
+	    this.form = formSelector;
+	    if (!Kensho.config.autocomplete) this.form.setAttribute('autocomplete', 'off');
+	    this.inputsRules = new Map();
+	    this.form.classList.add('kensho-form');
 
-	        var attrPrefix = Kensho.config.customAttrPrefix;
+	    if (option.search) {
+	      this.addFromCustomAttrs(this.search());
+	    }
 
-	        var _loop = function _loop() {
-	          var _Object$entries$_i = slicedToArray(_Object$entries[_i], 2),
-	              unitName = _Object$entries$_i[0],
-	              data = _Object$entries$_i[1];
+	    return this;
+	  }
 
-	          if (_this.inputsRules.get(unitName) !== undefined) throw new Error("The \"".concat(unitName, "\" rule unit is already exsisted."));
-	          var _inputElm = data.input;
-	          var name = unitName;
-	          var errorElement = data.error;
+	  createClass(Kensho, [{
+	    key: "addFromCustomAttrs",
+	    value: function addFromCustomAttrs(CustomAttrs) {
+	      var _this = this;
 
-	          var rawRule = _inputElm.getAttribute("".concat(attrPrefix, "rule"));
+	      var attrPrefix = Kensho.config.customAttrPrefix;
 
-	          if (rawRule === null) throw new Error("The `k-rule` attribute is not found in the element where `k-name=\"".concat(unitName, "\"` is specified."));
+	      var _loop = function _loop() {
+	        var _Object$entries$_i = slicedToArray(_Object$entries[_i], 2),
+	            unitName = _Object$entries$_i[0],
+	            data = _Object$entries$_i[1];
 
-	          var rule = _this.parseAttrStr2Arr(rawRule);
+	        if (_this.inputsRules.get(unitName) !== undefined) throw new Error("The \"".concat(unitName, "\" rule unit is already exsisted."));
+	        var _inputElm = data.input;
+	        var name = unitName;
+	        var errorElement = data.error;
 
-	          var inputElement = data.input;
-	          var typeAttr = data.input.getAttribute('type');
+	        var rawRule = _inputElm.getAttribute("".concat(attrPrefix, "rule"));
 
-	          if (typeAttr === 'radio') {
-	            inputElement = _this.form.querySelectorAll("input[name=\"".concat(data.input.getAttribute('name'), "\"]"));
+	        if (rawRule === null) throw new Error("The `k-rule` attribute is not found in the element where `k-name=\"".concat(unitName, "\"` is specified."));
+
+	        var rule = _this.parseAttrStr2Arr(rawRule);
+
+	        var inputElement = data.input;
+	        var typeAttr = data.input.getAttribute('type');
+
+	        if (typeAttr === 'radio') {
+	          inputElement = _this.form.querySelectorAll("input[name=\"".concat(data.input.getAttribute('name'), "\"]"));
+	        }
+
+	        var rawEvent = _inputElm.getAttribute("".concat(attrPrefix, "event")) !== null ? _inputElm.getAttribute("".concat(attrPrefix, "event")) : undefined;
+
+	        if (typeof rawEvent === 'string') {
+	          rawEvent = _this.parseAttrStr2Arr(rawEvent);
+	        }
+
+	        var event = rawEvent;
+	        var rawErrorMessage = _inputElm.getAttribute("".concat(attrPrefix, "message")) !== null ? _inputElm.getAttribute("".concat(attrPrefix, "message")) : undefined;
+
+	        if (typeof rawErrorMessage === 'string') {
+	          rawErrorMessage = rawErrorMessage.trim().replace(/\n/gm, '').replace(/'/g, '"');
+
+	          if (/^{.+}$/.test(rawErrorMessage)) {
+	            rawErrorMessage = JSON.parse(rawErrorMessage);
 	          }
+	        }
 
-	          var rawEvent = _inputElm.getAttribute("".concat(attrPrefix, "event")) !== null ? _inputElm.getAttribute("".concat(attrPrefix, "event")) : undefined;
+	        var errorMessage = rawErrorMessage;
+	        var rawFilter = _inputElm.getAttribute("".concat(attrPrefix, "filter")) !== null ? _inputElm.getAttribute("".concat(attrPrefix, "filter")) : undefined;
+	        var valueFilter = void 0;
 
-	          if (typeof rawEvent === 'string') {
-	            rawEvent = _this.parseAttrStr2Arr(rawEvent);
-	          }
+	        if (typeof rawFilter === 'string') {
+	          rawFilter = _this.parseAttrStr2Arr(rawFilter);
 
-	          var event = rawEvent;
-	          var rawErrorMessage = _inputElm.getAttribute("".concat(attrPrefix, "message")) !== null ? _inputElm.getAttribute("".concat(attrPrefix, "message")) : undefined;
+	          valueFilter = function valueFilter(value, Kensho) {
+	            var _iterator = _createForOfIteratorHelper$1(rawFilter),
+	                _step;
 
-	          if (typeof rawErrorMessage === 'string') {
-	            rawErrorMessage = rawErrorMessage.trim().replace(/\n/gm, '').replace(/'/g, '"');
+	            try {
+	              for (_iterator.s(); !(_step = _iterator.n()).done;) {
+	                var filter = _step.value;
 
-	            if (/^{.+}$/.test(rawErrorMessage)) {
-	              rawErrorMessage = JSON.parse(rawErrorMessage);
-	            }
-	          }
-
-	          var errorMessage = rawErrorMessage;
-	          var rawFilter = _inputElm.getAttribute("".concat(attrPrefix, "filter")) !== null ? _inputElm.getAttribute("".concat(attrPrefix, "filter")) : undefined;
-	          var valueFilter = void 0;
-
-	          if (typeof rawFilter === 'string') {
-	            rawFilter = _this.parseAttrStr2Arr(rawFilter);
-
-	            valueFilter = function valueFilter(value, Kensho) {
-	              var _iterator = _createForOfIteratorHelper$1(rawFilter),
-	                  _step;
-
-	              try {
-	                for (_iterator.s(); !(_step = _iterator.n()).done;) {
-	                  var filter = _step.value;
-
-	                  if (typeof filter === 'string') {
-	                    value = Kensho.use(filter, value);
-	                  } else {
-	                    value = Kensho.use.apply(Kensho, [filter[0], value].concat(toConsumableArray(filter[1])));
-	                  }
+	                if (typeof filter === 'string') {
+	                  value = Kensho.use(filter, value);
+	                } else {
+	                  value = Kensho.use.apply(Kensho, [filter[0], value].concat(toConsumableArray(filter[1])));
 	                }
-	              } catch (err) {
-	                _iterator.e(err);
-	              } finally {
-	                _iterator.f();
 	              }
+	            } catch (err) {
+	              _iterator.e(err);
+	            } finally {
+	              _iterator.f();
+	            }
 
-	              return value;
-	            };
-	          }
-
-	          var addParam = {
-	            inputElement: inputElement,
-	            errorElement: errorElement,
-	            errorMessage: errorMessage,
-	            rule: rule,
-	            event: event,
-	            valueFilter: valueFilter,
-	            name: name
+	            return value;
 	          };
+	        }
 
-	          _this.add(addParam);
+	        var addParam = {
+	          inputElement: inputElement,
+	          errorElement: errorElement,
+	          errorMessage: errorMessage,
+	          rule: rule,
+	          event: event,
+	          valueFilter: valueFilter,
+	          name: name
 	        };
 
-	        for (var _i = 0, _Object$entries = Object.entries(CustomAttrs); _i < _Object$entries.length; _i++) {
-	          _loop();
-	        }
+	        _this.add(addParam);
+	      };
+
+	      for (var _i = 0, _Object$entries = Object.entries(CustomAttrs); _i < _Object$entries.length; _i++) {
+	        _loop();
 	      }
-	    }, {
-	      key: "search",
-	      value: function search() {
-	        var prefix = Kensho.config.customAttrPrefix;
-	        var match = this.form.querySelectorAll("*[".concat(prefix, "name]"));
-	        var _list = {};
+	    }
+	  }, {
+	    key: "search",
+	    value: function search() {
+	      var prefix = Kensho.config.customAttrPrefix;
+	      var match = this.form.querySelectorAll("*[".concat(prefix, "name]"));
+	      var _list = {};
 
-	        var _iterator2 = _createForOfIteratorHelper$1(match),
-	            _step2;
+	      var _iterator2 = _createForOfIteratorHelper$1(match),
+	          _step2;
 
-	        try {
-	          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-	            var item = _step2.value;
+	      try {
+	        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+	          var item = _step2.value;
 
-	            var _name = item.getAttribute("".concat(prefix, "name"));
+	          var _name = item.getAttribute("".concat(prefix, "name"));
 
-	            var type = /\.error$/.test(_name) ? 'error' : 'input';
+	          var type = /\.error$/.test(_name) ? 'error' : 'input';
 
-	            if (type === 'error') {
-	              _name = _name.replace('.error', '');
-	            }
-
-	            if (_list[_name] === undefined) {
-	              _list[_name] = {};
-	            }
-
-	            if (type === 'input') {
-	              if (_list[_name].input !== undefined) {
-	                console.error("There are two or more `k-name` attributes of the same value. \"".concat(_name, "\""));
-	              }
-
-	              _list[_name].input = item;
-	            } else if (type === 'error') {
-	              if (_list[_name].error !== undefined) {
-	                console.error("There are two or more `k-name` attributes of the same value. \"".concat(_name, ".error\""));
-	              }
-
-	              _list[_name].error = item;
-	            }
+	          if (type === 'error') {
+	            _name = _name.replace('.error', '');
 	          }
-	        } catch (err) {
-	          _iterator2.e(err);
-	        } finally {
-	          _iterator2.f();
-	        }
 
-	        var list = {};
+	          if (_list[_name] === undefined) {
+	            _list[_name] = {};
+	          }
 
-	        for (var _i2 = 0, _Object$entries2 = Object.entries(_list); _i2 < _Object$entries2.length; _i2++) {
-	          var _Object$entries2$_i = slicedToArray(_Object$entries2[_i2], 2),
-	              name = _Object$entries2$_i[0],
-	              obj = _Object$entries2$_i[1];
+	          if (type === 'input') {
+	            if (_list[_name].input !== undefined) {
+	              console.error("There are two or more `k-name` attributes of the same value. \"".concat(_name, "\""));
+	            }
 
-	          if (obj.input !== undefined) {
-	            list[name] = obj;
-	          } else {
-	            console.error("No `k-name=\"".concat(name, "\"` attribute in HTML input form against `k-name=\"").concat(name, ".error\"`"));
+	            _list[_name].input = item;
+	          } else if (type === 'error') {
+	            if (_list[_name].error !== undefined) {
+	              console.error("There are two or more `k-name` attributes of the same value. \"".concat(_name, ".error\""));
+	            }
+
+	            _list[_name].error = item;
 	          }
 	        }
-
-	        return list;
+	      } catch (err) {
+	        _iterator2.e(err);
+	      } finally {
+	        _iterator2.f();
 	      }
-	    }, {
-	      key: "add",
-	      value: function add(param) {
-	        var _this2 = this;
 
-	        if (typeof param.inputElement === 'string') {
-	          var _elmSelector = param.inputElement;
-	          param.inputElement = this.form.querySelectorAll(_elmSelector);
-	          if (param.inputElement.length === 0) throw new Error("inputElement parameter \"".concat(_elmSelector, "\" is not found in the form."));
-	        }
+	      var list = {};
 
-	        if (param.inputElement instanceof HTMLInputElement) {
-	          param.inputElement = [param.inputElement];
-	        } else if (param.inputElement instanceof HTMLSelectElement) {
-	          param.inputElement = [param.inputElement];
-	        } else if (param.inputElement instanceof NodeList) {
-	          if (param.inputElement.length === 0) throw new Error('inputElement parameter length is 0');
-	          var _arr = [];
-	          param.inputElement.forEach(function (elm) {
-	            _arr.push(elm);
-	          });
-	          param.inputElement = _arr;
-	        }
+	      for (var _i2 = 0, _Object$entries2 = Object.entries(_list); _i2 < _Object$entries2.length; _i2++) {
+	        var _Object$entries2$_i = slicedToArray(_Object$entries2[_i2], 2),
+	            name = _Object$entries2$_i[0],
+	            obj = _Object$entries2$_i[1];
 
-	        if (typeof param.rule === 'string') {
-	          param.rule = [[param.rule, {}]];
-	        }
-
-	        param.rule = param.rule.map(function (rule) {
-	          return typeof rule === 'string' ? [rule, {}] : rule;
-	        });
-
-	        if (param.errorMessage === undefined) {
-	          param.errorMessage = {};
-	        } else if (typeof param.errorMessage === 'string') {
-	          param.errorMessage = {
-	            default: param.errorMessage
-	          };
-	        }
-
-	        param.errorMessage = Object.assign({
-	          default: 'The value has error.'
-	        }, param.errorMessage);
-
-	        if (param.errorElement === undefined) {
-	          param.errorMessage = undefined;
-	        } else if (typeof param.errorElement === 'string') {
-	          var _elmSelector2 = param.errorElement;
-
-	          var _elm = this.form.querySelector(param.errorElement);
-
-	          if (_elm === null) throw new Error("errorElement parameter \"".concat(_elmSelector2, "\" is not found in the form."));
-	          param.errorElement = _elm;
-	        }
-
-	        if (param.event === undefined) {
-	          param.event = [];
-	        } else if (typeof param.event === 'string') {
-	          param.event = [param.event];
-	        }
-
-	        if (param.name === undefined) param.name = __unitNameSeed();
-	        var tagName = param.inputElement[0].tagName.toLowerCase();
-	        var type = '';
-
-	        if (tagName === 'input') {
-	          type = param.inputElement[0].getAttribute('type');
+	        if (obj.input !== undefined) {
+	          list[name] = obj;
 	        } else {
-	          type = tagName;
+	          console.error("No `k-name=\"".concat(name, "\"` attribute in HTML input form against `k-name=\"").concat(name, ".error\"`"));
 	        }
+	      }
 
-	        if (type === 'password' || type === 'search' || type === 'tel' || type === 'email' || type === 'url' || type === 'number' || type === 'datetime' || type === 'date' || type === 'month' || type === 'week' || type === 'time' || type === 'datetime-local') type = 'text';
-	        param.inputElement.forEach(function (elem) {
-	          var events = param.event;
-	          events.forEach(function (event) {
-	            elem.addEventListener(event, function () {
-	              _this2.validate(param.name);
-	            });
+	      return list;
+	    }
+	  }, {
+	    key: "add",
+	    value: function add(param) {
+	      var _this2 = this;
+
+	      if (typeof param.inputElement === 'string') {
+	        var _elmSelector = param.inputElement;
+	        param.inputElement = this.form.querySelectorAll(_elmSelector);
+	        if (param.inputElement.length === 0) throw new Error("inputElement parameter \"".concat(_elmSelector, "\" is not found in the form."));
+	      }
+
+	      if (param.inputElement instanceof HTMLInputElement) {
+	        param.inputElement = [param.inputElement];
+	      } else if (param.inputElement instanceof HTMLSelectElement) {
+	        param.inputElement = [param.inputElement];
+	      } else if (param.inputElement instanceof NodeList) {
+	        if (param.inputElement.length === 0) throw new Error('inputElement parameter length is 0');
+	        var _arr = [];
+	        param.inputElement.forEach(function (elm) {
+	          _arr.push(elm);
+	        });
+	        param.inputElement = _arr;
+	      }
+
+	      if (typeof param.rule === 'string') {
+	        param.rule = [[param.rule, {}]];
+	      }
+
+	      param.rule = param.rule.map(function (rule) {
+	        return typeof rule === 'string' ? [rule, {}] : rule;
+	      });
+
+	      if (param.errorMessage === undefined) {
+	        param.errorMessage = {};
+	      } else if (typeof param.errorMessage === 'string') {
+	        param.errorMessage = {
+	          default: param.errorMessage
+	        };
+	      }
+
+	      param.errorMessage = Object.assign({
+	        default: 'The value has error.'
+	      }, param.errorMessage);
+
+	      if (param.errorElement === undefined) {
+	        param.errorMessage = undefined;
+	      } else if (typeof param.errorElement === 'string') {
+	        var _elmSelector2 = param.errorElement;
+
+	        var _elm = this.form.querySelector(param.errorElement);
+
+	        if (_elm === null) throw new Error("errorElement parameter \"".concat(_elmSelector2, "\" is not found in the form."));
+	        param.errorElement = _elm;
+	      }
+
+	      if (param.event === undefined) {
+	        param.event = [];
+	      } else if (typeof param.event === 'string') {
+	        param.event = [param.event];
+	      }
+
+	      if (param.name === undefined) param.name = _unitNameSeed_();
+	      var tagName = param.inputElement[0].tagName.toLowerCase();
+	      var type = '';
+
+	      if (tagName === 'input') {
+	        type = param.inputElement[0].getAttribute('type');
+	      } else {
+	        type = tagName;
+	      }
+
+	      if (type === 'password' || type === 'search' || type === 'tel' || type === 'email' || type === 'url' || type === 'number' || type === 'datetime' || type === 'date' || type === 'month' || type === 'week' || type === 'time' || type === 'datetime-local') type = 'text';
+	      param.inputElement.forEach(function (elem) {
+	        var events = param.event;
+	        events.forEach(function (event) {
+	          elem.addEventListener(event, function () {
+	            _this2.validate(param.name);
 	          });
 	        });
-	        var unit = Object.assign({}, param, {
-	          tagName: tagName,
-	          type: type,
-	          error: [],
-	          displayError: param.errorElement !== undefined
+	      });
+	      var unit = Object.assign({}, param, {
+	        tagName: tagName,
+	        type: type,
+	        error: [],
+	        displayError: param.errorElement !== undefined
+	      });
+	      this.inputsRules.set(unit.name, unit);
+	      return unit;
+	    }
+	  }, {
+	    key: "hasError",
+	    value: function hasError() {
+	      var hasError = false;
+	      this.inputsRules.forEach(function (val, key) {
+	        if (val.error.length > 0) hasError = true;
+	      });
+	      return hasError;
+	    }
+	  }, {
+	    key: "getRuleUnit",
+	    value: function getRuleUnit(ruleUnitName) {
+	      var unit = this.inputsRules.get(ruleUnitName);
+	      if (unit === undefined) throw new Error("".concat(ruleUnitName, " is not found."));
+	      return unit;
+	    }
+	  }, {
+	    key: "getInputValue",
+	    value: function getInputValue(unit) {
+	      var value = '';
+
+	      if (unit.type === 'text') {
+	        value = unit.inputElement[0].value;
+	      }
+
+	      if (unit.type === 'radio') {
+	        for (var i = 0, l = unit.inputElement.length; i < l; i++) {
+	          var elem = unit.inputElement[i];
+
+	          if (elem.checked) {
+	            value = elem.value;
+	            break;
+	          }
+	        }
+	      }
+
+	      if (unit.type === 'checkbox') {
+	        var _elem = unit.inputElement[0];
+
+	        if (_elem.checked) {
+	          value = _elem.value;
+	        }
+	      }
+
+	      if (unit.type === 'select') {
+	        var _elem2 = unit.inputElement[0];
+	        value = _elem2.options[_elem2.options.selectedIndex].value;
+	      }
+
+	      return value;
+	    }
+	  }, {
+	    key: "clear",
+	    value: function clear(unit) {
+	      unit.error = [];
+
+	      if (unit.displayError) {
+	        unit.errorElement.innerHTML = '';
+	      }
+	    }
+	  }, {
+	    key: "allClear",
+	    value: function allClear() {
+	      var _this3 = this;
+
+	      this.inputsRules.forEach(function (val, key) {
+	        return _this3.clear(_this3.getRuleUnit(key));
+	      });
+	    }
+	  }, {
+	    key: "validate",
+	    value: function validate(ruleUnitName) {
+	      var unit = this.getRuleUnit(ruleUnitName);
+	      var value = this.getInputValue(unit);
+	      if (unit.valueFilter !== undefined) value = unit.valueFilter.bind(this)(value, Kensho);
+	      this.clear(unit);
+
+	      var _iterator3 = _createForOfIteratorHelper$1(unit.rule),
+	          _step3;
+
+	      try {
+	        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+	          var _step3$value = slicedToArray(_step3.value, 2),
+	              ruleName = _step3$value[0],
+	              option = _step3$value[1];
+
+	          if (!Kensho.validate(ruleName, value, option)) {
+	            unit.error.push(ruleName);
+	          }
+	        }
+	      } catch (err) {
+	        _iterator3.e(err);
+	      } finally {
+	        _iterator3.f();
+	      }
+
+	      if (unit.error.length > 0 && unit.displayError) {
+	        this.displayError(unit);
+	      }
+
+	      return unit.error.length === 0;
+	    }
+	  }, {
+	    key: "allValidate",
+	    value: function allValidate() {
+	      var _this4 = this;
+
+	      this.inputsRules.forEach(function (val, key) {
+	        return _this4.validate(key);
+	      });
+	    }
+	  }, {
+	    key: "displayError",
+	    value: function displayError(unit) {
+	      if (!unit.displayError || unit.error.length === 0) return undefined;
+	      var errors = [];
+	      var wrapper = Kensho.config.errorMessageWrapper;
+
+	      var _iterator4 = _createForOfIteratorHelper$1(unit.error),
+	          _step4;
+
+	      try {
+	        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+	          var ruleName = _step4.value;
+	          if (ruleName === 'default') continue;
+	          var msg = unit.errorMessage[ruleName] === undefined ? "The value failed \"".concat(ruleName, "\" validation rule.") : unit.errorMessage[ruleName];
+	          errors.push("<".concat(wrapper, ">").concat(msg, "</").concat(wrapper, ">"));
+	        }
+	      } catch (err) {
+	        _iterator4.e(err);
+	      } finally {
+	        _iterator4.f();
+	      }
+
+	      var error = Kensho.config.verbose ? errors.join('') : "<".concat(wrapper, ">").concat(unit.errorMessage.default, "</").concat(wrapper, ">");
+	      unit.errorElement.innerHTML = error;
+	    }
+	  }, {
+	    key: "parseAttrStr2Arr",
+	    value: function parseAttrStr2Arr(value) {
+	      var _this5 = this;
+
+	      value = value.trim().replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',').replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'').replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"');
+	      value = "[".concat(value, "]").replace(/'/g, '"');
+	      var returnVal = JSON.parse(value).map(function (elem) {
+	        return _this5.parseString2rightType(elem);
+	      });
+	      return returnVal;
+	    }
+	  }, {
+	    key: "parseString2rightType",
+	    value: function parseString2rightType(val) {
+	      var _this6 = this;
+
+	      if (Array.isArray(val)) {
+	        val = val.map(function (v) {
+	          return _this6.parseString2rightType(v);
 	        });
-	        this.inputsRules.set(unit.name, unit);
-	        return unit;
-	      }
-	    }, {
-	      key: "hasError",
-	      value: function hasError() {
-	        var hasError = false;
-	        this.inputsRules.forEach(function (val, key) {
-	          if (val.error.length > 0) hasError = true;
-	        });
-	        return hasError;
-	      }
-	    }, {
-	      key: "getRuleUnit",
-	      value: function getRuleUnit(ruleUnitName) {
-	        var unit = this.inputsRules.get(ruleUnitName);
-	        if (unit === undefined) throw new Error("".concat(ruleUnitName, " is not found."));
-	        return unit;
-	      }
-	    }, {
-	      key: "getInputValue",
-	      value: function getInputValue(unit) {
-	        var value = '';
-
-	        if (unit.type === 'text') {
-	          value = unit.inputElement[0].value;
+	      } else if (_typeof_1(val) === 'object') {
+	        for (var key in val) {
+	          val[key] = this.parseString2rightType(val[key]);
 	        }
+	      } else if (typeof val === 'string') {
+	        var match = val.match(/(\/.+\/)([gimsuy]*)/);
 
-	        if (unit.type === 'radio') {
-	          for (var i = 0, l = unit.inputElement.length; i < l; i++) {
-	            var elem = unit.inputElement[i];
-
-	            if (elem.checked) {
-	              value = elem.value;
-	              break;
-	            }
-	          }
-	        }
-
-	        if (unit.type === 'checkbox') {
-	          var _elem = unit.inputElement[0];
-
-	          if (_elem.checked) {
-	            value = _elem.value;
-	          }
-	        }
-
-	        if (unit.type === 'select') {
-	          var _elem2 = unit.inputElement[0];
-	          value = _elem2.options[_elem2.options.selectedIndex].value;
-	        }
-
-	        return value;
-	      }
-	    }, {
-	      key: "clear",
-	      value: function clear(unit) {
-	        unit.error = [];
-
-	        if (unit.displayError) {
-	          unit.errorElement.innerHTML = '';
+	        if (match !== null) {
+	          match[1] = match[1].replace(/^\//, '').replace(/\/$/, '');
+	          val = match[2] === '' ? new RegExp(match[1]) : new RegExp(match[1], match[2]);
 	        }
 	      }
-	    }, {
-	      key: "allClear",
-	      value: function allClear() {
-	        var _this3 = this;
 
-	        this.inputsRules.forEach(function (val, key) {
-	          return _this3.clear(_this3.getRuleUnit(key));
-	        });
+	      return val;
+	    }
+	  }], [{
+	    key: "validate",
+	    value: function validate(ruleName) {
+	      var rule = Kensho.rule.get(ruleName);
+
+	      if ((arguments.length <= 2 ? undefined : arguments[2]) === undefined) {
+	        return rule(arguments.length <= 1 ? undefined : arguments[1], {}, Kensho);
+	      } else {
+	        return rule(arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2], Kensho);
 	      }
-	    }, {
-	      key: "validate",
-	      value: function validate(ruleUnitName) {
-	        var unit = this.getRuleUnit(ruleUnitName);
-	        var value = this.getInputValue(unit);
-	        if (unit.valueFilter !== undefined) value = unit.valueFilter.bind(this)(value, Kensho);
-	        this.clear(unit);
+	    }
+	  }, {
+	    key: "use",
+	    value: function use(pluginName) {
+	      var plugin = Kensho.plugin.get(pluginName).bind(Kensho);
 
-	        var _iterator3 = _createForOfIteratorHelper$1(unit.rule),
-	            _step3;
-
-	        try {
-	          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-	            var _step3$value = slicedToArray(_step3.value, 2),
-	                ruleName = _step3$value[0],
-	                option = _step3$value[1];
-
-	            if (!Kensho.validate(ruleName, value, option)) {
-	              unit.error.push(ruleName);
-	            }
-	          }
-	        } catch (err) {
-	          _iterator3.e(err);
-	        } finally {
-	          _iterator3.f();
-	        }
-
-	        if (unit.error.length > 0 && unit.displayError) {
-	          this.displayError(unit);
-	        }
-
-	        return unit.error.length === 0;
+	      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	        args[_key - 1] = arguments[_key];
 	      }
-	    }, {
-	      key: "allValidate",
-	      value: function allValidate() {
-	        var _this4 = this;
 
-	        this.inputsRules.forEach(function (val, key) {
-	          return _this4.validate(key);
-	        });
-	      }
-	    }, {
-	      key: "displayError",
-	      value: function displayError(unit) {
-	        if (!unit.displayError || unit.error.length === 0) return undefined;
-	        var errors = [];
-	        var wrapper = Kensho.config.errorMessageWrapper;
+	      return plugin.apply(void 0, args);
+	    }
+	  }]);
 
-	        var _iterator4 = _createForOfIteratorHelper$1(unit.error),
-	            _step4;
-
-	        try {
-	          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-	            var ruleName = _step4.value;
-	            if (ruleName === 'default') continue;
-	            var msg = unit.errorMessage[ruleName] === undefined ? "The value failed \"".concat(ruleName, "\" validation rule.") : unit.errorMessage[ruleName];
-	            errors.push("<".concat(wrapper, ">").concat(msg, "</").concat(wrapper, ">"));
-	          }
-	        } catch (err) {
-	          _iterator4.e(err);
-	        } finally {
-	          _iterator4.f();
-	        }
-
-	        var error = Kensho.config.verbose ? errors.join('') : "<".concat(wrapper, ">").concat(unit.errorMessage.default, "</").concat(wrapper, ">");
-	        unit.errorElement.innerHTML = error;
-	      }
-	    }, {
-	      key: "parseAttrStr2Arr",
-	      value: function parseAttrStr2Arr(value) {
-	        var _this5 = this;
-
-	        value = value.trim().replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',').replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'').replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"');
-	        value = "[".concat(value, "]").replace(/'/g, '"');
-	        var returnVal = JSON.parse(value).map(function (elem) {
-	          return _this5.parseString2rightType(elem);
-	        });
-	        return returnVal;
-	      }
-	    }, {
-	      key: "parseString2rightType",
-	      value: function parseString2rightType(val) {
-	        var _this6 = this;
-
-	        if (Array.isArray(val)) {
-	          val = val.map(function (v) {
-	            return _this6.parseString2rightType(v);
-	          });
-	        } else if (_typeof_1(val) === 'object') {
-	          for (var key in val) {
-	            val[key] = this.parseString2rightType(val[key]);
-	          }
-	        } else if (typeof val === 'string') {
-	          var match = val.match(/(\/.+\/)([gimsuy]*)/);
-
-	          if (match !== null) {
-	            match[1] = match[1].replace(/^\//, '').replace(/\/$/, '');
-	            val = match[2] === '' ? new RegExp(match[1]) : new RegExp(match[1], match[2]);
-	          }
-	        }
-
-	        return val;
-	      }
-	    }], [{
-	      key: "validate",
-	      value: function validate(ruleName) {
-	        var rule = Kensho.rule.get(ruleName);
-
-	        if ((arguments.length <= 2 ? undefined : arguments[2]) === undefined) {
-	          return rule(arguments.length <= 1 ? undefined : arguments[1], {}, Kensho);
-	        } else {
-	          return rule(arguments.length <= 1 ? undefined : arguments[1], arguments.length <= 2 ? undefined : arguments[2], Kensho);
-	        }
-	      }
-	    }, {
-	      key: "use",
-	      value: function use(pluginName) {
-	        var plugin = Kensho.plugin.get(pluginName).bind(Kensho);
-
-	        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	          args[_key - 1] = arguments[_key];
-	        }
-
-	        return plugin.apply(void 0, args);
-	      }
-	    }]);
-
-	    return Kensho;
-	  }();
-
-	  Kensho.config = config;
-	  Kensho.rule = rule;
-	  Kensho.plugin = plugin;
 	  return Kensho;
 	}();
+	Kensho.config = config;
+	Kensho.rule = rule;
+	Kensho.plugin = plugin;
 
 	for (var _i3 = 0, _Object$entries3 = Object.entries(defaultRules); _i3 < _Object$entries3.length; _i3++) {
 	  var _Object$entries3$_i = slicedToArray(_Object$entries3[_i3], 2),
@@ -4413,3 +4405,4 @@
 	Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
+//# sourceMappingURL=bundle.umd.js.map

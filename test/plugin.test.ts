@@ -3,7 +3,7 @@ import { PluginStore, pluginBox } from '@src/plugin'
 type KenshoType = typeof Kensho
 
 interface MyPluginStore extends PluginStore {
-  samplePlugin1():void
+  samplePlugin1 : () => void
 }
 
 describe('plugin control', () => {

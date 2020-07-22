@@ -289,7 +289,7 @@ var _plugins = /*#__PURE__*/Object.freeze({
 });
 
 const defaultRules = _rules;
-const __unitNameSeed = (() => {
+const _unitNameSeed_ = (() => {
     const list = [];
     const makeSeed = () => {
         let seed = `k_${Math.floor(Math.random() * 1000).toString().padStart(4, '0')}`;
@@ -485,7 +485,7 @@ class Kensho {
             param.event = [param.event];
         }
         if (param.name === undefined)
-            param.name = __unitNameSeed();
+            param.name = _unitNameSeed_();
         const tagName = param.inputElement[0].tagName.toLowerCase();
         let type = '';
         if (tagName === 'input') {

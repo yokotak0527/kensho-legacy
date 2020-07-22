@@ -34,7 +34,7 @@ export interface InputRuleUnitType {
   valueFilter   : Function | undefined
 }
 
-const __unitNameSeed = (() => {
+const _unitNameSeed_ = (() => {
   const list:string[] = []
   const makeSeed = ():string => {
     let seed = `k_${Math.floor(Math.random() * 1000).toString().padStart(4, '0')}`
@@ -296,7 +296,7 @@ export class Kensho {
     }
 
     // setup name --------------------------------------------------------------
-    if (param.name === undefined) param.name = __unitNameSeed()
+    if (param.name === undefined) param.name = _unitNameSeed_()
 
     // setup tagName -----------------------------------------------------------
     const tagName = param.inputElement[0].tagName.toLowerCase()

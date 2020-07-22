@@ -34,9 +34,9 @@ export type GetRuleType<N extends string, S extends RuleStore = RuleStore> = N e
 export const ruleBook: Map<string, any> = new Map()
 
 export const rule: {
-  add<V, O extends Object | undefined = undefined, K extends KenshoType | undefined = undefined>(name: string, callback: K extends undefined ? RuleType<V, O> : RuleType<V, O, K>): void
-  get<N extends string, S extends RuleStore = RuleStore>(name: N): N extends keyof S ? S[N] : SimpleRuleType
-  delete(name: string): void
+  add    : <V, O extends Object | undefined = undefined, K extends KenshoType | undefined = undefined>(name: string, callback: K extends undefined ? RuleType<V, O> : RuleType<V, O, K>) => void
+  get    : <N extends string, S extends RuleStore = RuleStore>(name: N) => N extends keyof S ? S[N] : SimpleRuleType
+  delete : (name: string) => void
 } = {
   /**
    * add rule
