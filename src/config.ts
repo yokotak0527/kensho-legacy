@@ -1,4 +1,4 @@
-const config = {
+const config:Kensho.Config = {
   customAttrPrefix    : 'k-',
   errorMessageWrapper : 'span',
   verbose             : true,

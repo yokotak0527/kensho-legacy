@@ -2,13 +2,13 @@
 // https://jestjs.io/docs/en/configuration.html
 
 module.exports = {
-  "preset": "ts-jest",
-  "verbose": true,
-  "moduleNameMapper": {
-    "^@src/(.*)$": "<rootDir>/src/$1",
-    "^@types/(.*)$": "<rootDir>/types/$1"
-  },
-  "testMatch": [
-    "<rootDir>/test/**/*.ts"
-  ]
+  "preset"           : "ts-jest",
+  "verbose"          : true,
+  "moduleNameMapper" : { "^@src/(.*)$" : "<rootDir>/src/$1" },
+  "testMatch"        : [ "<rootDir>/tests/**/*.ts" ],
+  "globals"          : {
+    "ts-jest" : {
+      "tsconfig" : './tests/tsconfig.json'
+    }
+  }
 };

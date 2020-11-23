@@ -1,23 +1,6 @@
-import { Kensho } from './Kensho'
-type KenshoType = typeof Kensho
+export const pluginBox:Map<string, any> = new Map()
 
-export const pluginBox: Map<string, any> = new Map()
-
-export interface PluginStore {
-  'charWidthMapAssign' : (map: {[x:string]:string}) => void
-  'half2full'          : (str: string) => string
-  'full2half'          : (str: string) => string
-  'is1byte'            : (char: string) => boolean
-  'is2byte'            : (char: string) => boolean
-  'squash'             : (str: string, linebreak?: boolean) => string
-}
-
-export const plugin: {
-  add: <F extends Function>(name: string | 'value', method: F) => void
-  get: <N extends string, S extends PluginStore = PluginStore>(name: N) => N extends keyof S ? S[N] : Function
-  delete: (name: string) => void
-  [x: string]: any
-} = {
+export const plugin:Kensho.Plugin.Methods = {
   /**
    *
    */

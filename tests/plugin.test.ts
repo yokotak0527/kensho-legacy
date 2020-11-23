@@ -1,21 +1,22 @@
-import { Kensho } from '@src/Kensho'
-import { PluginStore, pluginBox } from '@src/plugin'
-type KenshoType = typeof Kensho
+import Kensho        from '@src/Kensho'
+import { pluginBox } from '@src/plugin'
 
-interface MyPluginStore extends PluginStore {
+interface MyPluginStore extends Kensho.Plugin.Store {
   samplePlugin1 : () => void
 }
 
 describe('plugin control', () => {
   test('Kensho.plugin.add()', () => {
-    Kensho.plugin.add('samplePlugin1', () => {})
+    Kensho.plugin.add('samplePlugin1', () => {return})
     const plugin = pluginBox.get('samplePlugin1')
     expect(typeof plugin).toBe('function')
   })
+
   test('Kensho.plugin.get()', () => {
     const plugin = Kensho.plugin.get<'samplePlugin1', MyPluginStore>('samplePlugin1')
     expect(typeof plugin).toBe('function')
   })
+
   test('Kensho.plugin.delete()', () => {
     Kensho.plugin.delete('samplePlugin1')
 
@@ -59,7 +60,7 @@ describe('preinstall plugins', () => {
     expect(Kensho.use('squash', 'a a a')).toBe('aaa')
     expect(Kensho.use('squash', 'a a')).toBe('aa')
     expect(Kensho.use('squash', '  a  a  ')).toBe('aa')
-    expect(Kensho.use('squash', 'a　a')).toBe('aa')
+    expect(Kensho.use('squash', 'a　a')).toBe('aa')  // eslint-disable-line
     expect(Kensho.use('squash', 'a\na', true)).toBe('aa')
     expect(Kensho.use('squash', 'a\n\na', true)).toBe('aa')
   })

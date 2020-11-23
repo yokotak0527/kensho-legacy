@@ -1,14 +1,13 @@
-import { Kensho } from '@src/Kensho'
-import { RuleStore, RuleType, ruleBook } from '@src/rule'
-type KenshoType = typeof Kensho
+import Kensho       from '@src/Kensho'
+import { ruleBook } from '@src/rule'
 
-interface MyRuleStore extends RuleStore {
-  'sample1' : RuleType<string, {}>
+interface MyRuleStore extends Kensho.Rule.Store {
+  'sample1' : Kensho.Rule.Type2Arg<string, Kensho.AnyObject>
 }
 
 describe('rule control', () => {
   test('Kensho.rule.add()', () => {
-    const sampleFunc: MyRuleStore['sample1'] = (value, option) => {
+    const sampleFunc: MyRuleStore['sample1'] = () => {
       return true
     }
     Kensho.rule.add('sample1', sampleFunc)

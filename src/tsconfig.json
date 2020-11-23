@@ -1,0 +1,11 @@
+{
+  "extends" : "../tsconfig.base.json",
+  "compilerOptions" : {
+      "declaration"    : false, // 宣言ファイル出力
+      "declarationMap" : false, //
+      "sourceMap"      : false,
+      "noEmit"         : true
+  },
+  "files" : [ "../@types/index.d.ts" ],
+  "include" : [ "**/*.ts" ]
+}

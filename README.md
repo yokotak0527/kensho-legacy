@@ -7,20 +7,59 @@ The JavaScript validation library.
 ![open issue](https://img.shields.io/github/issues/yokotak0527/kensho)
 ![MIT licence](https://img.shields.io/github/license/yokotak0527/kensho)
 
-## What this can do
+## What can this do.
 
-- It can validates values simply.
-- It can also validates input values in the form.
-- You can add your own validation rules.
-- It provides any plugins. And you can also add your own plugins.
+- simple and easy validation of values.
+- multiple validations for one value.
+- addition of your custom validation rules.
 - IE11 support.
+
+## Install
+
+### npm
+
+```bash
+$ npm i @yokotak0527/kensho
+```
+
+### CDN
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@yokotak0527/kensho/dist/bundle.iife.min.js"></script>
+```
+
+### Files
+
+| Files                   | for...             |
+|-------------------------|--------------------|
+| dist/bundle.cjs.js      | CommonJS (default) |
+| dist/bundle.cjs.min.js  | CommonJS           |
+| dist/bundle.es.js       | ESModule (default) |
+| dist/bundle.es.min.js   | ESModule           |
+| dist/bundle.iife.js     | browser            |
+| dist/bundle.iife.min.js | browser (default)  |
+
+## Setup
+
+### CommonJS
+
+```js
+const Kensho = require('@yokotak0527/kensho')
+```
+
+### ESModule
+
+```js
+import Kensho from '@yokotak0527/kensho'
+```
 
 ## Validation
 
 ### A value validation.
 
 ```js
-Kensho.validate('email', 'private@myhost.com') // -> true
+Kensho.validate('email', 'private@myhost.com')
+// -> true
 ```
 
 ### The form inputs validation.
@@ -35,30 +74,12 @@ Kensho.validate('email', 'private@myhost.com') // -> true
 
 ```js
 // JS
-// Assuming the use of "bundle.umd.js".s
-const form = new yokotak0527.Kensho('.form')
-
-// If you use 'bundle.esm.js' or 'bundle.cjs.js'...
 const form = new Kensho('.form')
 ```
 
-If the value entered does not conform to the email address specification, "The value failed email validation rule." will be displayed.
-
-## Install
-
-```bash
-$ npm install @yokotak0527/kensho
-```
-
-| bundle file            |              |
-|------------------------|--------------|
-| dist/bundle.cjs.js     | for CommonJS |
-| dist/bundle.cjs.min.js | for CommonJS |
-| dist/bundle.esm.js     | for ESModule |
-| dist/bundle.esm.min.js | for ESModule |
-| dist/bundle.umd.js     | for browser  |
-| dist/bundle.umd.min.js | for browser  |
+the above code, If the value entered does not conform to the email address specification, "The value failed email validation rule." will be displayed.
 
 ## For more details..
 
-https://yokotak0527.gitbook.io/kensho/
+~~https://yokotak0527.gitbook.io/kensho/~~  
+※ The content is old. Update soon. 😞

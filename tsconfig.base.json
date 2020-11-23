@@ -1,0 +1,24 @@
+{
+  "compilerOptions" : {
+    "target"                           : "ES6",    // ダウンレベル指定
+    "module"                           : "ES6",    // モジュールパターン
+    "baseUrl"                          : "./",     // 非絶対モジュールを解決する基本URL
+    "strict"                           : true,     // strict モード
+    "sourceMap"                        : false,    // ソースマップ出力
+    "importHelpers"                    : true,     // 各ファイルにダウンレベル処理を記述せずに tslib を取り込む
+    "allowJs"                          : false,    // JSファイルをコンパイルに含める
+    "checkJs"                          : false,    // JSのエラーを出力する
+    "moduleResolution"                 : "node",   // 
+    "esModuleInterop"                  : true,     // CommonJS と ES Modules 間で相互運用可能なコードを出力
+    "removeComments"                   : true,     // コンパイル時にコメントを削除
+    "experimentalDecorators"           : true,     // デコレータ許可
+    "skipLibCheck"                     : true,     // 
+    // "resolveJsonModule"                : false,    // JSON をインポート可能にする
+    // "isolatedModules"                  : false,    // コンパイル対象のファイル間の関係性を一切無視して、全てのファイルを単一のモジュールとしてコンパイルする。これをtrueにした場合、コンパイル対象の全てのファイルがexport構文を含む必要がある
+    "forceConsistentCasingInFileNames" : true,     // 大文字小文字を別で考える
+    "paths" : {
+      "@src/*"  : ["src/*"],
+      "@type/*" : ["@types/*"]
+    }
+  }
+}
