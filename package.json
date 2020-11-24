@@ -5,7 +5,7 @@
   "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.es.js",
   "browser": "dist/bundle.iife.min.js",
-  "types": "@types/index.d.ts",
+  "types": "@types/Kensho.d.ts",
   "files": [
     "dist/*",
     "@types/*",
