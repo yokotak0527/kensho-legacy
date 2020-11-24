@@ -7,6 +7,5 @@
       "@src/*"  : ["src/*"]
     }
   },
-  "files" : [ "../@types/index.d.ts" ],
   "include" : [ "**/*.test.ts" ]
 }

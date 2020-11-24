@@ -6,12 +6,20 @@
   "module": "dist/bundle.es.js",
   "browser": "dist/bundle.iife.min.js",
   "types": "@types/index.d.ts",
+  "files": [
+    "dist/*",
+    "@types/*",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "start": "npm run build:es -- -w",
     "build:es": "cross-env OUTPUT=es rollup -c",
     "build:cjs": "cross-env OUTPUT=cjs rollup -c",
     "build:iife": "cross-env OUTPUT=iife rollup -c",
-    "build": "npm run build:es && npm run build:cjs && npm run build:iife",
+    "build:types": "cross-env OUTPUT=types rollup -c",
+    "build": "npm run build:es && npm run build:cjs && npm run build:iife && npm run build:types",
     "watch": "npm start",
     "lint": "eslint ./",
     "test": "jest",

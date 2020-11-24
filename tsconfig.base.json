@@ -17,8 +17,7 @@
     // "isolatedModules"                  : false,    // コンパイル対象のファイル間の関係性を一切無視して、全てのファイルを単一のモジュールとしてコンパイルする。これをtrueにした場合、コンパイル対象の全てのファイルがexport構文を含む必要がある
     "forceConsistentCasingInFileNames" : true,     // 大文字小文字を別で考える
     "paths" : {
-      "@src/*"  : ["src/*"],
-      "@type/*" : ["@types/*"]
+      "@src/*"  : ["src/*"]
     }
   }
 }

@@ -1,0 +1,14 @@
+export declare const required: Kensho.Rule.Store['required'];
+export declare const empty: Kensho.Rule.Store['empty'];
+export declare const regexp: Kensho.Rule.Store['regexp'];
+export declare const email: Kensho.Rule.Store['email'];
+export declare const list: Kensho.Rule.Store['list'];
+export declare const number: Kensho.Rule.Store['number'];
+export declare const integer: Kensho.Rule.Store['integer'];
+export declare const naturalNumber: Kensho.Rule.Store['naturalNumber'];
+export declare const positiveNumber: Kensho.Rule.Store['positiveNumber'];
+export declare const negativeNumber: Kensho.Rule.Store['negativeNumber'];
+export declare const zero: Kensho.Rule.Store['zero'];
+export declare const age: Kensho.Rule.Store['age'];
+export declare const equal: Kensho.Rule.Store['equal'];
+export declare const letters: Kensho.Rule.Store['letters'];
