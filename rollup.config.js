@@ -123,7 +123,7 @@ if (output === 'types') {
   const dist = '@types'
   module.exports = Object.assign({}, config, {
     output : {
-      dir : dist
+      dir : dist,
       // { name : 'Kensho', file : 'dist/bundle.iife.js',     exports : 'auto', format : output },
     },
     plugins : [

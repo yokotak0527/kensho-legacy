@@ -18,7 +18,7 @@
     "build:es": "cross-env OUTPUT=es rollup -c",
     "build:cjs": "cross-env OUTPUT=cjs rollup -c",
     "build:iife": "cross-env OUTPUT=iife rollup -c",
-    "build:types": "cross-env OUTPUT=types rollup -c",
+    "build:types": "cross-env OUTPUT=types rollup -c && node ./scripts/addTripleSlashReference.js",
     "build": "npm run build:es && npm run build:cjs && npm run build:iife && npm run build:types",
     "watch": "npm start",
     "lint": "eslint ./",
