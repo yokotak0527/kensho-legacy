@@ -1,3 +1,5 @@
+/// <reference types="./@types/" />
+
 declare type PluginStore = Kensho.Plugin.Store;
 declare type RuleStore = Kensho.Rule.Store;
 declare type AnyFunction = Kensho.AnyFunction;
