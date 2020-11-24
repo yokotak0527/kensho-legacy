@@ -12,7 +12,6 @@ The JavaScript validation library.
 - simple and easy validation of values.
 - multiple validations for one value.
 - addition of your custom validation rules.
-- IE11 support.
 
 ## Install
 
@@ -27,17 +26,6 @@ $ npm i @yokotak0527/kensho
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@yokotak0527/kensho/dist/bundle.iife.min.js"></script>
 ```
-
-### Files
-
-| Files                   | for...             |
-|-------------------------|--------------------|
-| dist/bundle.cjs.js      | CommonJS (default) |
-| dist/bundle.cjs.min.js  | CommonJS           |
-| dist/bundle.es.js       | ESModule (default) |
-| dist/bundle.es.min.js   | ESModule           |
-| dist/bundle.iife.js     | browser            |
-| dist/bundle.iife.min.js | browser (default)  |
 
 ## Setup
 
