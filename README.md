@@ -180,6 +180,15 @@ formElm.addEventListener('submit', (evt)=>{
 })
 ```
 
+### ignore validations when the value is empty
+
+```html
+<form class="myform">
+  <input type="email" k-name="sample" k-rule="email" k-event="keyup" k-allowempty />
+  <p k-name="sample.error"></p>
+</form>
+```
+
 ## For more details..
 
 ~~https://yokotak0527.gitbook.io/kensho/~~  

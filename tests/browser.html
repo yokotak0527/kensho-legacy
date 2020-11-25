@@ -8,12 +8,12 @@
 </head>
 <body>
   <form action="">
-    <input type="email" k-name="sample" k-rule="required, ['regexp', { 'regexp' : /hoge/ }]" k-event="keyup">
+    <input type="email" k-name="sample" k-rule="['regexp', { 'regexp' : /hoge/ }]" k-event="keyup" k-allowempty>
     <p k-name="sample.error"></p>
   </form>
   <script>
     window.onload = function(){
-      Kensho.config.errorClassName = 'k-error-item'
+      // Kensho.config.errorClassName = 'k-error-item'
       const kensho = new Kensho('form')
     }
   </script>

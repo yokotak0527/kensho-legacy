@@ -15,6 +15,7 @@ interface AddParams <F=AnyFunction>{
   errorElement? : string | HTMLElement
   event?        : string | string[]
   name?         : string
+  allowEmpty?   : boolean
   valueFilter?  : F
 }
 
@@ -154,6 +155,12 @@ class Kensho {
         rawEvent = this.parseAttrString2Array<Exclude<AddParams['event'], string>>(rawEvent)
       }
       const event = rawEvent
+  
+      // parse allows ----------------------------------------------------------
+      const strAllowEmpty = _inputElm.getAttribute(`${attrPrefix}allowempty`)
+
+      // <... k-allowempty="on">, <... k-allowempty="true">, <... k-allowempty>
+      const allowEmpty = strAllowEmpty === 'on' || strAllowEmpty === 'true' || strAllowEmpty === '' ? true : false
 
       // parse eventMessage ----------------------------------------------------
       const strMessage = _inputElm.getAttribute(`${attrPrefix}message`)
@@ -195,7 +202,8 @@ class Kensho {
         rule,
         event,
         valueFilter,
-        name
+        name,
+        allowEmpty
       })
     }
   }
@@ -304,6 +312,9 @@ class Kensho {
 
     // setup name --------------------------------------------------------------
     if (param.name === undefined) param.name = _unitNameSeed_()
+
+    // setup allows ------------------------------------------------------------
+    param.allowEmpty = param.allowEmpty ? true : false
 
     // setup tagName -----------------------------------------------------------
     const tagName = param.inputElement[0].tagName.toLowerCase()
@@ -455,6 +466,7 @@ class Kensho {
     this.clear(unit)
 
     for (const [ruleName, option] of unit.rule) {
+      if (ruleName !== 'required' && unit.allowEmpty && value === '') continue
       if (!Kensho.validate(ruleName, value, option)) {
         unit.error.push(ruleName)
       }
