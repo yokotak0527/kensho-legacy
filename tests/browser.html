@@ -8,7 +8,7 @@
 </head>
 <body>
   <form action="">
-    <input type="email" k-name="sample" k-rule="email, required" k-event="keyup">
+    <input type="email" k-name="sample" k-rule="required, ['regexp', { 'regexp' : /hoge/ }]" k-event="keyup">
     <p k-name="sample.error"></p>
   </form>
   <script>

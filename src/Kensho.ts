@@ -485,7 +485,6 @@ class Kensho {
     const errorItemClassName = Kensho.config.errorItemClassName
 
     for (const ruleName of unit.error) {
-      console.log(ruleName)
       if (ruleName === 'default') continue
       const msg:string = errorMessage[ruleName] === undefined ? `The value failed "${ruleName}" validation rule.` : errorMessage[ruleName]
       errors.push(`<${wrapper} class="${errorItemClassName}">${msg}</${wrapper}>`)

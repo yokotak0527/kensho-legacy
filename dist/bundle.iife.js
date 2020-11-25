@@ -398,6 +398,7 @@ var Kensho = (function () {
                 if (rawRule === null)
                     throw new Error(`The \`k-rule\` attribute is not found in the element where \`k-name="${unitName}"\` is specified.`);
                 const rule = this.parseAttrString2Array(rawRule);
+                console.log(rule);
                 let inputElement = data.input;
                 const typeAttr = data.input.getAttribute('type');
                 if (typeAttr === 'radio') {
