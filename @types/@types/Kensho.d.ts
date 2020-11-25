@@ -4,6 +4,7 @@ declare namespace Kensho { // eslint-disable-line
     errorMessageWrapper : string,
     verbose             : boolean,
     errorClassName      : string,
+    errorItemClassName  : string,
     autocomplete        : boolean,
     HTML5novalidate     : boolean
   }

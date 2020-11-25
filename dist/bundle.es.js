@@ -62,6 +62,7 @@ const config = {
     errorMessageWrapper: 'span',
     verbose: true,
     errorClassName: 'kensho-has-error',
+    errorItemClassName: 'kensho-error-message',
     autocomplete: false,
     HTML5novalidate: true
 };
@@ -662,13 +663,15 @@ class Kensho {
             return;
         const errors = [];
         const wrapper = Kensho.config.errorMessageWrapper;
+        const errorItemClassName = Kensho.config.errorItemClassName;
         for (const ruleName of unit.error) {
+            console.log(ruleName);
             if (ruleName === 'default')
                 continue;
             const msg = errorMessage[ruleName] === undefined ? `The value failed "${ruleName}" validation rule.` : errorMessage[ruleName];
-            errors.push(`<${wrapper}>${msg}</${wrapper}>`);
+            errors.push(`<${wrapper} class="${errorItemClassName}">${msg}</${wrapper}>`);
         }
-        const error = Kensho.config.verbose ? errors.join('') : `<${wrapper}>${errorMessage.default}</${wrapper}>`;
+        const error = Kensho.config.verbose ? errors.join('') : `<${wrapper} class="${errorItemClassName}">${errorMessage.default}</${wrapper}>`;
         errorElement.innerHTML = error;
     }
     parseAttrString2Array(value) {
