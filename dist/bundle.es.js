@@ -406,6 +406,8 @@ class Kensho {
                 rawEvent = this.parseAttrString2Array(rawEvent);
             }
             const event = rawEvent;
+            const strAllowEmpty = _inputElm.getAttribute(`${attrPrefix}allowempty`);
+            const allowEmpty = strAllowEmpty === 'on' || strAllowEmpty === 'true' || strAllowEmpty === '' ? true : false;
             const strMessage = _inputElm.getAttribute(`${attrPrefix}message`);
             let rawErrorMessage = strMessage !== null ? strMessage : undefined;
             if (typeof rawErrorMessage === 'string') {
@@ -442,7 +444,8 @@ class Kensho {
                 rule,
                 event,
                 valueFilter,
-                name
+                name,
+                allowEmpty
             });
         }
     }
@@ -534,6 +537,7 @@ class Kensho {
         }
         if (param.name === undefined)
             param.name = _unitNameSeed_();
+        param.allowEmpty = param.allowEmpty ? true : false;
         const tagName = param.inputElement[0].tagName.toLowerCase();
         let type = '';
         if (tagName === 'input') {
@@ -645,6 +649,8 @@ class Kensho {
             value = unit.valueFilter.bind(this)(value, Kensho);
         this.clear(unit);
         for (const [ruleName, option] of unit.rule) {
+            if (ruleName !== 'required' && unit.allowEmpty && value === '')
+                continue;
             if (!Kensho.validate(ruleName, value, option)) {
                 unit.error.push(ruleName);
             }

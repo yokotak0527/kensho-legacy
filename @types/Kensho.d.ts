@@ -13,6 +13,7 @@ interface AddParams<F = AnyFunction> {
     errorElement?: string | HTMLElement;
     event?: string | string[];
     name?: string;
+    allowEmpty?: boolean;
     valueFilter?: F;
 }
 declare class Kensho {

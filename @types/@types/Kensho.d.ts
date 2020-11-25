@@ -26,6 +26,7 @@ declare namespace Kensho { // eslint-disable-line
     name          : string
     tagName       : string
     type          : string
+    allowEmpty?   : boolean
     valueFilter?  : Kensho.AnyFunction
   }
 }
