@@ -8,11 +8,12 @@
 </head>
 <body>
   <form action="">
-    <input type="email" k-name="sample" k-rule="email" k-event="keyup">
+    <input type="email" k-name="sample" k-rule="email, required" k-event="keyup">
     <p k-name="sample.error"></p>
   </form>
   <script>
     window.onload = function(){
+      Kensho.config.errorClassName = 'k-error-item'
       const kensho = new Kensho('form')
     }
   </script>
