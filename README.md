@@ -43,7 +43,7 @@ import Kensho from '@yokotak0527/kensho'
 
 ## Validation
 
-### A value validation.
+### A value validation
 
 ```js
 // Kensho.validate(RULE NAME, VALUE)
@@ -59,6 +59,7 @@ Kensho.validate('letters', 'abcdefg', { range : { max : 5 } })
 
 ```html
 <!-- HTML -->
+
 <form class="form">
   <input type="email" k-name="sample" k-rule="email" k-event="keyup" />
   <p k-name="sample.error"></p>
@@ -67,10 +68,9 @@ Kensho.validate('letters', 'abcdefg', { range : { max : 5 } })
 
 ```js
 // JS
+
 const form = new Kensho('.form')
 ```
-
- <!-- the keyup and blur events are used to validate the values. -->
 
 In the case of the above code, every time a key-up event occurs, it verifies that the value entered meets the specification of the email address, and if it does not, it displays "Value failed the email verification rule".
 
@@ -106,11 +106,13 @@ If the validation rule has options...
 />
 ```
 
-As you can see, it's hard to read a little. If you need complex validation, you might want to write the validation settings in JS.
+As you can see, it's hard to read a little.
+If you need complex validation, you might want to write the validation settings in JS.
 
 ```html
+<!-- HTML -->
+
 <form action="" class="myform">
-  <!-- <input type="email" k-name="sample" k-rule="required, ['regexp', { 'regexp' : /hoge/ }]" k-event="keyup"> -->
   <input type="text" name="nickname">
   <p></p>
 </form>
@@ -119,6 +121,8 @@ As you can see, it's hard to read a little. If you need complex validation, you 
 Assuming there is an HTML file like the one above, write JS code as below.
 
 ```js
+// JS
+
 const kensho = new Kensho('.myform', { search : false })
 // By default, Kensho will look for HTML elements with Kensho attribute values
 // in the specified form when you create an instance,
@@ -144,6 +148,36 @@ Kensho.rule.add('myrule', (value, option, Kensho)=>{
 
 Kensho.validate('myrule', 'hello')
 // -> true
+```
+
+## Example
+
+### pre-sending validation
+
+```html
+<!-- HTML -->
+
+<form class="myform">
+  <input type="email" k-name="sample" k-rule="email" k-event="keyup" />
+  <p k-name="sample.error"></p>
+</form>
+```
+
+```js
+// JS
+const formElm = document.querySelector('.myform')
+
+const kensho  = new Kensho(formElm)
+
+formElm.addEventListener('submit', (evt)=>{
+
+  kensho.allValidate()
+
+  if (kensho.hasError()) {
+    evt.preventDefault()
+    alert('input error')
+  }
+})
 ```
 
 ## For more details..
