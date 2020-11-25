@@ -398,7 +398,6 @@ var Kensho = (function () {
                 if (rawRule === null)
                     throw new Error(`The \`k-rule\` attribute is not found in the element where \`k-name="${unitName}"\` is specified.`);
                 const rule = this.parseAttrString2Array(rawRule);
-                console.log(rule);
                 let inputElement = data.input;
                 const typeAttr = data.input.getAttribute('type');
                 if (typeAttr === 'radio') {
@@ -669,7 +668,6 @@ var Kensho = (function () {
             const wrapper = Kensho.config.errorMessageWrapper;
             const errorItemClassName = Kensho.config.errorItemClassName;
             for (const ruleName of unit.error) {
-                console.log(ruleName);
                 if (ruleName === 'default')
                     continue;
                 const msg = errorMessage[ruleName] === undefined ? `The value failed "${ruleName}" validation rule.` : errorMessage[ruleName];
