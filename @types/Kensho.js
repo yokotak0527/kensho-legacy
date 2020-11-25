@@ -363,6 +363,12 @@ class Kensho {
         const plugin = Kensho.plugin.get(pluginName).bind(Kensho);
         return plugin(...args);
     }
+    destroy() {
+        if (!Kensho.config.autocomplete)
+            this.form.setAttribute('autocomplete', '');
+        this.form.classList.remove('kensho-form');
+        console.log(this.ruleUnits);
+    }
     addFromUnitElements(inputElmsData) {
         const attrPrefix = Kensho.config.customAttrPrefix;
         for (const [unitName, data] of Object.entries(inputElmsData)) {

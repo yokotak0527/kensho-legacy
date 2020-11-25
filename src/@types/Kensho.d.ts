@@ -21,6 +21,7 @@ declare namespace Kensho { // eslint-disable-line
     error         : string[]
     displayError  : boolean
     event         : string[]
+    eventHandlers : {[key:string]:(...args:any)=>any}[]
     name          : string
     tagName       : string
     type          : string

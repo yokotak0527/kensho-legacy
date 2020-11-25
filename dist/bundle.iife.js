@@ -619,6 +619,7 @@ var Kensho = (function () {
 	})();
 	class Kensho {
 	    constructor(formSelector, option = {}) {
+	        this.isDestroyed = false;
 	        option = Object.assign({
 	            search: true
 	        }, option);
@@ -629,8 +630,14 @@ var Kensho = (function () {
 	            formSelector = _form;
 	        }
 	        this.form = formSelector;
-	        if (!Kensho.config.autocomplete)
-	            this.form.setAttribute('autocomplete', 'off');
+	        {
+	            this.defaultHasAutoCompleteAttr = this.form.getAttribute('autocomplete') !== null ? true : false;
+	            this.defaultAutoComplete = this.form.autocomplete;
+	            if (!Kensho.config.autocomplete) {
+	                this.form.setAttribute('autocomplete', 'off');
+	                this.form.autocomplete = 'off';
+	            }
+	        }
 	        this.ruleUnits = new Map();
 	        this.form.classList.add('kensho-form');
 	        if (option.search) {
@@ -649,6 +656,18 @@ var Kensho = (function () {
 	    static use(pluginName, ...args) {
 	        const plugin = Kensho.plugin.get(pluginName).bind(Kensho);
 	        return plugin(...args);
+	    }
+	    destroy() {
+	        this.form.autocomplete = this.defaultAutoComplete;
+	        if (this.defaultHasAutoCompleteAttr) {
+	            this.form.setAttribute('autocomplete', this.defaultAutoComplete);
+	        }
+	        else {
+	            this.form.removeAttribute('autocomplete');
+	        }
+	        this.form.classList.remove('kensho-form');
+	        this.removeAll();
+	        this.isDestroyed = true;
 	    }
 	    addFromUnitElements(inputElmsData) {
 	        const attrPrefix = Kensho.config.customAttrPrefix;
@@ -814,22 +833,45 @@ var Kensho = (function () {
 	            type === 'datetime' || type === 'date' || type === 'month' ||
 	            type === 'week' || type === 'time' || type === 'datetime-local')
 	            type = 'text';
-	        param.inputElement.forEach(elem => {
+	        const eventHandlers = [];
+	        param.inputElement.forEach((elem, elemNum) => {
 	            const events = param.event;
+	            eventHandlers[elemNum] = {};
+	            const handlers = eventHandlers[elemNum];
 	            events.forEach(event => {
-	                elem.addEventListener(event, () => {
+	                handlers[`kenshoEventHandler__${event}`] = () => {
 	                    this.validate(param.name);
-	                });
+	                };
+	                elem.addEventListener(event, handlers[`kenshoEventHandler__${event}`]);
 	            });
 	        });
 	        const unit = Object.assign({}, param, {
 	            tagName,
 	            type,
 	            error: [],
+	            eventHandlers,
 	            displayError: param.errorElement !== undefined
 	        });
 	        this.ruleUnits.set(unit.name, unit);
 	        return unit;
+	    }
+	    remove(ruleUnitName) {
+	        const unit = this.getRuleUnit(ruleUnitName);
+	        unit.inputElement.forEach((elem, elemNum) => {
+	            unit.event.forEach(eventName => {
+	                elem.removeEventListener(eventName, unit.eventHandlers[elemNum][`kenshoEventHandler__${eventName}`]);
+	            });
+	        });
+	        this.ruleUnits.delete(ruleUnitName);
+	    }
+	    removeAll() {
+	        const names = [];
+	        this.ruleUnits.forEach(unit => {
+	            names.push(unit.name);
+	        });
+	        names.forEach(name => {
+	            this.remove(name);
+	        });
 	    }
 	    hasError() {
 	        let hasError = false;

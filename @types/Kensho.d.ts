@@ -27,6 +27,7 @@ declare class Kensho {
     constructor(formSelector: string | HTMLElement, option?: {
         search?: boolean;
     });
+    destroy(): void;
     addFromUnitElements(inputElmsData: Kensho.RuleUnitElements): void;
     search(): Kensho.RuleUnitElements;
     add(param: AddParams): Kensho.RuleUnit;

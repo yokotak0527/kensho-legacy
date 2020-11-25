@@ -41,11 +41,14 @@ const _unitNameSeed_ = (() => {
 // =============================================================================
 class Kensho {
   // Props
-  public           form      : HTMLElement
-  private readonly ruleUnits : Map<string, Kensho.RuleUnit>
-  static           config    : Kensho.Config         = config
-  static           rule      : Kensho.Rule.Methods   = rule
-  static           plugin    : Kensho.Plugin.Methods = plugin
+  public           form                       : HTMLFormElement
+  public           defaultAutoComplete        : string
+  public           defaultHasAutoCompleteAttr : boolean
+  public           isDestroyed                : boolean
+  private readonly ruleUnits                  : Map<string, Kensho.RuleUnit>
+  static           config                     : Kensho.Config         = config
+  static           rule                       : Kensho.Rule.Methods   = rule
+  static           plugin                     : Kensho.Plugin.Methods = plugin
 
   /**
    * validate the value
@@ -74,20 +77,29 @@ class Kensho {
   /**
    *
    */
-  constructor (formSelector:string | HTMLElement, option:{ search?: boolean } = {}) {
+  constructor (formSelector:string | HTMLFormElement, option:{ search?: boolean } = {}) {
+    this.isDestroyed = false
+
     option = Object.assign({
       search : true
     }, option)
 
     if (typeof formSelector === 'string') {
-      const _form = document.querySelector<HTMLElement>(formSelector)
+      const _form = document.querySelector<HTMLFormElement>(formSelector)
       if (_form === null) throw new Error(`form "${formSelector}" is not found.`)
       formSelector = _form
     }
     this.form = formSelector
 
-    //
-    if (!Kensho.config.autocomplete) this.form.setAttribute('autocomplete', 'off')
+    { // autocomplete setup
+      this.defaultHasAutoCompleteAttr = this.form.getAttribute('autocomplete') !== null ? true : false
+      this.defaultAutoComplete = this.form.autocomplete
+  
+      if (!Kensho.config.autocomplete) {
+        this.form.setAttribute('autocomplete', 'off')
+        this.form.autocomplete = 'off'
+      }
+    }
 
     this.ruleUnits = new Map()
     this.form.classList.add('kensho-form')
@@ -96,7 +108,20 @@ class Kensho {
 
     return this
   }
-
+  /**
+   * 
+   */
+  destroy ():void {
+    this.form.autocomplete = this.defaultAutoComplete
+    if (this.defaultHasAutoCompleteAttr) {
+      this.form.setAttribute('autocomplete', this.defaultAutoComplete)
+    } else {
+      this.form.removeAttribute('autocomplete')
+    }
+    this.form.classList.remove('kensho-form')
+    this.removeAll()
+    this.isDestroyed = true
+  }
   /**
    * add unit rules from the Kensho.RuleUnitElements
    */
@@ -151,7 +176,6 @@ class Kensho {
       let valueFilter:AddParams['valueFilter']
       if (typeof rawFilter === 'string') {
         rawFilter = this.parseAttrString2Array<Exclude<RawFilter, string | undefined>>(rawFilter)
-        // console.log(rawFilter)
         valueFilter = function (value:any, Kensho: any) {
           for (const filter of rawFilter) {
             if (typeof filter === 'string') {
@@ -239,7 +263,6 @@ class Kensho {
       param.inputElement.forEach(elm => { _arr.push(elm) })
       param.inputElement = _arr
     }
-    // console.log(param.inputElement)
     // 🤔 definitely, the param.inputElement is Array<HTMLElement|HTMLSelectElement> and it is not zero length.
 
     // setup param.rule --------------------------------------------------------
@@ -300,12 +323,17 @@ class Kensho {
     ) type = 'text'
 
     // add events --------------------------------------------------------------
-    param.inputElement.forEach(elem => {
+    // const eventHandlers:{[key:string]:(...args:any)=>void} = {}
+    const eventHandlers:Kensho.RuleUnit['eventHandlers'] = []
+    param.inputElement.forEach((elem, elemNum) => {
       const events = param.event as string[]
+      eventHandlers[elemNum] = {}
+      const handlers = eventHandlers[elemNum]
       events.forEach(event => {
-        elem.addEventListener(event, () => {
+        handlers[`kenshoEventHandler__${event}`] = () => {
           this.validate(param.name as string)
-        })
+        }
+        elem.addEventListener(event, handlers[`kenshoEventHandler__${event}`])
       })
     })
 
@@ -313,13 +341,39 @@ class Kensho {
       tagName,
       type,
       error : [],
+      eventHandlers,
       displayError : param.errorElement !== undefined
     }) as Kensho.RuleUnit
 
     this.ruleUnits.set(unit.name, unit)
     return unit
   }
+  /**
+   * remove a rule unit
+   */
+  remove (ruleUnitName:string):void {
+    const unit = this.getRuleUnit(ruleUnitName)
 
+    // delete event handler
+    unit.inputElement.forEach((elem, elemNum) => {
+      unit.event.forEach(eventName => {
+        elem.removeEventListener(eventName, unit.eventHandlers[elemNum][`kenshoEventHandler__${eventName}`])
+      })
+    })
+    this.ruleUnits.delete(ruleUnitName)
+  }
+  /**
+   * 
+   */
+  removeAll ():void {
+    const names:string[] = []
+    this.ruleUnits.forEach(unit => {
+      names.push(unit.name)
+    })
+    names.forEach(name => {
+      this.remove(name)
+    })
+  }
   /**
    *
    */
