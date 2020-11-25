@@ -16,7 +16,10 @@ interface AddParams<F = AnyFunction> {
     valueFilter?: F;
 }
 declare class Kensho {
-    form: HTMLElement;
+    form: HTMLFormElement;
+    defaultAutoComplete: string;
+    defaultHasAutoCompleteAttr: boolean;
+    isDestroyed: boolean;
     private readonly ruleUnits;
     static config: Kensho.Config;
     static rule: Kensho.Rule.Methods;
@@ -24,13 +27,15 @@ declare class Kensho {
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : AnyFunction, A extends any[] = F extends AnyFunction ? Parameters<F> : never>(rulename: N, value: A[0], option: A[1]): boolean;
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : AnyFunction, A extends any[] = F extends AnyFunction ? Parameters<F> : never>(rulename: N, value: A[0]): boolean;
     static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : AnyFunction>(pluginName: N, ...args: F extends AnyFunction ? Parameters<F> : never): F extends AnyFunction ? ReturnType<F> : never;
-    constructor(formSelector: string | HTMLElement, option?: {
+    constructor(formSelector: string | HTMLFormElement, option?: {
         search?: boolean;
     });
     destroy(): void;
     addFromUnitElements(inputElmsData: Kensho.RuleUnitElements): void;
     search(): Kensho.RuleUnitElements;
     add(param: AddParams): Kensho.RuleUnit;
+    remove(ruleUnitName: string): void;
+    removeAll(): void;
     hasError(): boolean;
     getRuleUnit(ruleUnitName: string): Kensho.RuleUnit;
     getInputValue(unit: Kensho.RuleUnit): string;
