@@ -42,7 +42,7 @@ const Kensho = require('@yokotak0527/kensho')
 import Kensho from '@yokotak0527/kensho'
 ```
 
-## バリデーション
+## 検証
 
 デフォルトの検証ルール一覧を確認したい場合は[ガイド](https://yokotak0527.gitbook.io/kensho/rule/default-rules)か[コード](https://github.com/yokotak0527/kensho/blob/master/src/defaults/rules.ts)をご覧ください。
 
@@ -109,8 +109,8 @@ const form = new Kensho('.form')
 />
 ```
 
-ご覧の通り、複雑なバリデーションになればなるほどコードを読むのが大変です。  
-複雑なバリデーションが必要な場合は、バリデーションの設定をJSで書いた方がいいかもしれません。
+ご覧の通り、複雑な設定になればなるほどコードを読むのが大変です。  
+複雑な設定が必要な場合は設定を JS で書いた方がいいかもしれません。
 
 ```html
 <!-- HTML -->
@@ -147,7 +147,7 @@ kensho.add({
 例えば、全角文字列を半角文字列に変換してから検証したいなど。  
 Kensho はこのようなフィルタリング機能をプラグインとして提供しています。
 
-デフォルトの検証ルール一覧を確認したい場合は[コード](https://github.com/yokotak0527/kensho/blob/master/src/defaults/plugins.ts)をご覧ください。
+デフォルトのプラグイン一覧を確認したい場合は[コード](https://github.com/yokotak0527/kensho/blob/master/src/defaults/plugins.ts)をご覧ください。
 
 ```html
 <form>
@@ -169,7 +169,7 @@ Kensho はこのようなフィルタリング機能をプラグインとして�
 
 上記コードは検証ルール `regexp` によって 文字 `"a"` か `"b"` か `"c"` のみ受付ますが、フィルター `full2half` によって検証前に値がフィルタリングされるので、フルサイズの `"ａ"` と `"ｂ"` と `"ｃ"` も受付ます。
 
-## バリデーションルールを追加する
+## 検証ルールを追加する
 
 ```js
 Kensho.rule.add('myrule', (value, option, Kensho)=>{
