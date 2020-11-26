@@ -376,7 +376,7 @@ class Kensho {
   /**
    * 
    */
-  removeAll ():void {
+  allRemove ():void {
     const names:string[] = []
     this.ruleUnits.forEach(unit => {
       names.push(unit.name)
