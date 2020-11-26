@@ -383,7 +383,7 @@ var Kensho = (function () {
                 this.form.removeAttribute('autocomplete');
             }
             this.form.classList.remove('kensho-form');
-            this.allRemove();
+            this.removeAll();
             this.isDestroyed = true;
         }
         addFromUnitElements(inputElmsData) {
@@ -585,7 +585,7 @@ var Kensho = (function () {
             });
             this.ruleUnits.delete(ruleUnitName);
         }
-        allRemove() {
+        removeAll() {
             const names = [];
             this.ruleUnits.forEach(unit => {
                 names.push(unit.name);
@@ -642,7 +642,7 @@ var Kensho = (function () {
                 }
             }
         }
-        allClear() {
+        clearAll() {
             this.ruleUnits.forEach((val, key) => this.clear(this.getRuleUnit(key)));
         }
         validate(ruleUnitName) {
@@ -663,7 +663,7 @@ var Kensho = (function () {
             }
             return unit.error.length === 0;
         }
-        allValidate() {
+        validateAll() {
             this.ruleUnits.forEach((val, key) => this.validate(key));
         }
         displayError(_a) {

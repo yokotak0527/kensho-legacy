@@ -666,7 +666,7 @@ class Kensho {
             this.form.removeAttribute('autocomplete');
         }
         this.form.classList.remove('kensho-form');
-        this.allRemove();
+        this.removeAll();
         this.isDestroyed = true;
     }
     addFromUnitElements(inputElmsData) {
@@ -868,7 +868,7 @@ class Kensho {
         });
         this.ruleUnits.delete(ruleUnitName);
     }
-    allRemove() {
+    removeAll() {
         const names = [];
         this.ruleUnits.forEach(unit => {
             names.push(unit.name);
@@ -925,7 +925,7 @@ class Kensho {
             }
         }
     }
-    allClear() {
+    clearAll() {
         this.ruleUnits.forEach((val, key) => this.clear(this.getRuleUnit(key)));
     }
     validate(ruleUnitName) {
@@ -946,7 +946,7 @@ class Kensho {
         }
         return unit.error.length === 0;
     }
-    allValidate() {
+    validateAll() {
         this.ruleUnits.forEach((val, key) => this.validate(key));
     }
     displayError(_a) {

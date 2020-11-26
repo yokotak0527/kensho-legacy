@@ -386,7 +386,7 @@
                 this.form.removeAttribute('autocomplete');
             }
             this.form.classList.remove('kensho-form');
-            this.allRemove();
+            this.removeAll();
             this.isDestroyed = true;
         }
         addFromUnitElements(inputElmsData) {
@@ -588,7 +588,7 @@
             });
             this.ruleUnits.delete(ruleUnitName);
         }
-        allRemove() {
+        removeAll() {
             const names = [];
             this.ruleUnits.forEach(unit => {
                 names.push(unit.name);
@@ -645,7 +645,7 @@
                 }
             }
         }
-        allClear() {
+        clearAll() {
             this.ruleUnits.forEach((val, key) => this.clear(this.getRuleUnit(key)));
         }
         validate(ruleUnitName) {
@@ -666,7 +666,7 @@
             }
             return unit.error.length === 0;
         }
-        allValidate() {
+        validateAll() {
             this.ruleUnits.forEach((val, key) => this.validate(key));
         }
         displayError(_a) {
