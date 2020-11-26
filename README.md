@@ -1,6 +1,6 @@
 # Kensho
 
-The JavaScript validation library.
+The JavaScript validation package.
 
 ![NPM Download](https://img.shields.io/npm/dt/@yokotak0527/kensho)
 ![TravisCI](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
@@ -9,9 +9,10 @@ The JavaScript validation library.
 
 ## What can this do.
 
-- simple and easy validation of values.
-- multiple validations for one value.
-- addition of your custom validation rules.
+- Simple and easy validation of values.
+- Apply multiple validation rules for one value.
+- Adjust the value before validation.
+- Addition of your custom validation rules.
 
 ## Install
 
@@ -72,15 +73,15 @@ Kensho.validate('letters', 'abcdefg', { range : { max : 5 } })
 const form = new Kensho('.form')
 ```
 
-In the case of the above code, every time a key-up event occurs, it verifies that the value entered meets the specification of the email address, and if it does not, it displays "Value failed the email verification rule".
+In the case of the above code, every time a `keyup` event occurs, it validates that the entered value meets the email validation rule.
 
-It is also possible to set multiple events at the same time.In the code below, it validate the inputed value, when occur `keyup` or `blur` events.
+Also, the following code validates the values entered when the `keyup` and `blur` events occur.
 
 ```html
 <input type="email" k-name="sample" k-rule="email" k-event="keyup, blur" />
 ```
 
-Of course, you can also set multiple rules.
+Of course, you can also set multiple validation rules.
 
 ```html
 <input type="email" k-name="sample" k-rule="email, required" k-event="keyup, blur" />
@@ -106,7 +107,7 @@ If the validation rule has options...
 />
 ```
 
-As you can see, it's hard to read a little.
+As you can see, the more complex the validation, the harder it is to read the code.
 If you need complex validation, you might want to write the validation settings in JS.
 
 ```html
@@ -137,7 +138,7 @@ kensho.add({
 })
 ```
 
-The `inputElement` and `errorElement` properties can be either query selectors as strings or HTMLInputElement directly.
+The `inputElement` and `errorElement` properties can be either query selectors as strings or `HTMLInputElement` directly.
 
 ## Add the validate rule
 
