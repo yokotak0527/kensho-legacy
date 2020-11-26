@@ -142,6 +142,34 @@ kensho.add({
 
 The `inputElement` and `errorElement` properties can be either query selectors as strings or `HTMLInputElement` directly.
 
+## Filtering
+
+Sometimes you may want to filter the values before validating them.
+For example, it want to convert full-size string to half-size string and then validate it.
+Kensho provides such a filtering feature as a plugin.
+
+If you want to see default plugins, please see [code](https://github.com/yokotak0527/kensho/blob/master/src/defaults/plugins.ts).
+
+```html
+<form>
+  <input
+    type="text"
+    k-name="text"
+    k-rule="['regexp', {'regexp' : /^[abc]+$/ }]"
+    k-event="keyup"
+    k-filter="full2half"
+  >
+  <p k-name="text.error"></p>
+</form>
+<script>
+  window.onload = function(){
+    const kensho = new Kensho('form')
+  }
+</script>
+```
+
+The above code only accepts characters `"a"`, `"b"`, and `"c"` by the `regexp` validation rule, but it also accepts full size `"ａ"`, `"ｂ"`, and `"ｃ"` because the filter `full2half` filters the values before validation.
+
 ## Add the validate rule
 
 ```js
@@ -151,6 +179,25 @@ Kensho.rule.add('myrule', (value, option, Kensho)=>{
 
 Kensho.validate('myrule', 'hello')
 // -> true
+```
+
+## Add the Plugin
+
+```html
+<form>
+  <input type="text" k-name="text" k-rule="required" k-event="keyup" k-filter="myPlugin" />
+  <p k-name="text.error"></p>
+</form>
+<script>
+  window.onload = function(){
+    Kensho.plugin.add('myPlugin', function myPlugin(value){
+      // `this` is bind to the Kensho class.
+      // do something...
+      return value
+    })
+    const kensho = new Kensho('form')
+  }
+</script>
 ```
 
 ## Example

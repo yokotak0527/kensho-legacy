@@ -141,6 +141,34 @@ kensho.add({
 
 `inputElement` と `errorElement` プロパティは、文字列としてのクエリセレクタか `HTMLInputElement` を直接指定することができます。
 
+## フィルタリング
+
+値を検証する前にフィルタリングしたい場合があります。  
+例えば、全角文字列を半角文字列に変換してから検証したいなど。  
+Kensho はこのようなフィルタリング機能をプラグインとして提供しています。
+
+デフォルトの検証ルール一覧を確認したい場合は[コード](https://github.com/yokotak0527/kensho/blob/master/src/defaults/plugins.ts)をご覧ください。
+
+```html
+<form>
+  <input
+    type="text"
+    k-name="text"
+    k-rule="['regexp', {'regexp' : /^[abc]+$/ }]"
+    k-event="keyup"
+    k-filter="full2half"
+  >
+  <p k-name="text.error"></p>
+</form>
+<script>
+  window.onload = function(){
+    const kensho = new Kensho('form')
+  }
+</script>
+```
+
+上記コードは検証ルール `regexp` によって 文字 `"a"` か `"b"` か `"c"` のみ受付ますが、フィルター `full2half` によって検証前に値がフィルタリングされるので、フルサイズの `"ａ"` と `"ｂ"` と `"ｃ"` も受付ます。
+
 ## バリデーションルールを追加する
 
 ```js
@@ -150,6 +178,25 @@ Kensho.rule.add('myrule', (value, option, Kensho)=>{
 
 Kensho.validate('myrule', 'hello')
 // -> true
+```
+
+## プラグインを追加する
+
+```html
+<form>
+  <input type="text" k-name="text" k-rule="required" k-event="keyup" k-filter="myPlugin" />
+  <p k-name="text.error"></p>
+</form>
+<script>
+  window.onload = function(){
+    Kensho.plugin.add('myPlugin', function myPlugin(value){
+      // `this` is bind to the Kensho class.
+      // do something...
+      return value
+    })
+    const kensho = new Kensho('form')
+  }
+</script>
 ```
 
 ## 例
