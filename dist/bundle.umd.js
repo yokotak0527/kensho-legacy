@@ -386,7 +386,7 @@
                 this.form.removeAttribute('autocomplete');
             }
             this.form.classList.remove('kensho-form');
-            this.removeAll();
+            this.allRemove();
             this.isDestroyed = true;
         }
         addFromUnitElements(inputElmsData) {
@@ -588,7 +588,7 @@
             });
             this.ruleUnits.delete(ruleUnitName);
         }
-        removeAll() {
+        allRemove() {
             const names = [];
             this.ruleUnits.forEach(unit => {
                 names.push(unit.name);

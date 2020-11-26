@@ -120,7 +120,7 @@ class Kensho {
       this.form.removeAttribute('autocomplete')
     }
     this.form.classList.remove('kensho-form')
-    this.removeAll()
+    this.allRemove()
     this.isDestroyed = true
   }
   /**

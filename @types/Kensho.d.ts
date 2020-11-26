@@ -36,7 +36,7 @@ declare class Kensho {
     search(): Kensho.RuleUnitElements;
     add(param: AddParams): Kensho.RuleUnit;
     remove(ruleUnitName: string): void;
-    removeAll(): void;
+    allRemove(): void;
     hasError(): boolean;
     getRuleUnit(ruleUnitName: string): Kensho.RuleUnit;
     getInputValue(unit: Kensho.RuleUnit): string;
