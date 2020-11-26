@@ -11,7 +11,7 @@ JavaScript バリデーションパッケージ
 
 - シンプルで簡単な値の検証
 - 1つの値に対して複数の検証
-- 検証する前に値を調整
+- 検証する前に値にフィルターを適用
 - 独自の検証ルールを追加
 
 ## インストール
@@ -44,6 +44,8 @@ import Kensho from '@yokotak0527/kensho'
 
 ## バリデーション
 
+デフォルトの検証ルール一覧を確認したい場合は[ガイド](https://yokotak0527.gitbook.io/kensho/rule/default-rules)か[コード](https://github.com/yokotak0527/kensho/blob/master/src/defaults/rules.ts)をご覧ください。
+
 ### 値の検証
 
 ```js
@@ -73,7 +75,7 @@ Kensho.validate('letters', 'abcdefg', { range : { max : 5 } })
 const form = new Kensho('.form')
 ```
 
-上記コードの場合、`keyup` イベントが発生するたびに、入力された値がメールアドレスの仕様を満たしているかどうかを検証し、満たしていない場合は「Value failed the email verification rule」と表示されます。
+上記コードの場合 `keyup` イベントが発生するたびに、入力された値がメールアドレスの仕様を満たしているかどうかを検証し、満たしていない場合は「Value failed the email verification rule」と表示されます。
 
 以下のコードでは、`keyup` や `blur` イベントが発生したときに入力された値を検証しています。
 
@@ -86,7 +88,7 @@ const form = new Kensho('.form')
 ```html
 <input type="email" k-name="sample" k-rule="email, required" k-event="keyup, blur" />
 
-<!-- with cutom messages -->
+<!-- with custom messages -->
 <input
   type="email"
   k-name="sample"
@@ -107,7 +109,7 @@ const form = new Kensho('.form')
 />
 ```
 
-ご覧の通り、複雑なバリデーションになればなるほどコードを読むのが大変です。
+ご覧の通り、複雑なバリデーションになればなるほどコードを読むのが大変です。  
 複雑なバリデーションが必要な場合は、バリデーションの設定をJSで書いた方がいいかもしれません。
 
 ```html
@@ -119,14 +121,14 @@ const form = new Kensho('.form')
 </form>
 ```
 
-上記のようなHTMLファイルがあると仮定して、以下のようにJSコードを記述します。
+上記のような HTML ファイルがあると仮定して、以下のように JS コードを記述します。
 
 ```js
 // JS
 
 const kensho = new Kensho('.myform', { search : false })
 // デフォルトでは Kensho はインスタンスを作成する際に指定したフォームの Kensho 属性値を持つ
-// HTML要素を探しますが オプション `search : false` が与えられている場合、その操作は行われません。
+// HTML 要素を探しますが オプション `search : false` が与えられている場合、その操作は行われません。
 
 kensho.add({
   inputElement : 'input[name="nickname"]',
@@ -139,7 +141,7 @@ kensho.add({
 
 `inputElement` と `errorElement` プロパティは、文字列としてのクエリセレクタか `HTMLInputElement` を直接指定することができます。
 
-## Add the validate rule
+## バリデーションルールを追加する
 
 ```js
 Kensho.rule.add('myrule', (value, option, Kensho)=>{

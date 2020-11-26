@@ -11,7 +11,7 @@ The JavaScript validation package.
 
 - Simple and easy validation of values.
 - Apply multiple validation rules for one value.
-- Adjust the value before validation.
+- Apply filteres to the value before validation.
 - Addition of your custom validation rules.
 
 ## Install
@@ -43,6 +43,8 @@ import Kensho from '@yokotak0527/kensho'
 ```
 
 ## Validation
+
+If you want to see default validation rules, please see [the guide](https://yokotak0527.gitbook.io/kensho/rule/default-rules) or [code](https://github.com/yokotak0527/kensho/blob/master/src/defaults/rules.ts).
 
 ### A value validation
 
@@ -86,7 +88,7 @@ Of course, you can also set multiple validation rules.
 ```html
 <input type="email" k-name="sample" k-rule="email, required" k-event="keyup, blur" />
 
-<!-- with cutom messages -->
+<!-- with custom messages -->
 <input
   type="email"
   k-name="sample"
