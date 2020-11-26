@@ -120,7 +120,7 @@ class Kensho {
       this.form.removeAttribute('autocomplete')
     }
     this.form.classList.remove('kensho-form')
-    this.allRemove()
+    this.removeAll()
     this.isDestroyed = true
   }
   /**
@@ -376,7 +376,7 @@ class Kensho {
   /**
    * 
    */
-  allRemove ():void {
+  removeAll ():void {
     const names:string[] = []
     this.ruleUnits.forEach(unit => {
       names.push(unit.name)
@@ -450,7 +450,7 @@ class Kensho {
   /**
    *
    */
-  allClear ():void {
+  clearAll ():void {
     this.ruleUnits.forEach((val, key) => this.clear(this.getRuleUnit(key)))
   }
 
@@ -482,7 +482,7 @@ class Kensho {
   /**
    *
    */
-  allValidate ():void {
+  validateAll ():void {
     this.ruleUnits.forEach((val, key) => this.validate(key))
   }
 

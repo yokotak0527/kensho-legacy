@@ -172,7 +172,7 @@ const kensho  = new Kensho(formElm)
 
 formElm.addEventListener('submit', (evt)=>{
 
-  kensho.allValidate()
+  kensho.validateAll()
 
   if (kensho.hasError()) {
     evt.preventDefault()

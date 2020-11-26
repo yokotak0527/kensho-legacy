@@ -36,14 +36,14 @@ declare class Kensho {
     search(): Kensho.RuleUnitElements;
     add(param: AddParams): Kensho.RuleUnit;
     remove(ruleUnitName: string): void;
-    allRemove(): void;
+    removeAll(): void;
     hasError(): boolean;
     getRuleUnit(ruleUnitName: string): Kensho.RuleUnit;
     getInputValue(unit: Kensho.RuleUnit): string;
     clear(unit: Kensho.RuleUnit): void;
-    allClear(): void;
+    clearAll(): void;
     validate(ruleUnitName: string): boolean;
-    allValidate(): void;
+    validateAll(): void;
     displayError({ errorElement, displayError, errorMessage, ...unit }: Kensho.RuleUnit): void;
     private parseAttrString2Array;
     private parseString2RightType;
