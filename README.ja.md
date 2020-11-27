@@ -237,7 +237,7 @@ formElm.addEventListener('submit', (evt)=>{
   <p k-name="sample.error"></p>
 </form>
 ```
-## Kensho 属性名の接頭辞を変更する
+### Kensho 属性名の接頭辞を変更する
 
 ```html
 <form action="">

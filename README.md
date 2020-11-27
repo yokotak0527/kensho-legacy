@@ -239,7 +239,7 @@ formElm.addEventListener('submit', (evt)=>{
 </form>
 ```
 
-## change the prefix of the Kensho attribute names.
+### change the prefix of the Kensho attribute names.
 
 ```html
 <form action="">
