@@ -109,7 +109,7 @@ If the validation rule has options...
 />
 ```
 
-As you can see, the more complex the validation, the harder it is to read the code.
+As you can see, more complex validations, the harder it is to read the code.  
 If you need complex validation, you might want to write the validation settings in JS.
 
 ```html
@@ -121,13 +121,13 @@ If you need complex validation, you might want to write the validation settings 
 </form>
 ```
 
-Assuming there is an HTML file like the one above, write JS code as below.
+Assuming there is an HTML file like the one above, write JS code as following below.
 
 ```js
 // JS
 
 const kensho = new Kensho('.myform', { search : false })
-// By default, Kensho will look for HTML elements with Kensho attribute values
+// By default, The Kensho will look for HTML elements with The Kensho attribute values
 // in the specified form when you create an instance,
 // but the If the option `search : false` is given, the operation will not be performed.
 
@@ -145,8 +145,8 @@ The `inputElement` and `errorElement` properties can be either query selectors a
 ## Filtering
 
 Sometimes you may want to filter the values before validating them.
-For example, it want to convert full-size string to half-size string and then validate it.
-Kensho provides such a filtering feature as a plugin.
+For example, it want to convert full-size string to half-size string and then validate it.  
+The Kensho provides such a filtering feature as a plugin.
 
 If you want to see default plugins, please see [code](https://github.com/yokotak0527/kensho/blob/master/src/defaults/plugins.ts).
 
