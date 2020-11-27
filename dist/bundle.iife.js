@@ -387,31 +387,31 @@ var Kensho = (function () {
             this.isDestroyed = true;
         }
         addFromUnitElements(inputElmsData) {
-            const attrPrefix = Kensho.config.customAttrPrefix;
+            const prefix = Kensho.config.customAttrPrefix;
             for (const [unitName, data] of Object.entries(inputElmsData)) {
                 if (this.ruleUnits.get(unitName) !== undefined)
                     throw new Error(`The "${unitName}" rule unit is already exsisted.`);
                 const _inputElm = data.input;
                 const name = unitName;
                 const errorElement = data.error;
-                const rawRule = _inputElm.getAttribute(`${attrPrefix}rule`);
+                const rawRule = _inputElm.getAttribute(`${prefix}rule`);
                 if (rawRule === null)
-                    throw new Error(`The \`k-rule\` attribute is not found in the element where \`k-name="${unitName}"\` is specified.`);
+                    throw new Error(`The \`${prefix}rule\` attribute is not found in the element where \`${prefix}name="${unitName}"\` is specified.`);
                 const rule = this.parseAttrString2Array(rawRule);
                 let inputElement = data.input;
                 const typeAttr = data.input.getAttribute('type');
                 if (typeAttr === 'radio') {
                     inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
                 }
-                const strEvents = _inputElm.getAttribute(`${attrPrefix}event`);
+                const strEvents = _inputElm.getAttribute(`${prefix}event`);
                 let rawEvent = strEvents !== null ? strEvents : undefined;
                 if (typeof rawEvent === 'string') {
                     rawEvent = this.parseAttrString2Array(rawEvent);
                 }
                 const event = rawEvent;
-                const strAllowEmpty = _inputElm.getAttribute(`${attrPrefix}allowempty`);
+                const strAllowEmpty = _inputElm.getAttribute(`${prefix}allowempty`);
                 const allowEmpty = strAllowEmpty === 'on' || strAllowEmpty === 'true' || strAllowEmpty === '' ? true : false;
-                const strMessage = _inputElm.getAttribute(`${attrPrefix}message`);
+                const strMessage = _inputElm.getAttribute(`${prefix}message`);
                 let rawErrorMessage = strMessage !== null ? strMessage : undefined;
                 if (typeof rawErrorMessage === 'string') {
                     rawErrorMessage = rawErrorMessage
@@ -423,7 +423,7 @@ var Kensho = (function () {
                     }
                 }
                 const errorMessage = rawErrorMessage;
-                const strFilter = _inputElm.getAttribute(`${attrPrefix}filter`);
+                const strFilter = _inputElm.getAttribute(`${prefix}filter`);
                 let rawFilter = strFilter !== null ? strFilter : '';
                 let valueFilter;
                 if (typeof rawFilter === 'string') {
