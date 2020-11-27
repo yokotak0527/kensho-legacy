@@ -237,6 +237,20 @@ formElm.addEventListener('submit', (evt)=>{
   <p k-name="sample.error"></p>
 </form>
 ```
+## Kensho 属性名の接頭辞を変更する
+
+```html
+<form action="">
+  <input type="email" data-name="sample" data-rule="email" data-event="keyup">
+  <p data-name="sample.error"></p>
+</form>
+<script>
+  window.onload = function(){
+    Kensho.config.customAttrPrefix = 'data-'
+    const kensho = new Kensho('form')
+  }
+</script>
+```
 
 ## For more details..
 
