@@ -127,7 +127,7 @@ class Kensho {
    * add unit rules from the Kensho.RuleUnitElements
    */
   addFromUnitElements (inputElmsData:Kensho.RuleUnitElements):void {
-    const attrPrefix = Kensho.config.customAttrPrefix
+    const prefix = Kensho.config.customAttrPrefix
     for (const [unitName, data] of Object.entries(inputElmsData)) {
       if (this.ruleUnits.get(unitName) !== undefined) throw new Error(`The "${unitName}" rule unit is already exsisted.`)
 
@@ -137,8 +137,8 @@ class Kensho {
       const errorElement = data.error
 
       // parse rule ------------------------------------------------------------
-      const rawRule:AddParams['rule'] | null = _inputElm.getAttribute(`${attrPrefix}rule`)
-      if (rawRule === null) throw new Error(`The \`k-rule\` attribute is not found in the element where \`k-name="${unitName}"\` is specified.`)
+      const rawRule:AddParams['rule'] | null = _inputElm.getAttribute(`${prefix}rule`)
+      if (rawRule === null) throw new Error(`The \`${prefix}rule\` attribute is not found in the element where \`${prefix}name="${unitName}"\` is specified.`)
       const rule = this.parseAttrString2Array<Exclude<AddParams['rule'], string>>(rawRule)
 
       // parse inputElement ----------------------------------------------------
@@ -149,7 +149,7 @@ class Kensho {
       }
 
       // parse event -----------------------------------------------------------
-      const strEvents = _inputElm.getAttribute(`${attrPrefix}event`)
+      const strEvents = _inputElm.getAttribute(`${prefix}event`)
       let rawEvent:string | string[] | undefined = strEvents !== null ? strEvents : undefined
       if (typeof rawEvent === 'string') {
         rawEvent = this.parseAttrString2Array<Exclude<AddParams['event'], string>>(rawEvent)
@@ -157,13 +157,13 @@ class Kensho {
       const event = rawEvent
   
       // parse allows ----------------------------------------------------------
-      const strAllowEmpty = _inputElm.getAttribute(`${attrPrefix}allowempty`)
+      const strAllowEmpty = _inputElm.getAttribute(`${prefix}allowempty`)
 
       // <... k-allowempty="on">, <... k-allowempty="true">, <... k-allowempty>
       const allowEmpty = strAllowEmpty === 'on' || strAllowEmpty === 'true' || strAllowEmpty === '' ? true : false
 
       // parse eventMessage ----------------------------------------------------
-      const strMessage = _inputElm.getAttribute(`${attrPrefix}message`)
+      const strMessage = _inputElm.getAttribute(`${prefix}message`)
       let rawErrorMessage:AddParams['errorMessage'] | undefined = strMessage !== null ? strMessage : undefined
       if (typeof rawErrorMessage === 'string') {
         rawErrorMessage = rawErrorMessage
@@ -178,7 +178,7 @@ class Kensho {
 
       // parse filter ----------------------------------------------------------
       type RawFilter = string | Array<string | [ string, any[] ]>
-      const strFilter = _inputElm.getAttribute(`${attrPrefix}filter`)
+      const strFilter = _inputElm.getAttribute(`${prefix}filter`)
       let rawFilter:RawFilter = strFilter !== null ? strFilter : ''
       let valueFilter:AddParams['valueFilter']
       if (typeof rawFilter === 'string') {
