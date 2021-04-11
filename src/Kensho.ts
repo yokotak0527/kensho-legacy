@@ -415,6 +415,9 @@ class Kensho {
    */
   getInputValue (unit:Kensho.RuleUnit):string {
     let value = ''
+    if (unit.type === 'textarea') {
+      value = unit.inputElement[0].value
+    }
     if (unit.type === 'text') {
       value = unit.inputElement[0].value
     }
