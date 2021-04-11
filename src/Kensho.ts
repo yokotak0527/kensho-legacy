@@ -545,7 +545,6 @@ class Kensho {
   }
 }
 
-export interface KenshoType extends Kensho {}
 export default Kensho
 
 // add default rules

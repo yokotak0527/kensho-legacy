@@ -48,6 +48,4 @@ declare class Kensho {
     private parseAttrString2Array;
     private parseString2RightType;
 }
-export interface KenshoType extends Kensho {
-}
 export default Kensho;
