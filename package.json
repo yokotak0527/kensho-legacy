@@ -38,9 +38,6 @@
     "version": "npm run build && git add -A",
     "postversion": "git push && git push --tags"
   },
-  "engines": {
-    "node": "^12.16.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yokotak0527/kensho.git"
