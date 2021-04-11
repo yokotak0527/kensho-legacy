@@ -170,6 +170,7 @@ class Kensho {
           .trim()
           .replace(/\n/gm, '')
           .replace(/'/g, '"')
+          .replace(/\\/, '\\\\')
         if (/^{.+}$/.test(rawErrorMessage)) {
           rawErrorMessage = JSON.parse(rawErrorMessage) as Exclude<AddParams['errorMessage'], string>
         }
@@ -513,8 +514,10 @@ class Kensho {
       .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',') // "hoge, ['fuga', {}], piyo"   -> "'hoge', ['fuga', {}], piyo"
       .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'')     // "'hoge', ['fuga', {}], piyo" -> "'hoge', ['fuga', {}], 'piyo'"
       .replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"')     // escape regexp
+      .replace(/\\/g, '\\\\')                         // escape backslash
     value = `[${value}]`
       .replace(/'/g, '"')
+      .replace(/\\\\"/g, '\'')
 
     const returnVal:N = JSON.parse(value).map((elem:any) => this.parseString2RightType(elem))
     return returnVal
