@@ -1,7 +1,7 @@
 {
   "compilerOptions" : {
     "target"                           : "ES6",    // ダウンレベル指定
-    "module"                           : "ES6",    // モジュールパターン
+    "module"                           : "ESNext", // モジュールパターン
     "baseUrl"                          : "./",     // 非絶対モジュールを解決する基本URL
     "strict"                           : true,     // strict モード
     "sourceMap"                        : false,    // ソースマップ出力

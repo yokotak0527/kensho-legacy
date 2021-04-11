@@ -1,4 +1,4 @@
-declare namespace Kensho { // eslint-disable-line
+namespace Kensho { // eslint-disable-line
   interface Config {
     customAttrPrefix    : string,
     errorMessageWrapper : string,

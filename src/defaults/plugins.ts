@@ -1,5 +1,3 @@
-import Kensho from '../Kensho'
-
 const charWidthMap:{[x:string]:string} = {}
 /* eslint-disable object-property-newline,quote-props */
 Object.assign(charWidthMap, {
@@ -38,10 +36,10 @@ export const charWidthMapAssign: Kensho.Plugin.Store['charWidthMapAssign'] = fun
 /**
  * half width char convert full width
  */
-export const half2full: Kensho.Plugin.Store['half2full'] = function (str) {
+export const half2full: Kensho.Plugin.Store['half2full'] = function (this:any, str) {
   return str.split('').map(char => {
     let returnVal = char
-    if (Kensho.use('is2byte', char)) return returnVal
+    if (this.use('is2byte', char)) return returnVal
     for (const [key, value] of Object.entries(charWidthMap)) {
       if (value === char) {
         returnVal = key
@@ -55,10 +53,10 @@ export const half2full: Kensho.Plugin.Store['half2full'] = function (str) {
 /**
  * full width convert half width
  */
-export const full2half: Kensho.Plugin.Store['full2half'] = function (str) {
+export const full2half: Kensho.Plugin.Store['full2half'] = function (this:any, str) {
   return str.split('').map(char => {
     let returnVal = char
-    if (Kensho.use('is1byte', char)) return returnVal
+    if (this.use('is1byte', char)) return returnVal
     for (const [key, value] of Object.entries(charWidthMap)) {
       if (key === char) {
         returnVal = value

@@ -1,4 +1,4 @@
-declare namespace Kensho { // eslint-disable-line
+namespace Kensho { // eslint-disable-line
   namespace Rule {
     type Type1Arg<V=any>                                                     = (value : V) => boolean
     type Type2Arg<V, O extends Kensho.AnyObject>                             = (value : V, option : O) => boolean

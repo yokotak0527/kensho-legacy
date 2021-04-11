@@ -1,38 +1,5 @@
 'use strict';
 
-function getDefaultExportFromCjs (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule(fn, basedir, module) {
-	return module = {
-		path: basedir,
-		exports: {},
-		require: function (path, base) {
-			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-		}
-	}, fn(module, module.exports), module.exports;
-}
-
-function getAugmentedNamespace(n) {
-	if (n.__esModule) return n;
-	var a = Object.defineProperty({}, '__esModule', {value: true});
-	Object.keys(n).forEach(function (k) {
-		var d = Object.getOwnPropertyDescriptor(n, k);
-		Object.defineProperty(a, k, d.get ? d : {
-			enumerable: true,
-			get: function () {
-				return n[k];
-			}
-		});
-	});
-	return a;
-}
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-}
-
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -47,31 +14,6 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 
 function __rest(s, e) {
     var t = {};
@@ -85,250 +27,38 @@ function __rest(s, e) {
     return t;
 }
 
-function __decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-
-function __param(paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-}
-
-function __metadata(metadataKey, metadataValue) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
-}
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-}
-
-var __createBinding = Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-});
-
-function __exportStar(m, o) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
-}
-
-function __values(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-}
-
-function __read(o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-}
-
-function __spread() {
-    for (var ar = [], i = 0; i < arguments.length; i++)
-        ar = ar.concat(__read(arguments[i]));
-    return ar;
-}
-
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-}
-function __await(v) {
-    return this instanceof __await ? (this.v = v, this) : new __await(v);
-}
-
-function __asyncGenerator(thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-    function fulfill(value) { resume("next", value); }
-    function reject(value) { resume("throw", value); }
-    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-}
-
-function __asyncDelegator(o) {
-    var i, p;
-    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
-}
-
-function __asyncValues(o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-}
-
-function __makeTemplateObject(cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-}
-var __setModuleDefault = Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-};
-
-function __importStar(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-}
-
-function __importDefault(mod) {
-    return (mod && mod.__esModule) ? mod : { default: mod };
-}
-
-function __classPrivateFieldGet(receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
-}
-
-function __classPrivateFieldSet(receiver, privateMap, value) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to set private field on non-instance");
-    }
-    privateMap.set(receiver, value);
-    return value;
-}
-
-var tslib_es6 = /*#__PURE__*/Object.freeze({
-	__proto__: null,
-	__extends: __extends,
-	get __assign () { return __assign; },
-	__rest: __rest,
-	__decorate: __decorate,
-	__param: __param,
-	__metadata: __metadata,
-	__awaiter: __awaiter,
-	__generator: __generator,
-	__createBinding: __createBinding,
-	__exportStar: __exportStar,
-	__values: __values,
-	__read: __read,
-	__spread: __spread,
-	__spreadArrays: __spreadArrays,
-	__await: __await,
-	__asyncGenerator: __asyncGenerator,
-	__asyncDelegator: __asyncDelegator,
-	__asyncValues: __asyncValues,
-	__makeTemplateObject: __makeTemplateObject,
-	__importStar: __importStar,
-	__importDefault: __importDefault,
-	__classPrivateFieldGet: __classPrivateFieldGet,
-	__classPrivateFieldSet: __classPrivateFieldSet
-});
-
-var rule_1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ruleBook = void 0;
-exports.ruleBook = new Map();
+const ruleBook = new Map();
 const rule = {
     add(name, callback) {
-        exports.ruleBook.set(name, callback);
+        ruleBook.set(name, callback);
     },
     get(name) {
-        const callback = exports.ruleBook.get(name);
+        const callback = ruleBook.get(name);
         if (callback === undefined)
             throw new Error(`Rule "${name}" is not found.`);
         return callback;
     },
     delete(name) {
-        exports.ruleBook.delete(name);
+        ruleBook.delete(name);
     }
 };
-exports.default = rule;
-});
 
-var plugin = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.plugin = exports.pluginBox = void 0;
-exports.pluginBox = new Map();
-exports.plugin = {
+const pluginBox = new Map();
+const plugin = {
     add(name, method) {
-        exports.pluginBox.set(name, method);
+        pluginBox.set(name, method);
     },
     get(name) {
-        const method = exports.pluginBox.get(name);
+        const method = pluginBox.get(name);
         if (method === undefined)
             throw new Error(`Plugin "${name}" is not found.`);
         return method;
     },
     delete(name) {
-        exports.pluginBox.delete(name);
+        pluginBox.delete(name);
     }
 };
-});
 
-var config_1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
 const config = {
     customAttrPrefix: 'k-',
     errorMessageWrapper: 'span',
@@ -338,12 +68,7 @@ const config = {
     autocomplete: false,
     HTML5novalidate: true
 };
-exports.default = config;
-});
 
-var rules = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.letters = exports.equal = exports.age = exports.zero = exports.negativeNumber = exports.positiveNumber = exports.naturalNumber = exports.integer = exports.number = exports.list = exports.email = exports.regexp = exports.empty = exports.required = void 0;
 const required = value => {
     if (typeof value === 'string')
         return value.trim() !== '';
@@ -357,7 +82,6 @@ const required = value => {
         return false;
     return true;
 };
-exports.required = required;
 const empty = (value) => {
     if (typeof value === 'string')
         return value === '';
@@ -371,15 +95,12 @@ const empty = (value) => {
         return true;
     return false;
 };
-exports.empty = empty;
 const regexp = (value, { regexp }) => {
     return regexp.test(value);
 };
-exports.regexp = regexp;
 const email = (value, option, Kensho) => {
     return Kensho.validate('regexp', value, { regexp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ });
 };
-exports.email = email;
 const list = (value, { list }, Kensho) => {
     let hit = false;
     for (let i = 0, l = list.length; i < l; i++) {
@@ -395,7 +116,6 @@ const list = (value, { list }, Kensho) => {
     }
     return hit;
 };
-exports.list = list;
 const number = value => {
     if (typeof value === 'number')
         return true;
@@ -403,7 +123,6 @@ const number = value => {
         return false;
     return !Number.isNaN(value * 1);
 };
-exports.number = number;
 const integer = (value, option, Kensho) => {
     if (!Kensho.validate('number', value))
         return false;
@@ -412,7 +131,6 @@ const integer = (value, option, Kensho) => {
     }
     return value % 1 === 0;
 };
-exports.integer = integer;
 const naturalNumber = (value, { zero = false }, Kensho) => {
     if (!Kensho.validate('integer', value))
         return false;
@@ -423,7 +141,6 @@ const naturalNumber = (value, { zero = false }, Kensho) => {
         return true;
     return value > 0;
 };
-exports.naturalNumber = naturalNumber;
 const positiveNumber = (value, option, Kensho) => {
     if (!Kensho.validate('number', value))
         return false;
@@ -432,7 +149,6 @@ const positiveNumber = (value, option, Kensho) => {
     }
     return value > 0;
 };
-exports.positiveNumber = positiveNumber;
 const negativeNumber = (value, option, Kensho) => {
     if (!Kensho.validate('number', value))
         return false;
@@ -441,7 +157,6 @@ const negativeNumber = (value, option, Kensho) => {
     }
     return value < 0;
 };
-exports.negativeNumber = negativeNumber;
 const zero = (value, option, Kensho) => {
     if (!Kensho.validate('number', value))
         return false;
@@ -450,7 +165,6 @@ const zero = (value, option, Kensho) => {
     }
     return value === 0;
 };
-exports.zero = zero;
 const age = (value, { max = 125 }, Kensho) => {
     if (!Kensho.validate('naturalNumber', value, { zero: true }))
         return false;
@@ -459,7 +173,6 @@ const age = (value, { max = 125 }, Kensho) => {
     }
     return value <= max;
 };
-exports.age = age;
 const equal = (value, { others, isInput = true }) => {
     let result = true;
     if (typeof others === 'string')
@@ -484,7 +197,6 @@ const equal = (value, { others, isInput = true }) => {
     }
     return result;
 };
-exports.equal = equal;
 const letters = (value, { range = {} }) => {
     const fixRange = Object.assign({ min: -1, max: -1 }, range);
     fixRange.min = typeof fixRange.min === 'string' ? parseInt(fixRange.min, 10) : fixRange.min;
@@ -501,16 +213,25 @@ const letters = (value, { range = {} }) => {
         return value.length >= fixRange.min && value.length <= fixRange.max;
     return false;
 };
-exports.letters = letters;
+
+var _rules = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    required: required,
+    empty: empty,
+    regexp: regexp,
+    email: email,
+    list: list,
+    number: number,
+    integer: integer,
+    naturalNumber: naturalNumber,
+    positiveNumber: positiveNumber,
+    negativeNumber: negativeNumber,
+    zero: zero,
+    age: age,
+    equal: equal,
+    letters: letters
 });
 
-var tslib_1 = /*@__PURE__*/getAugmentedNamespace(tslib_es6);
-
-var plugins = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.squash = exports.is2byte = exports.is1byte = exports.full2half = exports.half2full = exports.charWidthMapAssign = void 0;
-
-const Kensho_1$1 = tslib_1.__importDefault(Kensho_1);
 const charWidthMap = {};
 Object.assign(charWidthMap, {
     '０': '0', '１': '1', '２': '2', '３': '3', '４': '4',
@@ -543,11 +264,10 @@ Object.assign(charWidthMap, {
 const charWidthMapAssign = function (map) {
     Object.assign(charWidthMap, map);
 };
-exports.charWidthMapAssign = charWidthMapAssign;
 const half2full = function (str) {
     return str.split('').map(char => {
         let returnVal = char;
-        if (Kensho_1$1.default.use('is2byte', char))
+        if (this.use('is2byte', char))
             return returnVal;
         for (const [key, value] of Object.entries(charWidthMap)) {
             if (value === char) {
@@ -558,11 +278,10 @@ const half2full = function (str) {
         return returnVal;
     }).join('');
 };
-exports.half2full = half2full;
 const full2half = function (str) {
     return str.split('').map(char => {
         let returnVal = char;
-        if (Kensho_1$1.default.use('is1byte', char))
+        if (this.use('is1byte', char))
             return returnVal;
         for (const [key, value] of Object.entries(charWidthMap)) {
             if (key === char) {
@@ -573,7 +292,6 @@ const full2half = function (str) {
         return returnVal;
     }).join('');
 };
-exports.full2half = full2half;
 const _isNbyte = (half, char) => {
     const code = char.charCodeAt(0);
     const f = (code >= 0x0 && code < 0x81) || (code === 0xf8f0) || (code >= 0xff61 && code < 0xffa0) || (code >= 0xf8f1 && code < 0xf8f4);
@@ -582,26 +300,24 @@ const _isNbyte = (half, char) => {
 const is1byte = (char) => {
     return _isNbyte(true, char);
 };
-exports.is1byte = is1byte;
 const is2byte = function (char) {
     return _isNbyte(false, char);
 };
-exports.is2byte = is2byte;
 const squash = function (str, linebreak = false) {
     const regexp = linebreak ? /([^\S]|[\t\n])+/gm : /([^\S]|\t)+/gm;
     return str.trim().replace(regexp, '');
 };
-exports.squash = squash;
+
+var defaultPlugins = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    charWidthMapAssign: charWidthMapAssign,
+    half2full: half2full,
+    full2half: full2half,
+    is1byte: is1byte,
+    is2byte: is2byte,
+    squash: squash
 });
 
-var Kensho_1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-
-const rule_1$1 = tslib_1.__importDefault(rule_1);
-
-const config_1$1 = tslib_1.__importDefault(config_1);
-const _rules = tslib_1.__importStar(rules);
-const _plugins = tslib_1.__importStar(plugins);
 const defaultRules = _rules;
 const _unitNameSeed_ = (() => {
     const list = [];
@@ -647,15 +363,15 @@ class Kensho {
     }
     static validate(ruleName, ...args) {
         if (args[1] === undefined) {
-            return rule_1$1.default.get(ruleName)(args[0], {}, Kensho);
+            return rule.get(ruleName)(args[0], {}, Kensho);
         }
         else {
-            return rule_1$1.default.get(ruleName)(args[0], args[1], Kensho);
+            return rule.get(ruleName)(args[0], args[1], Kensho);
         }
     }
     static use(pluginName, ...args) {
         const plugin = Kensho.plugin.get(pluginName).bind(Kensho);
-        return plugin(...args);
+        return plugin(...args, Kensho);
     }
     destroy() {
         this.form.autocomplete = this.defaultAutoComplete;
@@ -700,7 +416,9 @@ class Kensho {
                 rawErrorMessage = rawErrorMessage
                     .trim()
                     .replace(/\n/gm, '')
-                    .replace(/'/g, '"');
+                    .replace(/'/g, '"')
+                    .replace(/\\/, '\\\\')
+                    .replace(/\\\\"/g, '\'');
                 if (/^{.+}$/.test(rawErrorMessage)) {
                     rawErrorMessage = JSON.parse(rawErrorMessage);
                 }
@@ -950,7 +668,7 @@ class Kensho {
         this.ruleUnits.forEach((val, key) => this.validate(key));
     }
     displayError(_a) {
-        var { errorElement, displayError, errorMessage } = _a, unit = tslib_1.__rest(_a, ["errorElement", "displayError", "errorMessage"]);
+        var { errorElement, displayError, errorMessage } = _a, unit = __rest(_a, ["errorElement", "displayError", "errorMessage"]);
         if (!errorElement || !displayError || unit.error.length === 0 || !errorMessage)
             return;
         const errors = [];
@@ -969,9 +687,11 @@ class Kensho {
         value = value.trim()
             .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',')
             .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'')
-            .replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"');
+            .replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"')
+            .replace(/\\/g, '\\\\');
         value = `[${value}]`
-            .replace(/'/g, '"');
+            .replace(/'/g, '"')
+            .replace(/\\\\"/g, '\'');
         const returnVal = JSON.parse(value).map((elem) => this.parseString2RightType(elem));
         return returnVal;
     }
@@ -994,18 +714,14 @@ class Kensho {
         return val;
     }
 }
-Kensho.config = config_1$1.default;
-Kensho.rule = rule_1$1.default;
-Kensho.plugin = plugin.plugin;
-exports.default = Kensho;
+Kensho.config = config;
+Kensho.rule = rule;
+Kensho.plugin = plugin;
 for (const [ruleName, callback] of Object.entries(defaultRules)) {
     Kensho.rule.add(ruleName, callback);
 }
-for (const [pluginName, method] of Object.entries(_plugins)) {
+for (const [pluginName, method] of Object.entries(defaultPlugins)) {
     Kensho.plugin.add(pluginName, method);
 }
-});
-
-var Kensho = /*@__PURE__*/getDefaultExportFromCjs(Kensho_1);
 
 module.exports = Kensho;

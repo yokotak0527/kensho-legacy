@@ -27,7 +27,7 @@ declare class Kensho {
     static plugin: Kensho.Plugin.Methods;
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : AnyFunction, A extends any[] = F extends AnyFunction ? Parameters<F> : never>(rulename: N, value: A[0], option: A[1]): boolean;
     static validate<N extends string, S extends RuleStore = RuleStore, F = N extends keyof S ? S[N] : AnyFunction, A extends any[] = F extends AnyFunction ? Parameters<F> : never>(rulename: N, value: A[0]): boolean;
-    static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : AnyFunction>(pluginName: N, ...args: F extends AnyFunction ? Parameters<F> : never): F extends AnyFunction ? ReturnType<F> : never;
+    static use<NAME extends string, STORE extends PluginStore = PluginStore, FUNC = NAME extends keyof STORE ? STORE[NAME] : AnyFunction>(pluginName: NAME, ...args: FUNC extends AnyFunction ? Parameters<FUNC> : any): FUNC extends AnyFunction ? ReturnType<FUNC> : any;
     constructor(formSelector: string | HTMLFormElement, option?: {
         search?: boolean;
     });
@@ -47,5 +47,7 @@ declare class Kensho {
     displayError({ errorElement, displayError, errorMessage, ...unit }: Kensho.RuleUnit): void;
     private parseAttrString2Array;
     private parseString2RightType;
+}
+export interface KenshoType extends Kensho {
 }
 export default Kensho;

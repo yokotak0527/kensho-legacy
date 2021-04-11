@@ -1,8 +1,8 @@
 import rule          from './rule'
 import { plugin }    from './plugin'
 import config        from './config'
-import * as _rules   from './defaults/rules'
-import * as _plugins from './defaults/plugins'
+
+import { rules as _rules, plugins as defaultPlugins } from './defaults'
 
 type PluginStore = Kensho.Plugin.Store
 type RuleStore   = Kensho.Rule.Store
@@ -67,9 +67,9 @@ class Kensho {
   /**
    * use plugin
    */
-  static use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : AnyFunction> (pluginName:N, ...args: F extends AnyFunction ? Parameters<F> : never):F extends AnyFunction ? ReturnType<F> : never {
+  static use<NAME extends string, STORE extends PluginStore = PluginStore, FUNC = NAME extends keyof STORE ? STORE[NAME] : AnyFunction> (pluginName:NAME, ...args: FUNC extends AnyFunction ? Parameters<FUNC> : any):FUNC extends AnyFunction ? ReturnType<FUNC> : any {
     const plugin = Kensho.plugin.get(pluginName).bind(Kensho)
-    return plugin(...args)
+    return plugin(...args as any, Kensho)
   }
 
   // use<N extends string, S extends PluginStore = PluginStore, F = N extends keyof S ? S[N] : _F> (...args:Parameters<Kensho.use<N, S, F>>) {
@@ -171,6 +171,7 @@ class Kensho {
           .replace(/\n/gm, '')
           .replace(/'/g, '"')
           .replace(/\\/, '\\\\')
+          .replace(/\\\\"/g, '\'')
         if (/^{.+}$/.test(rawErrorMessage)) {
           rawErrorMessage = JSON.parse(rawErrorMessage) as Exclude<AddParams['errorMessage'], string>
         }
@@ -544,6 +545,7 @@ class Kensho {
   }
 }
 
+export interface KenshoType extends Kensho {}
 export default Kensho
 
 // add default rules
@@ -552,6 +554,6 @@ for (const [ruleName, callback] of Object.entries(defaultRules)) {
 }
 
 // // add default plugins
-for (const [pluginName, method] of Object.entries(_plugins)) {
+for (const [pluginName, method] of Object.entries(defaultPlugins)) {
   Kensho.plugin.add(pluginName, method)
 }

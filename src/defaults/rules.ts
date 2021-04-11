@@ -1,4 +1,4 @@
-import Kensho from '../Kensho'
+// import Kensho from '../Kensho'
 
 /**
  *

@@ -1,4 +1,4 @@
-declare namespace Kensho { // eslint-disable-line
+namespace Kensho { // eslint-disable-line
   namespace Plugin {
     interface Methods {
       add    : <F extends Kensho.AnyFunction>(name: string, method: F) => void

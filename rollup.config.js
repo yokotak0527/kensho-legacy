@@ -62,7 +62,7 @@ if (output === 'cjs') {
       resolve(),
       typescript({
         tsconfig : 'src/tsconfig.json',
-        module   : 'CommonJS'
+        // module   : 'CommonJS'
       }),
       commonjs({extensions: ['.ts', '.js']})
     ]

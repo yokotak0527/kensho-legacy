@@ -265,7 +265,7 @@ const charWidthMapAssign = function (map) {
 const half2full = function (str) {
     return str.split('').map(char => {
         let returnVal = char;
-        if (Kensho.use('is2byte', char))
+        if (this.use('is2byte', char))
             return returnVal;
         for (const [key, value] of Object.entries(charWidthMap)) {
             if (value === char) {
@@ -279,7 +279,7 @@ const half2full = function (str) {
 const full2half = function (str) {
     return str.split('').map(char => {
         let returnVal = char;
-        if (Kensho.use('is1byte', char))
+        if (this.use('is1byte', char))
             return returnVal;
         for (const [key, value] of Object.entries(charWidthMap)) {
             if (key === char) {
@@ -306,7 +306,7 @@ const squash = function (str, linebreak = false) {
     return str.trim().replace(regexp, '');
 };
 
-var _plugins = /*#__PURE__*/Object.freeze({
+var defaultPlugins = /*#__PURE__*/Object.freeze({
     __proto__: null,
     charWidthMapAssign: charWidthMapAssign,
     half2full: half2full,
@@ -369,7 +369,7 @@ class Kensho {
     }
     static use(pluginName, ...args) {
         const plugin = Kensho.plugin.get(pluginName).bind(Kensho);
-        return plugin(...args);
+        return plugin(...args, Kensho);
     }
     destroy() {
         this.form.autocomplete = this.defaultAutoComplete;
@@ -414,7 +414,9 @@ class Kensho {
                 rawErrorMessage = rawErrorMessage
                     .trim()
                     .replace(/\n/gm, '')
-                    .replace(/'/g, '"');
+                    .replace(/'/g, '"')
+                    .replace(/\\/, '\\\\')
+                    .replace(/\\\\"/g, '\'');
                 if (/^{.+}$/.test(rawErrorMessage)) {
                     rawErrorMessage = JSON.parse(rawErrorMessage);
                 }
@@ -683,9 +685,11 @@ class Kensho {
         value = value.trim()
             .replace(/\s*([0-9a-z\-_]+)\s*,/gmi, '\'$1\',')
             .replace(/\s*([0-9a-zA-Z\-_]+)$/, '\'$1\'')
-            .replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"');
+            .replace(/\/(.+)\/([gimsuy]*)/, '"/$1/$2"')
+            .replace(/\\/g, '\\\\');
         value = `[${value}]`
-            .replace(/'/g, '"');
+            .replace(/'/g, '"')
+            .replace(/\\\\"/g, '\'');
         const returnVal = JSON.parse(value).map((elem) => this.parseString2RightType(elem));
         return returnVal;
     }
@@ -714,7 +718,7 @@ Kensho.plugin = plugin;
 for (const [ruleName, callback] of Object.entries(defaultRules)) {
     Kensho.rule.add(ruleName, callback);
 }
-for (const [pluginName, method] of Object.entries(_plugins)) {
+for (const [pluginName, method] of Object.entries(defaultPlugins)) {
     Kensho.plugin.add(pluginName, method);
 }
 
