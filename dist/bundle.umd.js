@@ -616,6 +616,9 @@
         }
         getInputValue(unit) {
             let value = '';
+            if (unit.type === 'textarea') {
+                value = unit.inputElement[0].value;
+            }
             if (unit.type === 'text') {
                 value = unit.inputElement[0].value;
             }
