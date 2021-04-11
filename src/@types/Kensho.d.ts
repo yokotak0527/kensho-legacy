@@ -8,7 +8,7 @@ namespace Kensho { // eslint-disable-line
     autocomplete        : boolean,
     HTML5novalidate     : boolean
   }
-  type InputElementTypes = HTMLInputElement | HTMLSelectElement
+  type InputElementTypes = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
 
   interface RuleUnitElements {
     [name:string] : { input : Kensho.InputElementTypes, error? : HTMLElement }

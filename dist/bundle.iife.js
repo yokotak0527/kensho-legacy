@@ -498,7 +498,8 @@ var Kensho = (function () {
                 if (param.inputElement.length === 0)
                     throw new Error(`inputElement parameter "${_elmSelector}" is not found in the form.`);
             }
-            if (param.inputElement instanceof HTMLInputElement) {
+            if (param.inputElement instanceof HTMLInputElement ||
+                param.inputElement instanceof HTMLTextAreaElement) {
                 param.inputElement = [param.inputElement];
             }
             else if (param.inputElement instanceof HTMLSelectElement) {

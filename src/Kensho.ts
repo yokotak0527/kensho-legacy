@@ -263,7 +263,10 @@ class Kensho {
       if (param.inputElement.length === 0) throw new Error(`inputElement parameter "${_elmSelector}" is not found in the form.`)
     }
 
-    if (param.inputElement instanceof HTMLInputElement) { // HTMLInputElement -> HTMLInputElement[]
+    if (
+      param.inputElement instanceof HTMLInputElement ||
+      param.inputElement instanceof HTMLTextAreaElement
+    ) { // HTMLInputElement -> HTMLInputElement[]
       param.inputElement = [param.inputElement]
     } else if (param.inputElement instanceof HTMLSelectElement) { // HTMLSelectElement -> HTMLSelectElement[]
       param.inputElement = [param.inputElement]

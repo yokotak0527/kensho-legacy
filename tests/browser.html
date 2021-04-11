@@ -8,8 +8,16 @@
 </head>
 <body>
   <form action="">
+    <textarea name="" id="" cols="30" rows="10" k-name="textarea" k-event="blur" k-rule="required"></textarea>
+    <p k-name="textarea.error"></p>
     <input type="email" k-name="sample1" k-rule="email" k-event="keyup">
-    <input type="email" k-name="sample2" k-rule="email, ['equal', { 'others' : '*[k-name=\'sample1\']' }]" k-event="keyup">
+    <input
+      type="email"
+      k-name="sample2"
+      k-rule="email, ['equal', { 'others' : '*[k-name=\'sample1\']' }]"
+      k-event="keyup"
+      k-message="{ 'equal' : '一致しません。' }"
+    >
     <p k-name="sample1.error"></p>
     <p k-name="sample2.error"></p>
   </form>
