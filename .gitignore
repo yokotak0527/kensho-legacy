@@ -3,4 +3,5 @@ project.code-workspace
 .envrc
 .node-version
 node_modules
+.npmrc
 /old
