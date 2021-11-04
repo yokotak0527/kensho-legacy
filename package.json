@@ -1,5 +1,5 @@
 {
-  "name": "@yokotak0527/kensho",
+  "name": "@yokotak0527/kensho-legacy",
   "version": "2.6.1",
   "description": "JavaScript validation library",
   "main": "./dist/bundle.cjs.js",
