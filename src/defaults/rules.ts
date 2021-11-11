@@ -4,6 +4,7 @@
  *
  */
 export const required:Kensho.Rule.Store['required'] = value => {
+  if (Array.isArray(value))                        return value.map(v => required(v)).includes(true)
   if (typeof value === 'string')                   return value.trim() !== ''
   if (typeof value === 'number')                   return true
   if (Array.isArray(value))                        return value.length !== 0
