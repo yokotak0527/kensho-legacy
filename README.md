@@ -1,11 +1,8 @@
 # Kensho
 
-The JavaScript validation package.
-
-![NPM Download](https://img.shields.io/npm/dt/@yokotak0527/kensho)
-![TravisCI](https://travis-ci.org/yokotak0527/kensho.svg?branch=master)
-![open issue](https://img.shields.io/github/issues/yokotak0527/kensho)
-![MIT licence](https://img.shields.io/github/license/yokotak0527/kensho)
+The JavaScript validation package.  
+This package will not be updated in the future.  
+Use [Kensho](https://github.com/yokotak0527/kensho) or [Kensho-form](https://github.com/yokotak0527/kensho-form) instead.
 
 ## What can this do.
 
