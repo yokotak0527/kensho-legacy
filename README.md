@@ -1,4 +1,4 @@
-# Kensho
+# Kensho (legacy)
 
 The JavaScript validation package.  
 This package will not be updated in the future.  
@@ -16,13 +16,13 @@ Use [Kensho](https://github.com/yokotak0527/kensho) or [Kensho-form](https://git
 ### npm
 
 ```bash
-$ npm i @yokotak0527/kensho
+$ npm i @yokotak0527/kensho-legacy
 ```
 
 ### CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@yokotak0527/kensho/dist/bundle.iife.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@yokotak0527/kensho-legacy/dist/bundle.iife.min.js"></script>
 ```
 
 ## Setup
@@ -30,13 +30,13 @@ $ npm i @yokotak0527/kensho
 ### CommonJS
 
 ```js
-const Kensho = require('@yokotak0527/kensho')
+const Kensho = require('@yokotak0527/kensho-legacy')
 ```
 
 ### ESModule
 
 ```js
-import Kensho from '@yokotak0527/kensho'
+import Kensho from '@yokotak0527/kensho-legacy'
 ```
 
 ## Validation
