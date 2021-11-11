@@ -70,6 +70,8 @@ const config = {
 };
 
 const required = value => {
+    if (Array.isArray(value))
+        return value.map(v => required(v)).includes(true);
     if (typeof value === 'string')
         return value.trim() !== '';
     if (typeof value === 'number')
@@ -404,7 +406,6 @@ class Kensho {
             }
             if (typeAttr === 'checkbox') {
                 inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
-                console.log(inputElement);
             }
             const strEvents = _inputElm.getAttribute(`${prefix}event`);
             let rawEvent = strEvents !== null ? strEvents : undefined;
@@ -632,10 +633,13 @@ class Kensho {
             }
         }
         if (unit.type === 'checkbox') {
-            const elem = unit.inputElement[0];
-            if (elem.checked) {
-                value = elem.value;
+            const valueArray = [];
+            for (let i = 0, l = unit.inputElement.length; i < l; i++) {
+                const elem = unit.inputElement[i];
+                if (elem.checked)
+                    valueArray.push(elem.value);
             }
+            value = valueArray;
         }
         if (unit.type === 'select') {
             const elem = unit.inputElement[0];
@@ -657,8 +661,14 @@ class Kensho {
     validate(ruleUnitName) {
         const unit = this.getRuleUnit(ruleUnitName);
         let value = this.getInputValue(unit);
-        if (unit.valueFilter !== undefined)
-            value = unit.valueFilter.bind(this)(value, Kensho);
+        if (unit.valueFilter !== undefined) {
+            if (typeof value === 'string') {
+                value = unit.valueFilter.bind(this)(value, Kensho);
+            }
+            if (Array.isArray(value)) {
+                value = value.map(v => { var _a; return (_a = unit.valueFilter) === null || _a === void 0 ? void 0 : _a.bind(this)(v, Kensho); });
+            }
+        }
         this.clear(unit);
         for (const [ruleName, option] of unit.rule) {
             if (ruleName !== 'required' && unit.allowEmpty && value === '')

@@ -39,7 +39,7 @@ declare class Kensho {
     removeAll(): void;
     hasError(): boolean;
     getRuleUnit(ruleUnitName: string): Kensho.RuleUnit;
-    getInputValue(unit: Kensho.RuleUnit): string;
+    getInputValue(unit: Kensho.RuleUnit): string | string[];
     clear(unit: Kensho.RuleUnit): void;
     clearAll(): void;
     validate(ruleUnitName: string): boolean;
