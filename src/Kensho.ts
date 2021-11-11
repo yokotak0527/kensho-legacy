@@ -147,6 +147,9 @@ class Kensho {
       if (typeAttr === 'radio') {
         inputElement = this.form.querySelectorAll<HTMLInputElement>(`input[name="${data.input.getAttribute('name')}"]`)
       }
+      if (typeAttr === 'checkbox') {
+        inputElement = this.form.querySelectorAll<HTMLInputElement>(`input[name="${data.input.getAttribute('name')}"]`)
+      }
 
       // parse event -----------------------------------------------------------
       const strEvents = _inputElm.getAttribute(`${prefix}event`)
@@ -413,8 +416,8 @@ class Kensho {
   /**
    * get value from the input
    */
-  getInputValue (unit:Kensho.RuleUnit):string {
-    let value = ''
+  getInputValue (unit:Kensho.RuleUnit):string|string[] {
+    let value:string|string[] = ''
     if (unit.type === 'textarea') {
       value = unit.inputElement[0].value
     }
@@ -431,10 +434,13 @@ class Kensho {
       }
     }
     if (unit.type === 'checkbox') {
-      const elem = unit.inputElement[0] as HTMLInputElement
-      if (elem.checked) {
-        value = elem.value
+
+      const valueArray:string[] = []
+      for (let i = 0, l = unit.inputElement.length; i < l; i++) {
+        const elem = unit.inputElement[i] as HTMLInputElement
+        if (elem.checked) valueArray.push(elem.value)
       }
+      value = valueArray
     }
     if (unit.type === 'select') {
       const elem = unit.inputElement[0] as HTMLSelectElement
@@ -469,7 +475,14 @@ class Kensho {
     const unit = this.getRuleUnit(ruleUnitName)
 
     let value = this.getInputValue(unit)
-    if (unit.valueFilter !== undefined) value = unit.valueFilter.bind(this)(value, Kensho)
+    if (unit.valueFilter !== undefined) {
+      if (typeof value === 'string') {
+        value = unit.valueFilter.bind(this)(value, Kensho)
+      }
+      if (Array.isArray(value)) {
+        value = value.map(v => unit.valueFilter?.bind(this)(v, Kensho))
+      }
+    }
 
     this.clear(unit)
 

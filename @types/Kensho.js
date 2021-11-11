@@ -400,6 +400,10 @@ class Kensho {
             if (typeAttr === 'radio') {
                 inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
             }
+            if (typeAttr === 'checkbox') {
+                inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
+                console.log(inputElement);
+            }
             const strEvents = _inputElm.getAttribute(`${prefix}event`);
             let rawEvent = strEvents !== null ? strEvents : undefined;
             if (typeof rawEvent === 'string') {
@@ -625,9 +629,19 @@ class Kensho {
                 }
             }
         }
+        // console.log(unit.type)
         if (unit.type === 'checkbox') {
+
+            // for (let i = 0, l = unit.inputElement.length; i < l; i++) {
+            //     const elem = unit.inputElement[i];
+            //     if (elem.checked) {
+            //         value = elem.value;
+            //         break;
+            //     }
+            // }
             const elem = unit.inputElement[0];
             if (elem.checked) {
+                console.log(elem.value)
                 value = elem.value;
             }
         }

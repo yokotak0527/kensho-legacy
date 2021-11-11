@@ -20,6 +20,9 @@
     >
     <p k-name="sample1.error"></p>
     <p k-name="sample2.error"></p>
+    <input type="checkbox" name="my-checkbox" value="hoge" k-name="my-checkbox" k-rule="required" k-event="blur">
+    <input type="checkbox" value="fuga" name="my-checkbox">
+    <p k-name="my-checkbox.error"></p>
   </form>
   <script>
     window.onload = function(){

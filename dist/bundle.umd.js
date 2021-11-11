@@ -406,6 +406,10 @@
                 if (typeAttr === 'radio') {
                     inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
                 }
+                if (typeAttr === 'checkbox') {
+                    inputElement = this.form.querySelectorAll(`input[name="${data.input.getAttribute('name')}"]`);
+                    console.log(inputElement);
+                }
                 const strEvents = _inputElm.getAttribute(`${prefix}event`);
                 let rawEvent = strEvents !== null ? strEvents : undefined;
                 if (typeof rawEvent === 'string') {
